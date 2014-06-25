@@ -38,7 +38,7 @@ class Fast5File(object):
 			table = self.hdf5file.getNode(fastq_path)
 			self.fastq = formats.Fastq(table.Fastq[()])
 		except Exception, e:
-			print sys.stderr("Can't find FASTQ in %s: %s" % (self.filename, e))
+			sys.stderr.write("Can't find FASTQ in %s\n" % self.filename)
 
 	def get_fasta(self):
 		"""
@@ -48,6 +48,6 @@ class Fast5File(object):
 			table = self.hdf5file.getNode(fastq_path)
 			self.fasta = formats.Fasta(table.Fastq[()])
 		except Exception, e:
-			print sys.stderr("Can't find FASTQ in %s: %s" % (self.filename, e))
+			sys.stderr.write("Can't find FASTQ in %s\n" % self.filename)
 			
 

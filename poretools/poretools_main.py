@@ -9,6 +9,7 @@ import stats
 import hist
 import fasta
 import fastq
+import nucdist
 import poretools.version
 
 
@@ -54,6 +55,14 @@ def main():
     parser_fastq.add_argument('files', metavar='FILES', nargs='+',
                              help='The input FAST5 files.')
     parser_fastq.set_defaults(func=fastq.run)
+
+    # nucdist
+    parser_nucdist = subparsers.add_parser('nucdist',
+                                        help='Inspect the nucleotide composition of a set of FAST5 files')
+    parser_nucdist.add_argument('files', metavar='FILES', nargs='+',
+                             help='The input FAST5 files.')
+    parser_nucdist.set_defaults(func=nucdist.run)
+
 
     #######################################################
     # parse the args and call the selected function
