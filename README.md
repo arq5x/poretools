@@ -35,3 +35,11 @@ Collect read size statistics from a set of FAST5 files.
 Plot a histogram of read sizes from a set of FAST5 files.
     
     poretools hist fast5/*.fast5
+
+Look at the nucleotide composition of a set of FAST5 files.
+    
+    poretools nucdist fast5/*.fast5
+
+Look at the quality score composition of a set of FAST5 files.
+    
+    poretools qualdist fast5/*.fast5
