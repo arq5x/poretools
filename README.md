@@ -10,7 +10,12 @@ Requirements
 
 Installation
 ========
+	git clone https://github.com/arq5x/poretools
+	cd poretools
     python setup.py install
+    # or
+    sudo python setup.py install
+
 
 Examples
 ========
