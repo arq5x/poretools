@@ -2,6 +2,7 @@ A wee toolkit for working with nanopore sequencing data from Oxford Nanopore.
 
 Requirements
 ============
+- Python 2.7+
 - Pytables 3.x
 - NUMPY
 - Matplotlib
