@@ -4,14 +4,14 @@ def run(parser, args):
 	for filename in args.files:
 		fast5 = Fast5File.Fast5File(filename)
 		
-		fa = fast5.fasta
-		if fa is not None:
+		fas = fast5.get_fastas(args.type)
+		for fa in fas:
 
-			# does the read meet user's criteria?
-			if len(fa.seq) < args.min_length:
+			if fa is None or \
+			len(fa.seq) < args.min_length:			
 				fast5.close()
 				continue
-
+			
 			print fa
-
 		fast5.close()
+

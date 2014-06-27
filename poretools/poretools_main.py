@@ -70,6 +70,12 @@ def main():
                                         help='Extract FASTA sequences from a set of FAST5 files')
     parser_fasta.add_argument('files', metavar='FILES', nargs='+',
                              help='The input FAST5 files.')
+    parser_fasta.add_argument('--type',
+                              dest='type',
+                              metavar='STRING',
+                              choices=['all', 'fwd', 'rev', '2D', 'fwd,rev'],
+                              default='all',
+                              help='Which type of FASTQ entries should be reported? Def.=all')
     parser_fasta.add_argument('--min-length',
                               dest='min_length',
                               default=0,
@@ -85,6 +91,12 @@ def main():
                                         help='Extract FASTQ sequences from a set of FAST5 files')
     parser_fastq.add_argument('files', metavar='FILES', nargs='+',
                              help='The input FAST5 files.')
+    parser_fastq.add_argument('--type',
+                              dest='type',
+                              metavar='STRING',
+                              choices=['all', 'fwd', 'rev', '2D', 'fwd,rev'],
+                              default='all',
+                              help='Which type of FASTA entries should be reported? Def.=all')
     parser_fastq.add_argument('--min-length',
                               dest='min_length',
                               default=0,

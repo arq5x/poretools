@@ -8,8 +8,9 @@ def run(parser, args):
 
 	for filename in args.files:
 		fast5 = Fast5File.Fast5File(filename)
-		if fast5.fastq is not None:
-			for n in fast5.fastq.seq:
+		fq = fast5.get_fastq()
+		if fq is not None:
+			for n in fq.seq:
 				nuc_count[n] += 1
 				total_nucs += 1
 		fast5.close()

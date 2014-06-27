@@ -6,7 +6,7 @@ def run(parser, args):
 	sizes = []
 	for filename in args.files:
 		fast5 = Fast5File.Fast5File(filename)
-		fq = fast5.fastq
+		fq = fast5.get_fastq()
 		if fq is not None:
 			sizes.append(len(fq.seq))
 		fast5.close()
