@@ -23,10 +23,12 @@ Examples
 Extract sequences in FASTQ format from a set of FAST5 files.
     
     poretools fastq fast5/*.fast5
+    poretools fastq --min-length 5000 fast5/*.fast5
 
 Extract sequences in FASTA format from a set of FAST5 files.
     
     poretools fasta fast5/*.fast5
+    poretools fasta --min-length 5000 fast5/*.fast5
 
 Collect read size statistics from a set of FAST5 files.
     

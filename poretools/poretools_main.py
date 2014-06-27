@@ -48,13 +48,24 @@ def main():
                                         help='Extract FASTA sequences from a set of FAST5 files')
     parser_fasta.add_argument('files', metavar='FILES', nargs='+',
                              help='The input FAST5 files.')
+    parser_fasta.add_argument('--min-length',
+                              dest='min_length',
+                              default=0,
+                              type=int,
+                              help=('Minimum read length for FASTA entry to be reported.'))
     parser_fasta.set_defaults(func=fasta.run)
+
 
     # FASTQ
     parser_fastq = subparsers.add_parser('fastq',
                                         help='Extract FASTQ sequences from a set of FAST5 files')
     parser_fastq.add_argument('files', metavar='FILES', nargs='+',
                              help='The input FAST5 files.')
+    parser_fastq.add_argument('--min-length',
+                              dest='min_length',
+                              default=0,
+                              type=int,
+                              help=('Minimum read length for FASTQ entry to be reported.'))
     parser_fastq.set_defaults(func=fastq.run)
 
     # nucdist
