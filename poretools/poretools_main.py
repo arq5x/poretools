@@ -29,21 +29,43 @@ def main():
     # create the individual tool parsers
     #########################################
 
+    ##########
     # stats
+    ##########
     parser_stats = subparsers.add_parser('stats',
                                         help='Get read size stats for a set of FAST5 files')
     parser_stats.add_argument('files', metavar='FILES', nargs='+',
                              help='The input FAST5 files.')
     parser_stats.set_defaults(func=stats.run)
 
+    ##########
     # hist
+    ##########
     parser_hist = subparsers.add_parser('hist',
                                         help='Plot read size histogram for a set of FAST5 files')
     parser_hist.add_argument('files', metavar='FILES', nargs='+',
                              help='The input FAST5 files.')
+    parser_hist.add_argument('--min-length',
+                              dest='min_length',
+                              default=0,
+                              type=int,
+                              help=('Minimum read length to be included in histogram.'))
+    parser_hist.add_argument('--max-length',
+                              dest='max_length',
+                              default=1000000000,
+                              type=int,
+                              help=('Maximum read length to be included in histogram.'))
+    parser_hist.add_argument('--num-bins',
+                              dest='num_bins',
+                              default=50,
+                              type=int,
+                              help=('The number of histogram bins.'))
     parser_hist.set_defaults(func=hist.run)
 
+
+    ##########
     # FASTA
+    ##########
     parser_fasta = subparsers.add_parser('fasta',
                                         help='Extract FASTA sequences from a set of FAST5 files')
     parser_fasta.add_argument('files', metavar='FILES', nargs='+',
@@ -56,7 +78,9 @@ def main():
     parser_fasta.set_defaults(func=fasta.run)
 
 
+    ##########
     # FASTQ
+    ##########
     parser_fastq = subparsers.add_parser('fastq',
                                         help='Extract FASTQ sequences from a set of FAST5 files')
     parser_fastq.add_argument('files', metavar='FILES', nargs='+',
@@ -68,14 +92,20 @@ def main():
                               help=('Minimum read length for FASTQ entry to be reported.'))
     parser_fastq.set_defaults(func=fastq.run)
 
+    
+    #########
     # nucdist
+    #########
     parser_nucdist = subparsers.add_parser('nucdist',
                                         help='Inspect the nucleotide composition of a set of FAST5 files')
     parser_nucdist.add_argument('files', metavar='FILES', nargs='+',
                              help='The input FAST5 files.')
     parser_nucdist.set_defaults(func=nucdist.run)
 
+    
+    ##########
     # qualdist
+    ##########
     parser_qualdist = subparsers.add_parser('qualdist',
                                         help='Inspect the qual score composition of a set of FAST5 files')
     parser_qualdist.add_argument('files', metavar='FILES', nargs='+',

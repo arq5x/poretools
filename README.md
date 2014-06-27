@@ -37,6 +37,8 @@ Collect read size statistics from a set of FAST5 files.
 Plot a histogram of read sizes from a set of FAST5 files.
     
     poretools hist fast5/*.fast5
+    poretools hist --min-length 1000 --max-length 10000 fast5/*.fast5
+    poretools hist --num-bins 20 --max-length 10000 fast5/*.fast5
 
 Look at the nucleotide composition of a set of FAST5 files.
     
