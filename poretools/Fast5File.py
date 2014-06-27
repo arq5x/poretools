@@ -88,7 +88,7 @@ class Fast5File(object):
 		fas = []
 		if choice == "all":
 			for fasta in self.fastas:
-				fas.append(self.fastas[fastq])
+				fas.append(self.fastas[fasta])
 		elif choice == "fwd":
 				fas.append(self.fastas.get('template'))
 		elif choice == "rev":
