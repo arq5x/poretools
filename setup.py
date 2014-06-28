@@ -27,7 +27,7 @@ setup(
         requires = ['python (>=2.7, <3.0)'],
         packages=['poretools',
                   'poretools.scripts'],
-        author="Aaron Quinlan",
+        author="Nick Loman and Aaron Quinlan",
         description='A toolset for working with nanopore sequencing data',
         long_description=long_description,
         url="http://poretools.readthedocs.org",
