@@ -27,7 +27,7 @@ Extract sequences in FASTQ format from a set of FAST5 files.
 Or, if there are too many files for your OS to do the wildcard expansion, just provide a directory.
 ``poreutils`` will automatically find all of the FAST5 files in the directory.
 
-    poretools fastq fast5/*.fast5
+    poretools fastq fast5/
 
 
 Extract sequences in FASTQ format from a set of FAST5 files.
