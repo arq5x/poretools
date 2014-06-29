@@ -11,7 +11,7 @@ def get_fast5_files(file):
 		file = file[0]
 		# is it a directory or single file?
 		if os.path.isdir(file):
-			pattern = dir + '/' + '*.fast5'
+			pattern = file + '/' + '*.fast5'
 			files = glob.glob(pattern)
 			return files
 		else:
