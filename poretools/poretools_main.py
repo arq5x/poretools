@@ -11,6 +11,8 @@ import fasta
 import fastq
 import nucdist
 import qualdist
+import readstats
+import getevents
 import poretools.version
 
 
@@ -123,6 +125,28 @@ def main():
     parser_qualdist.add_argument('files', metavar='FILES', nargs='+',
                              help='The input FAST5 files.')
     parser_qualdist.set_defaults(func=qualdist.run)
+
+
+    ###########
+    # readstats
+    ###########
+    parser_readstats = subparsers.add_parser('readstats',
+                                        help='Extract signal information for each read over time.')
+    parser_readstats.add_argument('files', metavar='FILES', nargs='+',
+                             help='The input FAST5 files.')
+    parser_readstats.set_defaults(func=readstats.run)
+
+
+    ###########
+    # getevents
+    ###########
+    parser_getevents = subparsers.add_parser('getevents',
+                                        help='Extract each nanopore event for each read.')
+    parser_getevents.add_argument('files', metavar='FILES', nargs='+',
+                             help='The input FAST5 files.')
+    parser_getevents.set_defaults(func=getevents.run)
+
+
 
     #######################################################
     # parse the args and call the selected function

@@ -1,6 +1,7 @@
 import sys
 import tables as pyhdf5
 import formats
+from Event import Event
 
 fastq_paths = {'template' : '/Analyses/Basecall_2D_000/BaseCalled_template',
                'complement' : '/Analyses/Basecall_2D_000/BaseCalled_complement',
@@ -17,6 +18,11 @@ class Fast5File(object):
 		
 		self._extract_fastqs_from_fast5()
 		self._extract_fastas_from_fast5()
+		self._extract_template_events()
+		self._extract_complement_events()
+
+		self._get_metadata()
+
 
 	def open(self):
 		"""
@@ -55,6 +61,38 @@ class Fast5File(object):
 				self.fastas[id] = fa
 			except Exception, e:
 				pass
+
+	def _extract_template_events(self):
+		"""
+		Pull out the event information for the template strand
+		"""
+		try:
+			table = self.hdf5file.getNode(fastq_paths['template'])
+			self.template_events = [Event(x[:]) for x in table.Events]
+		except Exception, e:
+			self.template_events = None
+
+	def _extract_complement_events(self):
+		"""
+		Pull out the event information for the complementary strand
+		"""
+		try:
+			table = self.hdf5file.getNode(fastq_paths['complement'])
+			self.complement_events = [Event(x[:]) for x in table.Events]
+		except Exception, e:
+
+			self.complement_events = None
+
+	def _get_metadata(self):
+		try:
+			self.keyinfo = self.hdf5file.getNode('/UniqueGlobalKey')
+		except Exception, e:
+			try:
+				self.keyinfo = self.hdf5file.getNode('/Key')
+			except Exception, e:
+				self.keyinfo = None
+				sys.stderr.write("Cannot find keyinfo. Exiting.\n")
+
 
 	def get_fastqs(self, choice):
 		"""
@@ -132,4 +170,50 @@ class Fast5File(object):
 			return self.fastas.get('template')
 		elif self.fastas.get('complement') is not None:
 			return self.fastas.get('complement')
+
+	def get_start_time(self):
+		"""
+		Return the starting time at which signals were collected
+		for the given read.
+		"""
+		try:
+			return self.keyinfo.tracking_id._f_getAttr('exp_start_time')
+		except:
+			return None
+
+	def get_channel_number(self):
+		"""
+		Return the channel (pore) number at which signals were collected
+		for the given read.
+		"""
+		try:
+			return self.keyinfo.tracking_id._f_getAttr('channel_number')
+		except:
+			return None
+
+	def get_read_number(self):
+		"""
+		Return the read number for the pore representing the given read.
+		"""
+		try:
+			return self.keyinfo.tracking_id._f_getAttr('read_number')
+		except:
+			return None
+
+	def get_template_events(self):
+		"""
+		Return the table of event data for the template strand
+		"""
+		return self.template_events
+
+	def get_complement_events(self):
+		"""
+		Return the table of event data for the complement strand
+		"""
+		return self.complement_events
+
+
+
+
+
 
