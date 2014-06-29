@@ -70,7 +70,7 @@ class Fast5File(object):
 			table = self.hdf5file.getNode(fastq_paths['template'])
 			self.template_events = [Event(x[:]) for x in table.Events]
 		except Exception, e:
-			self.template_events = None
+			self.template_events = []
 
 	def _extract_complement_events(self):
 		"""
@@ -81,7 +81,7 @@ class Fast5File(object):
 			self.complement_events = [Event(x[:]) for x in table.Events]
 		except Exception, e:
 
-			self.complement_events = None
+			self.complement_events = []
 
 	def _get_metadata(self):
 		try:
