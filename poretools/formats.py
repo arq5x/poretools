@@ -4,7 +4,7 @@ class Fastq(object):
 		self.parse()
 
 	def parse(self):
-		(self.name, self.seq, self.sep, self.qual) = self.s.split('\n')[0:4]
+		(self.name, self.seq, self.sep, self.qual) = self.s.strip().split('\n')
 
 	def __repr__(self):
 		return '\n'.join([self.name, self.seq, self.sep, self.qual])
@@ -16,7 +16,7 @@ class Fasta(object):
 		self.parse()
 
 	def parse(self):
-		(self.name, self.seq, self.sep, self.qual) = self.s.split('\n')[0:4]
+		(self.name, self.seq, self.sep, self.qual) = self.s.strip().split('\n')
 
 	def __repr__(self):
 		return '\n'.join(['>'+self.name, self.seq])
