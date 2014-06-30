@@ -112,7 +112,7 @@ def main():
     # nucdist
     #########
     parser_nucdist = subparsers.add_parser('nucdist',
-                                        help='Inspect the nucleotide composition of a set of FAST5 files')
+                                        help='Get the nucl. composition of a set of FAST5 files')
     parser_nucdist.add_argument('files', metavar='FILES', nargs='+',
                              help='The input FAST5 files.')
     parser_nucdist.set_defaults(func=nucdist.run)
@@ -122,7 +122,7 @@ def main():
     # qualdist
     ##########
     parser_qualdist = subparsers.add_parser('qualdist',
-                                        help='Inspect the qual score composition of a set of FAST5 files')
+                                        help='Get the qual score composition of a set of FAST5 files')
     parser_qualdist.add_argument('files', metavar='FILES', nargs='+',
                              help='The input FAST5 files.')
     parser_qualdist.set_defaults(func=qualdist.run)
