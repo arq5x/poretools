@@ -17,11 +17,14 @@ class Fast5File(object):
 		self.fastqs = {}
 		
 		self._extract_fastqs_from_fast5()
-		self._extract_fastas_from_fast5()
-		self._extract_template_events()
-		self._extract_complement_events()
 
-		self._get_metadata()
+		# booleans for lazy loading (speed)
+		self.have_fastas = False
+		self.have_templates = False
+		self.have_complements = False
+		self.have_metadata = False
+
+		#self._get_metadata()
 
 	####################################################################
 	# Public API methods
@@ -67,6 +70,10 @@ class Fast5File(object):
 		Return the set of base called sequences in the FAST5
 		in FASTQ format.
 		"""
+		if self.have_fastas is False:
+			self._extract_fastas_from_fast5()
+			self.have_fastas = True
+
 		# TODO "best". What is "best"?
 		fas = []
 		if choice == "all":
@@ -120,12 +127,20 @@ class Fast5File(object):
 		"""
 		Return the table of event data for the template strand
 		"""
+		if self.have_templates is False:
+			self._extract_template_events()
+			self.have_templates = True
+
 		return self.template_events
 
 	def get_complement_events(self):
 		"""
 		Return the table of event data for the complement strand
 		"""
+		if self.have_complements is False:
+			self._extract_complement_events()
+			self.have_complements = True
+		
 		return self.complement_events
 
 	####################################################################
@@ -137,6 +152,10 @@ class Fast5File(object):
 		Return the starting time at which signals were collected
 		for the given read.
 		"""
+		if self.have_metadata is False:
+			self._get_metadata()
+			self.have_metadata = True
+
 		try:
 			return self.keyinfo.tracking_id._f_getAttr('exp_start_time')
 		except:
@@ -147,6 +166,10 @@ class Fast5File(object):
 		Return the channel (pore) number at which signals were collected
 		for the given read.
 		"""
+		if self.have_metadata is False:
+			self._get_metadata()
+			self.have_metadata = True
+
 		try:
 			return self.keyinfo.tracking_id._f_getAttr('channel_number')
 		except:
@@ -156,6 +179,10 @@ class Fast5File(object):
 		"""
 		Return the read number for the pore representing the given read.
 		"""
+		if self.have_metadata is False:
+			self._get_metadata()
+			self.have_metadata = True
+
 		try:
 			return self.keyinfo.tracking_id._f_getAttr('read_number')
 		except:
@@ -165,6 +192,10 @@ class Fast5File(object):
 		"""
 		Return the flow cell version name.
 		"""
+		if self.have_metadata is False:
+			self._get_metadata()
+			self.have_metadata = True
+
 		try:
 			return self.keyinfo.tracking_id._f_getAttr('version_name')
 		except:
@@ -174,6 +205,10 @@ class Fast5File(object):
 		"""
 		Return the run id.
 		"""
+		if self.have_metadata is False:
+			self._get_metadata()
+			self.have_metadata = True
+
 		try:
 			return self.keyinfo.tracking_id._f_getAttr('run_id')
 		except:
@@ -183,6 +218,10 @@ class Fast5File(object):
 		"""
 		Return the heatsink temperature.
 		"""
+		if self.have_metadata is False:
+			self._get_metadata()
+			self.have_metadata = True
+
 		try:
 			return self.keyinfo.tracking_id._f_getAttr('heatsink_temp')
 		except:
@@ -192,6 +231,10 @@ class Fast5File(object):
 		"""
 		Return the ASIC temperature.
 		"""
+		if self.have_metadata is False:
+			self._get_metadata()
+			self.have_metadata = True
+
 		try:
 			return self.keyinfo.tracking_id._f_getAttr('asic_temp')
 		except:
@@ -201,6 +244,10 @@ class Fast5File(object):
 		"""
 		Return the flowcell_id.
 		"""
+		if self.have_metadata is False:
+			self._get_metadata()
+			self.have_metadata = True
+
 		try:
 			return self.keyinfo.tracking_id._f_getAttr('flowcell_id')
 		except:
@@ -210,6 +257,10 @@ class Fast5File(object):
 		"""
 		Return the exp_script_purpose.
 		"""
+		if self.have_metadata is False:
+			self._get_metadata()
+			self.have_metadata = True
+
 		try:
 			return self.keyinfo.tracking_id._f_getAttr('exp_script_purpose')
 		except:
@@ -219,10 +270,18 @@ class Fast5File(object):
 		"""
 		Return the flowcell's ASIC id.
 		"""
+		if self.have_metadata is False:
+			self._get_metadata()
+			self.have_metadata = True
+
 		try:
 			return self.keyinfo.tracking_id._f_getAttr('asic_id')
 		except:
 			return None
+
+		if self.have_metadata is False:
+			self._get_metadata()
+			self.have_metadata = True
 
 	def get_device_id(self):
 		"""
