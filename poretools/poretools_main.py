@@ -12,7 +12,7 @@ import fastq
 import nucdist
 import qualdist
 import readstats
-import getevents
+import events
 import tabular
 import poretools.version
 
@@ -139,13 +139,13 @@ def main():
 
 
     ###########
-    # getevents
+    # events
     ###########
-    parser_getevents = subparsers.add_parser('getevents',
+    parser_events = subparsers.add_parser('events',
                                         help='Extract each nanopore event for each read.')
-    parser_getevents.add_argument('files', metavar='FILES', nargs='+',
+    parser_events.add_argument('files', metavar='FILES', nargs='+',
                              help='The input FAST5 files.')
-    parser_getevents.set_defaults(func=getevents.run)
+    parser_events.set_defaults(func=events.run)
 
 
     ##########
