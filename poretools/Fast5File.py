@@ -16,6 +16,7 @@ class Fast5File(object):
 		self.fastas = {}
 		self.fastqs = {}
 		
+		# pre-load the FASTQ data
 		self._extract_fastqs_from_fast5()
 
 		# booleans for lazy loading (speed)
@@ -23,8 +24,6 @@ class Fast5File(object):
 		self.have_templates = False
 		self.have_complements = False
 		self.have_metadata = False
-
-		#self._get_metadata()
 
 	####################################################################
 	# Public API methods
