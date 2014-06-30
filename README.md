@@ -19,6 +19,33 @@ Installation
     sudo python setup.py install
 
 
+Usage
+=====
+
+    $ poretools --help
+    usage: poretools [-h] [-v]
+
+                     {stats,hist,fasta,fastq,nucdist,qualdist,readstats,events,tabular}
+                     ...
+
+    optional arguments:
+      -h, --help            show this help message and exit
+      -v, --version         Installed poretools version
+
+    [sub-commands]:
+      {stats,hist,fasta,fastq,nucdist,qualdist,readstats,events,tabular}
+        stats               Get read size stats for a set of FAST5 files
+        hist                Plot read size histogram for a set of FAST5 files
+        fasta               Extract FASTA sequences from a set of FAST5 files
+        fastq               Extract FASTQ sequences from a set of FAST5 files
+        nucdist             Get the nucl. composition of a set of FAST5 files
+        qualdist            Get the qual score composition of a set of FAST5 files
+        readstats           Extract signal information for each read over time.
+        events              Extract each nanopore event for each read.
+        tabular             Extract the lengths and name/seq/quals from a set of
+                            FAST5 files in TAB delimited format
+
+
 Examples
 ========
 
