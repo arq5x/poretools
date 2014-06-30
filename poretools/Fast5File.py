@@ -68,7 +68,7 @@ class Fast5File(object):
 		"""
 		try:
 			table = self.hdf5file.getNode(fastq_paths['template'])
-			self.template_events = [Event(x[:]) for x in table.Events]
+			self.template_events = [Event(x) for x in table.Events]
 		except Exception, e:
 			self.template_events = []
 
@@ -78,7 +78,7 @@ class Fast5File(object):
 		"""
 		try:
 			table = self.hdf5file.getNode(fastq_paths['complement'])
-			self.complement_events = [Event(x[:]) for x in table.Events]
+			self.complement_events = [Event(x) for x in table.Events]
 		except Exception, e:
 
 			self.complement_events = []
