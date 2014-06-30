@@ -13,6 +13,7 @@ import nucdist
 import qualdist
 import readstats
 import getevents
+import tabular
 import poretools.version
 
 
@@ -147,6 +148,20 @@ def main():
     parser_getevents.set_defaults(func=getevents.run)
 
 
+    ##########
+    # tabular
+    ##########
+    parser_tabular = subparsers.add_parser('tabular',
+                                        help='Extract the lengths and name/seq/quals from a set of FAST5 files in TAB delimited format')
+    parser_tabular.add_argument('files', metavar='FILES', nargs='+',
+                             help='The input FAST5 files.')
+    parser_tabular.add_argument('--type',
+                              dest='type',
+                              metavar='STRING',
+                              choices=['all', 'fwd', 'rev', '2D', 'fwd,rev'],
+                              default='all',
+                              help='Which type of FASTA entries should be reported? Def.=all')
+    parser_tabular.set_defaults(func=tabular.run)
 
     #######################################################
     # parse the args and call the selected function
