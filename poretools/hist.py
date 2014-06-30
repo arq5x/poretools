@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import common
 import Fast5File
+import rpy2.robjects as robjects
 
 def run(parser, args):
 	sizes = []
@@ -11,10 +12,16 @@ def run(parser, args):
 			sizes.append(len(fq.seq))
 		fast5.close()
 
-	print sizes 
-	n, bins, patches = \
-		plt.hist([s for s in sizes if s < args.max_length and s > args.min_length], 
-				 args.num_bins, facecolor='green', alpha=0.75)
-	plt.xlabel('Read length')
-	plt.ylabel('Count')
-	plt.show()#
+	r = robjects.r
+	r_sizes = robjects.IntVector([s for s in sizes \
+		if s < args.max_length and s > args.min_length])
+	
+	r.hist(r_sizes, breaks=args.num_bins,
+		xlab='Read lengths', ylab='Count',
+		main='Histogram of read lengths')
+
+	# keep the plot open until user hits enter
+	print('Type enter to exit.')
+	raw_input()
+
+

@@ -3,9 +3,11 @@ A wee toolkit for working with nanopore sequencing data from Oxford Nanopore.
 Nick Loman and Aaron Quinlan
 
 Requirements
-============
+===================
 - Python 2.7+
+- R
 - hd5f
+- rpy2
 - Pytables 3.x
 - NUMPY
 - Matplotlib
