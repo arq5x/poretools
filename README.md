@@ -10,7 +10,6 @@ Requirements
 - rpy2
 - Pytables 3.x
 - NUMPY
-- Matplotlib
 
 Installation
 ========
