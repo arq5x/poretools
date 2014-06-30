@@ -8,6 +8,7 @@ def get_fast5_files(file):
 	if len(file) > 1:
 		return file
 	elif len(file) == 1:
+		# e.g. ['/path/to/dir'] or ['/path/to/file']
 		file = file[0]
 		# is it a directory or single file?
 		if os.path.isdir(file):
