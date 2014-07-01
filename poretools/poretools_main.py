@@ -14,6 +14,7 @@ import qualdist
 import readstats
 import events
 import tabular
+import winner
 import poretools.version
 
 
@@ -163,6 +164,22 @@ def main():
     parser_qualdist.add_argument('files', metavar='FILES', nargs='+',
                              help='The input FAST5 files.')
     parser_qualdist.set_defaults(func=qualdist.run)
+
+
+    ##########
+    # winner
+    ##########
+    parser_winner = subparsers.add_parser('winner',
+                                        help='Get the longest read from a set of FAST5 files')
+    parser_winner.add_argument('files', metavar='FILES', nargs='+',
+                               help='The input FAST5 files.')
+    parser_winner.add_argument('--type',
+                              dest='type',
+                              metavar='STRING',
+                              choices=['all', 'fwd', 'rev', '2D', 'fwd,rev'],
+                              default='all',
+                              help='Which type of FASTA entries should be reported? Def.=all')
+    parser_winner.set_defaults(func=winner.run)
 
 
     #######################################################
