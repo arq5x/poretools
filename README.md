@@ -86,6 +86,39 @@ Extract sequences in FASTA format from a set of FAST5 files.
     poretools fasta --type fwd,rev fast5/
 
 
+``poretools wiggle``
+-------------------
+Make a "wiggle" plot of the signal over time for a given read or set of reads
+
+    poretools wiggle fast5/foo.fast5
+
+The result should look something like:
+    
+    .. image:: https://raw.github.com/arq5x/poretools/master/images/foo.fast5.png
+
+Other options:
+
+    # save as PNG
+    poretools wiggle --saveas png fast5/foo.fast5
+
+    # save as PDF
+    poretools wiggle --saveas pdf fast5/foo.fast5
+
+    # make a PNG for each FAST5 file in a directory
+    poretools wiggle --saveas pdf fast5/
+
+
+``poretools winner``
+-------------------
+Report the longest read among a set of FAST5 files.
+
+    poretools winner fast5/
+    poretools winner --type all fast5/
+    poretools winner --type fwd fast5/
+    poretools winner --type rev fast5/
+    poretools winner --type 2D fast5/
+    poretools winner --type fwd,rev fast5/
+
 ``poretools stats``
 -------------------
 Collect read size statistics from a set of FAST5 files.

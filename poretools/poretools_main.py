@@ -15,6 +15,7 @@ import readstats
 import events
 import tabular
 import winner
+import wiggle
 import poretools.version
 
 
@@ -181,6 +182,20 @@ def main():
                               help='Which type of FASTA entries should be reported? Def.=all')
     parser_winner.set_defaults(func=winner.run)
 
+    ###########
+    # wiggle
+    ###########
+    parser_wiggle = subparsers.add_parser('wiggle',
+                                        help='Create a wiggle plot of the observe signal for a FAST5 read.')
+    parser_wiggle.add_argument('files', metavar='FILES', nargs='+',
+                             help='The input FAST5 files.')
+    parser_wiggle.add_argument('--saveas',
+                             dest='saveas',
+                             metavar='STRING',
+                             choices=['pdf', 'png'],
+                             help='Save the wiggle plot to a file.',
+                             default=None)
+    parser_wiggle.set_defaults(func=wiggle.run)
 
     #######################################################
     # parse the args and call the selected function
