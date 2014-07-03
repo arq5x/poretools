@@ -1,3 +1,12 @@
+## parse the output of this to make a collectors curve of reads
+#a=read.table("/tmp/times.txt", header=T, sep="\t")
+#b=cbind(a, "start" = a$timestamp - min(a$timestamp))
+#c=cut(b$start, seq(3600, 259200, by=3600)
+#cumfreq0=c(0, cumsum(f))
+#breaks = seq(3600, 259200, by=3600)
+#plot(breaks/3600, cumfreq0)
+#lines(breaks/3600, cumfreq0)
+
 import common
 import Fast5File
 from time import strftime, localtime
