@@ -1,4 +1,4 @@
-#!/usr/bin/env python -E
+#!/usr/bin/python -E
 
 import poretools.scripts
 import poretools.poretools_main

@@ -15,7 +15,11 @@ import readstats
 import events
 import tabular
 import winner
+<<<<<<< Updated upstream
 import wiggle
+=======
+import times
+>>>>>>> Stashed changes
 import poretools.version
 
 
@@ -83,6 +87,12 @@ def main():
                                         help='Get read size stats for a set of FAST5 files')
     parser_stats.add_argument('files', metavar='FILES', nargs='+',
                              help='The input FAST5 files.')
+    parser_stats.add_argument('--type',
+                              dest='type',
+                              metavar='STRING',
+                              choices=['all', 'fwd', 'rev', '2D', 'fwd,rev'],
+                              default='all',
+                              help='Which type of FASTQ entries should be reported? Def.=all')
     parser_stats.set_defaults(func=stats.run)
 
 
@@ -197,6 +207,19 @@ def main():
                              default=None)
     parser_wiggle.set_defaults(func=wiggle.run)
 
+    ##########
+    # times
+    ##########
+    parser_times = subparsers.add_parser('times',
+                                        help='Return the start times from a set of FAST5 files in tabular format')
+    parser_times.add_argument('files', metavar='FILES', nargs='+',
+                               help='The input FAST5 files.')
+    parser_times.set_defaults(func=times.run)
+
+    #######################################################
+    # parse the args and call the selected function
+    #######################################################
+    args = parser.parse_args()
     #######################################################
     # parse the args and call the selected function
     #######################################################

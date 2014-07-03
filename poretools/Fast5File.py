@@ -146,7 +146,7 @@ class Fast5File(object):
 	# Flowcell Metadata methods
 	####################################################################
 
-	def get_start_time(self):
+	def get_exp_start_time(self):
 		"""
 		Return the starting time at which signals were collected
 		for the given read.
@@ -170,10 +170,11 @@ class Fast5File(object):
 			self.have_metadata = True
 
 		try:
-			return self.keyinfo.tracking_id._f_getAttr('channel_number')
+			return self.keyinfo.channel_id._f_getAttr('channel_number')
 		except:
 			return None
 
+	### seems to be broken/absent in latest metrichor files
 	def get_read_number(self):
 		"""
 		Return the read number for the pore representing the given read.
@@ -183,9 +184,23 @@ class Fast5File(object):
 			self.have_metadata = True
 
 		try:
-			return self.keyinfo.tracking_id._f_getAttr('read_number')
+			return self.keyinfo.channel_id._f_getAttr('read_number')
 		except:
 			return None
+
+	def get_start_time(self):
+		exp_start_time = self.get_exp_start_time()
+
+		path = "/Analyses/Basecall_2D_000/InputEvents"
+
+		newpath = self.hdf5file.getNode(path)
+		# the soft link target seems broken
+		newpath = "/" + "/".join(newpath.target.split("/")[:-1])
+		start_time = self.hdf5file.getNode(newpath)._f_getAttr('start_time')
+
+		## I deduce this is milliseconds!
+
+		return int(exp_start_time) + (start_time/1000)
 
 	def get_version_name(self):
 		"""

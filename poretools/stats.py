@@ -6,14 +6,13 @@ def run(parser, args):
 	sizes = []
 	for filename in common.get_fast5_files(args.files):
 		fast5 = Fast5File.Fast5File(filename)
-		fq = fast5.get_fastq()
-		if fq is not None:
-			sizes.append(len(fq.seq))
+                fas = fast5.get_fastas(args.type)
+		sizes.extend([len(fa.seq) for fa in fas if fa is not None])
 		fast5.close()
 
-	print "total reads\t%f" % (len(sizes))
-	print "total base pairs\t%f" % (sum(sizes))
-	print "mean\t%f" % (numpy.mean(sizes))
-	print "median\t%f" % (numpy.median(sizes))
-	print "min\t%f" % (numpy.min(sizes))
-	print "max\t%f" % (numpy.max(sizes))
+	print "total reads\t%d" % (len(sizes))
+	print "total base pairs\t%d" % (sum(sizes))
+	print "mean\t%.2f" % (numpy.mean(sizes))
+	print "median\t%d" % (numpy.median(sizes))
+	print "min\t%d" % (numpy.min(sizes))
+	print "max\t%d" % (numpy.max(sizes))
