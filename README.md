@@ -107,7 +107,7 @@ Other options:
     poretools wiggle --saveas pdf fast5/foo.fast5
 
     # make a PNG for each FAST5 file in a directory
-    poretools wiggle --saveas pdf fast5/
+    poretools wiggle --saveas png fast5/
 
 
 ``poretools winner``
