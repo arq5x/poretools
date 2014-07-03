@@ -36,7 +36,7 @@ def plot_wiggle(filename, saveas, start_times, mean_signals):
 		+ ggplot2.scale_x_continuous('Time (seconds)') \
 		+ ggplot2.scale_y_continuous('Mean signal (picoamps)') \
 		+ ggplot2.ggtitle('Wiggle plot for read: ' + filename + "\nTotal time (sec): " + str(total_time)) \
-		+ ggplot2.theme(**{'plot.title': ggplot2.element_text(size=8)})
+		+ ggplot2.theme(**{'plot.title': ggplot2.element_text(size=11)})
 
 	if saveas is not None:
 		plot_file = filename + "." + saveas
@@ -58,8 +58,8 @@ def run(parser, args):
 	files = common.get_fast5_files(args.files)
 	# only create a wiggle plot for multiple reads if saving to file.
 	if len(files) > 1 and args.saveas is None:
-		sys.stderr.write("Please use --saveas when plotting \
-			              multiple FAST5 files as input.\n")
+		sys.exit("""Please use --saveas when plotting"""
+			     """multiple FAST5 files as input.\n""")
 	
 	for filename in files:
 		fast5 = Fast5File.Fast5File(filename)
