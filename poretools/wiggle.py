@@ -33,9 +33,9 @@ def plot_wiggle(filename, saveas, start_times, mean_signals):
 	pp = gp + ggplot2.aes_string(x='start', y='mean') \
 		+ ggplot2.geom_step() \
 		+ ggplot2.facet_wrap(robjects.Formula('~cat'), ncol=1, scales="free_x") \
-		+ ggplot2.scale_x_continuous('Total time ' + str(total_time) + ' seconds') \
+		+ ggplot2.scale_x_continuous('Time (seconds)') \
 		+ ggplot2.scale_y_continuous('Mean signal (picoamps)') \
-		+ ggplot2.ggtitle('Wiggle plot for read: ' + filename) \
+		+ ggplot2.ggtitle('Wiggle plot for read: ' + filename + "\nTotal time (sec): " + str(total_time)) \
 		+ ggplot2.theme(**{'plot.title': ggplot2.element_text(size=8)})
 
 	if saveas is not None:
