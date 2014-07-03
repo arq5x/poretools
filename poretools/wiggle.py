@@ -41,8 +41,7 @@ def plot_wiggle(filename, saveas, start_times, mean_signals):
 	if saveas is not None:
 		plot_file = filename + "." + saveas
 		if saveas == "pdf":
-			grdevices.pdf(plot_file, width = 8.5, height = 11, 
-				units = "in", res = 300)
+			grdevices.pdf(plot_file, width = 8.5, height = 11)
 		elif saveas == "png":
 			grdevices.png(plot_file, width = 8.5, height = 11, 
 				units = "in", res = 300)
