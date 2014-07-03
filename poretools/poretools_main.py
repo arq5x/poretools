@@ -15,13 +15,9 @@ import readstats
 import events
 import tabular
 import winner
-<<<<<<< Updated upstream
 import wiggle
-=======
 import times
->>>>>>> Stashed changes
 import poretools.version
-
 
 def main():
 
