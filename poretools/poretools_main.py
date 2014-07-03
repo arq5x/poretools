@@ -186,7 +186,7 @@ def main():
     # wiggle
     ###########
     parser_wiggle = subparsers.add_parser('wiggle',
-                                        help='Create a wiggle plot of the observe signal for a FAST5 read.')
+                                        help='Plot the observed signals for FAST5 reads.')
     parser_wiggle.add_argument('files', metavar='FILES', nargs='+',
                              help='The input FAST5 files.')
     parser_wiggle.add_argument('--saveas',
