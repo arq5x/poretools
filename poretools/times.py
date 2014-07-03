@@ -1,4 +1,6 @@
 ## parse the output of this to make a collectors curve of reads
+## this only works with >=1.10 metrichor output
+
 #a=read.table("/tmp/times.txt", header=T, sep="\t")
 #b=cbind(a, "start" = a$timestamp - min(a$timestamp))
 #c=cut(b$start, seq(3600, 259200, by=3600)
