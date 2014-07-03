@@ -92,9 +92,11 @@ Make a "wiggle" plot of the signal over time for a given read or set of reads
 
     poretools wiggle fast5/foo.fast5
 
+
 The result should look something like:
     
-    .. image:: https://raw.github.com/arq5x/poretools/master/images/foo.fast5.png
+![example wiggle plot](https://raw.github.com/arq5x/poretools/master/images/foo.fast5.png)
+
 
 Other options:
 
