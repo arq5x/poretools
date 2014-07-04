@@ -1,3 +1,4 @@
+numexpr>=2.4
 numpy>=1.7.1
 tables>=3.1.1
 rpy2>=2.4.2
