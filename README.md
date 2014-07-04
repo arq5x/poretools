@@ -34,7 +34,7 @@ Usage
       -v, --version         Installed poretools version
 
     [sub-commands]:
-      {fastq,fasta,stats,hist,events,readstats,tabular,nucdist,qualdist,winner,wiggle}
+      {fastq,fasta,stats,hist,events,readstats,tabular,nucdist,qualdist,winner,wiggle,times}
         fastq               Extract FASTQ sequences from a set of FAST5 files
         fasta               Extract FASTA sequences from a set of FAST5 files
         stats               Get read size stats for a set of FAST5 files
@@ -47,6 +47,8 @@ Usage
         qualdist            Get the qual score composition of a set of FAST5 files
         winner              Get the longest read from a set of FAST5 files
         wiggle              Plot the observed signals for FAST5 reads.
+        times               Return the start times from a set of FAST5 files in
+                            tabular format
 
 
 Examples
