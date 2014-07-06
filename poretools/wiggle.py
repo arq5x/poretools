@@ -55,14 +55,14 @@ def plot_wiggle(filename, saveas, start_times, mean_signals):
 
 def run(parser, args):
 
-	files = common.get_fast5_files(args.files)
+	fast5_set = Fast5File.Fast5FileSet(args.files)
+
 	# only create a wiggle plot for multiple reads if saving to file.
-	if len(files) > 1 and args.saveas is None:
+	if fast5_set.get_num_files() > 1 and args.saveas is None:
 		sys.exit("""Please use --saveas when plotting"""
-			     """multiple FAST5 files as input.\n""")
+			     """ multiple FAST5 files as input.\n""")
 	
-	for filename in files:
-		fast5 = Fast5File.Fast5File(filename)
+	for fast5 in fast5_set:
 
 		start_times = []
 		mean_signals = []
@@ -72,10 +72,10 @@ def run(parser, args):
 			mean_signals.append(event.mean)		
 
 		if start_times:
-			plot_wiggle(filename, args.saveas, start_times, mean_signals)
+			plot_wiggle(fast5.filename, args.saveas, start_times, mean_signals)
 		else:
 			sys.stderr.write("Could not extract template events for read: %s.\n" \
-				% filename)
+				% fast5.filename)
 
 		fast5.close()
 

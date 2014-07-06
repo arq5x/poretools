@@ -5,6 +5,7 @@ import sys
 import argparse
 
 # poretools imports
+import combine
 import stats
 import hist
 import fasta
@@ -33,6 +34,21 @@ def main():
     #########################################
     # create the individual tool parsers
     #########################################
+
+    ##########
+    # combine
+    ##########
+    parser_combine = subparsers.add_parser('combine',
+                                        help='Combine a set of FAST5 files in a TAR achive')
+    parser_combine.add_argument('files', metavar='FILES', nargs='+',
+                             help='The input FAST5 files.')
+    parser_combine.add_argument('-o',
+                              dest='tar_filename',
+                              metavar='STRING',
+                              required=True,
+                              help='The name of the output TAR archive for the set of FAST5 files.')
+    parser_combine.set_defaults(func=combine.run)
+
 
     ##########
     # FASTQ

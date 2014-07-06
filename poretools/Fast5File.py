@@ -1,11 +1,91 @@
 import sys
+import os
+import glob
+import tarfile
+import shutil
 import tables as pyhdf5
+
+
+# poretools imports
 import formats
 from Event import Event
 
 fastq_paths = {'template' : '/Analyses/Basecall_2D_000/BaseCalled_template',
                'complement' : '/Analyses/Basecall_2D_000/BaseCalled_complement',
                'twodirections' : '/Analyses/Basecall_2D_000/BaseCalled_2D'}
+
+FAST5SET_FILELIST = 0
+FAST5SET_DIRECTORY = 1
+FAST5SET_SINGLEFILE = 2
+FAST5SET_TARBALL = 3
+PORETOOOLS_TMPDIR = '.poretools_tmp'
+
+class Fast5FileSet(object):
+
+	def __init__(self, fileset):
+		self.fileset = fileset
+		self.set_type = None
+		self.num_files_in_set = None
+		self._extract_fast5_files()
+
+	def get_num_files(self):
+		"""
+		Return the number of files in the FAST5 set.
+		"""
+		return self.num_files_in_set
+
+	def __iter__(self):
+		return self
+
+	def next(self):
+		try:
+			return Fast5File(self.files.next())
+		except Exception as e:
+			# cleanup our mess
+			if self.set_type ==	 FAST5SET_TARBALL:
+				shutil.rmtree(PORETOOOLS_TMPDIR)
+			raise StopIteration
+
+	def _extract_fast5_files(self):
+
+		# return as-is if list of files
+		if len(self.fileset) > 1:
+			self.files = iter(self.fileset)
+			self.num_files_in_set = len(self.fileset)
+			self.set_type = FAST5SET_FILELIST
+		elif len(self.fileset) == 1:
+			# e.g. ['/path/to/dir'] or ['/path/to/file']
+			f = self.fileset[0]
+
+			# is it a directory?
+			if os.path.isdir(f):
+				pattern = f + '/' + '*.fast5'
+				files = glob.glob(pattern)
+				self.files = iter(files)
+				self.num_files_in_set = len(files)
+				self.set_type = FAST5SET_DIRECTORY
+
+			# is it a tarball?
+			elif tarfile.is_tarfile(f):
+				if os.path.isdir(PORETOOOLS_TMPDIR):
+					shutil.rmtree(PORETOOOLS_TMPDIR)
+				os.mkdir(PORETOOOLS_TMPDIR)
+				
+				tar = tarfile.open(f)
+				tar.extractall(PORETOOOLS_TMPDIR)
+				self.files = (PORETOOOLS_TMPDIR + '/' + f for f in tar.getnames())
+				self.num_files_in_set = len(tar.getnames())
+				self.set_type = FAST5SET_TARBALL
+
+			# just a single FAST5 file.
+			else:
+				self.files = iter([f])
+				self.num_files_in_set = 1
+				self.set_type = FAST5SET_SINGLEFILE
+		else:
+			sys.stderr.write("Directory %s could not be opened. Exiting.\n" % dir)
+			sys.exit()
+
 
 class Fast5File(object):
 
@@ -189,17 +269,19 @@ class Fast5File(object):
 			return None
 
 	def get_start_time(self):
-		exp_start_time = self.get_exp_start_time()
 
+		exp_start_time	= self.get_exp_start_time()
+			
 		path = "/Analyses/Basecall_2D_000/InputEvents"
 
 		newpath = self.hdf5file.getNode(path)
-		# the soft link target seems broken
-		newpath = "/" + "/".join(newpath.target.split("/")[:-1])
+
+		# the soft link target seems broken?
+		newpath = "/" + "/".join(newpath.target.split("/")[:-1]) + '/Events'
+
 		start_time = self.hdf5file.getNode(newpath)._f_getAttr('start_time')
 
 		## I deduce this is milliseconds!
-
 		return int(exp_start_time) + (start_time/1000)
 
 	def get_version_name(self):

@@ -4,8 +4,7 @@ import Fast5File
 
 def run(parser, args):
 
-	for filename in common.get_fast5_files(args.files):
-		fast5 = Fast5File.Fast5File(filename)
+	for fast5 in Fast5File.Fast5FileSet(args.files):
 
 		start_time = fast5.get_start_time()
 		channel_number = fast5.get_channel_number()

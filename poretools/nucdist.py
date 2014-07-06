@@ -7,8 +7,7 @@ def run(parser, args):
 	nuc_count = Counter()
 	total_nucs = 0
 
-	for filename in common.get_fast5_files(args.files):
-		fast5 = Fast5File.Fast5File(filename)
+	for fast5 in Fast5File.Fast5FileSet(args.files):
 		fq = fast5.get_fastq()
 		if fq is not None:
 			for n in fq.seq:

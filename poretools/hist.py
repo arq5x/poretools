@@ -1,10 +1,8 @@
-import matplotlib.pyplot as plt
-import common
 import sys
 import Fast5File
 import rpy2.robjects as robjects
 
-def plot_hist(sizes):
+def plot_hist(sizes, args):
 	"""
 	Use rpy2 to plot a histogram of the read sizes
 	"""
@@ -24,8 +22,7 @@ def plot_hist(sizes):
 def run(parser, args):
 	sizes = []
 	files_processed = 0
-	for filename in common.get_fast5_files(args.files):
-		fast5 = Fast5File.Fast5File(filename)
+	for fast5 in Fast5File.Fast5FileSet(args.files):
 		fq = fast5.get_fastq()
 		if fq is not None:
 			sizes.append(len(fq.seq))
@@ -34,6 +31,6 @@ def run(parser, args):
 			sys.stderr.write("LOG: %d files processed.\n" % files_processed)
 		fast5.close()
 
-	plot_hist(sizes)
+	plot_hist(sizes, args)
 
 

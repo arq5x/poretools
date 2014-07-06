@@ -5,8 +5,7 @@ def run(parser, args):
 	
 	print '\t'.join(['length', 'name', 'sequence', 'quals'])
 	
-	for filename in common.get_fast5_files(args.files):
-		fast5 = Fast5File.Fast5File(filename)
+	for fast5 in Fast5File.Fast5FileSet(args.files):
 		fqs = fast5.get_fastqs(args.type)
 		for fq in fqs:
 			if fq is None:

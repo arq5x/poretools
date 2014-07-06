@@ -6,8 +6,7 @@ def run(parser, args):
 	longest_size = 0
 	longest_read = None
 	
-	for filename in common.get_fast5_files(args.files):
-		fast5 = Fast5File.Fast5File(filename)
+	for fast5 in Fast5File.Fast5FileSet(args.files):
 		fas = fast5.get_fastas(args.type)
 
 		for fa in fas:

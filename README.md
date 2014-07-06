@@ -26,7 +26,7 @@ Usage
     poretools --help
     usage: poretools [-h] [-v]
 
-                     {fastq,fasta,stats,hist,readstats,events,tabular,nucdist,qualdist}
+                     {combine,fastq,fasta,stats,hist,events,readstats,tabular,nucdist,qualdist,winner,wiggle,times}
                      ...
 
     optional arguments:
@@ -34,7 +34,8 @@ Usage
       -v, --version         Installed poretools version
 
     [sub-commands]:
-      {fastq,fasta,stats,hist,events,readstats,tabular,nucdist,qualdist,winner,wiggle,times}
+      {combine,fastq,fasta,stats,hist,events,readstats,tabular,nucdist,qualdist,winner,wiggle,times}
+        combine             Combine a set of FAST5 files in a TAR achive
         fastq               Extract FASTQ sequences from a set of FAST5 files
         fasta               Extract FASTA sequences from a set of FAST5 files
         stats               Get read size stats for a set of FAST5 files
@@ -88,6 +89,20 @@ Extract sequences in FASTA format from a set of FAST5 files.
     poretools fasta --type rev fast5/
     poretools fasta --type 2D fast5/
     poretools fasta --type fwd,rev fast5/
+
+
+``poretools combine``
+---------------------
+Create a tarball from a set of FAST5 (HDF5) files.
+
+    # plain tar (recommended for speed)
+    poretools combine -o foo.fast5.tar fast5/*.fast5
+
+    # gzip
+    poretools combine -o foo.fast5.tar.gz fast5/*.fast5
+
+    # bzip2
+    poretools combine -o foo.fast5.tar.bz2 fast5/*.fast5
 
 
 ``poretools wiggle``
