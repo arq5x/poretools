@@ -1,5 +1,5 @@
-% poretools: a toolkit for working with nanopore sequencing data from Oxford Nanopore.
-% Nick Loman and Aaron Quinlan
+## poretools: a toolkit for working with nanopore sequencing data from Oxford Nanopore.
+## Nick Loman and Aaron Quinlan
 
 Requirements
 ===================
