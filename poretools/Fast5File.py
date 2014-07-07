@@ -23,7 +23,10 @@ PORETOOOLS_TMPDIR = '.poretools_tmp'
 class Fast5FileSet(object):
 
 	def __init__(self, fileset):
-		self.fileset = fileset
+		if isinstance(fileset, list):
+			self.fileset = fileset
+		elif isinstance(fileset, str):
+			self.fileset = [fileset]
 		self.set_type = None
 		self.num_files_in_set = None
 		self._extract_fast5_files()
@@ -56,7 +59,6 @@ class Fast5FileSet(object):
 		elif len(self.fileset) == 1:
 			# e.g. ['/path/to/dir'] or ['/path/to/file']
 			f = self.fileset[0]
-
 			# is it a directory?
 			if os.path.isdir(f):
 				pattern = f + '/' + '*.fast5'
