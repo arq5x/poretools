@@ -1,4 +1,3 @@
-import common
 import Fast5File
 from collections import Counter
 

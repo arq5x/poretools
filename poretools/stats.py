@@ -1,5 +1,4 @@
 import numpy
-import common
 import Fast5File
 
 def run(parser, args):

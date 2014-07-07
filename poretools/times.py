@@ -8,8 +8,6 @@
 #breaks = seq(3600, 259200, by=3600)
 #plot(breaks/3600, cumfreq0)
 #lines(breaks/3600, cumfreq0)
-
-import common
 import Fast5File
 from time import strftime, localtime
 

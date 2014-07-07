@@ -4,8 +4,6 @@ import rpy2.robjects as robjects
 import rpy2.robjects.lib.ggplot2 as ggplot2
 from rpy2.robjects.packages import importr
 
-
-import common
 import Fast5File
 
 def plot_wiggle(filename, saveas, start_times, mean_signals):
