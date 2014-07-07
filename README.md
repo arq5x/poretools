@@ -2,6 +2,8 @@
 
 *Nick Loman and Aaron Quinlan*
 
+**Note:** this software is in an alpha state; the code is changing rapidly and the API and CLI may change at any time.
+
 Requirements
 ===================
 - Python 2.7+
@@ -10,6 +12,7 @@ Requirements
 - rpy2
 - Pytables 3.x
 - NUMPY
+
 
 Installation
 ========
