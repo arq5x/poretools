@@ -6,7 +6,7 @@ Requirements
 ===================
 - Python 2.7+
 - R
-- hd5f
+- HDF5 >=1.8.7 (http://www.hdfgroup.org/HDF5/)
 - rpy2
 - Pytables 3.x
 - NUMPY
