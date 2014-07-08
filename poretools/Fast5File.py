@@ -93,7 +93,7 @@ class Fast5File(object):
 
 	def __init__(self, filename):
 		self.filename = filename
-		self.open()
+		self.is_open = self.open()
 
 		self.fastas = {}
 		self.fastqs = {}
@@ -115,13 +115,20 @@ class Fast5File(object):
 		"""
 		Open an ONT Fast5 file, assuming HDF5 format
 		"""
-		self.hdf5file = pyhdf5.open_file(self.filename, 'r')
-
+		try:
+			self.hdf5file = pyhdf5.open_file(self.filename, 'r')
+			return True
+		except Exception, e:
+			sys.stderr.write("Cannot open file: %s. Perhaps it is corrupt? Moving on.\n" % self.filename)
+			return False
+			
 	def close(self):
 		"""
 		Close an open an ONT Fast5 file, assuming HDF5 format
 		"""
-		self.hdf5file.close()
+		if self.is_open:
+			self.hdf5file.close()
+
 
 	def get_fastqs(self, choice):
 		"""
