@@ -84,6 +84,16 @@ def main():
                               choices=['all', 'fwd', 'rev', '2D', 'fwd,rev'],
                               default='all',
                               help='Which type of FASTQ entries should be reported? Def.=all')
+    parser_fasta.add_argument('--start',
+                              dest='start_time',
+                              default=None,
+                              type=int,
+                              help='Only report reads from after start timestamp')
+    parser_fasta.add_argument('--end',
+                              dest='end_time',
+                              default=None,
+                              type=int,
+                              help='Only report reads from before end timestamp')
     parser_fasta.add_argument('--min-length',
                               dest='min_length',
                               default=0,

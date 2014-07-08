@@ -66,6 +66,8 @@ class Fast5FileSet(object):
 				self.files = iter(files)
 				self.num_files_in_set = len(files)
 				self.set_type = FAST5SET_DIRECTORY
+				if not len(files):
+					print >>sys.stderr, "Directory is empty!"
 
 			# is it a tarball?
 			elif tarfile.is_tarfile(f):
@@ -99,9 +101,10 @@ class Fast5File(object):
 		self.fastqs = {}
 		
 		# pre-load the FASTQ data
-		self._extract_fastqs_from_fast5()
+		#self._extract_fastqs_from_fast5()
 
 		# booleans for lazy loading (speed)
+		self.have_fastqs = False
 		self.have_fastas = False
 		self.have_templates = False
 		self.have_complements = False
@@ -186,6 +189,10 @@ class Fast5File(object):
 		in FASTQ format. Try 2D then template, then complement.
 		If all fail, return None
 		"""
+		if self.have_fastqs is False:
+			self._extract_fastqs_from_fast5()
+			self.have_fastqs = True
+
 		if not self.fastqs:
 			return None
 		elif self.fastqs.get('twodirections') is not None:
@@ -278,20 +285,31 @@ class Fast5File(object):
 			return None
 
 	def get_start_time(self):
-
 		exp_start_time	= self.get_exp_start_time()
-			
+	
+		path = "/Analyses/Basecall_2D_000/BaseCalled_template/Events"
+		try:
+			return int(exp_start_time) + int(self.hdf5file.getNode(path)._f_getAttr('start_time'))
+		except Exception:
+			pass
+		
 		path = "/Analyses/Basecall_2D_000/InputEvents"
 
-		newpath = self.hdf5file.getNode(path)
+		try:
+			newpath = self.hdf5file.getNode(path)
+		except Exception:
+			print >>sys.stderr, "Cannot find inputevents"
+			return None
 
 		# the soft link target seems broken?
 		newpath = "/" + "/".join(newpath.target.split("/")[:-1]) + '/Events'
 
-		start_time = self.hdf5file.getNode(newpath)._f_getAttr('start_time')
+		try:
+			start_time = self.hdf5file.getNode(newpath)._f_getAttr('start_time')
+		except Exception:
+			return None
 
-		## I deduce this is milliseconds!
-		return int(exp_start_time) + (start_time/1000)
+		return int(exp_start_time) + int(start_time)
 
 	def get_version_name(self):
 		"""
