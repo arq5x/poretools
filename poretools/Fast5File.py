@@ -138,6 +138,10 @@ class Fast5File(object):
 		Return the set of base called sequences in the FAST5
 		in FASTQ format.
 		"""
+		if self.have_fastqs is False:
+			self._extract_fastqs_from_fast5()
+			self.have_fastqs = True
+
 		# TODO "best". What is "best"?
 		fqs = []
 		if choice == "all":
