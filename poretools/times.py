@@ -13,21 +13,34 @@ from time import strftime, localtime
 import sys
 
 def run(parser, args):
-	print '\t'.join(['filename', 'exp_starttime', 'unix_timestamp', 'iso_timestamp', 'day', 'hour', 'minute'])
+	print '\t'.join(['filename', 'read_length', 'exp_starttime', 'unix_timestamp', 'iso_timestamp', 'day', 'hour', 'minute'])
 	
 	for fast5 in Fast5File.Fast5FileSet(args.files):
 		if fast5.is_open:
+			
+			fq = fast5.get_fastq()
+			
 			start_time = fast5.get_start_time()
 			if start_time is None:
 				print >>sys.stderr, "No start time for %s!" % (fast5.filename)
 				fast5.close()
 				continue
 
+			if fq is not None:
+				read_length = len(fq.seq)
+			else:
+				read_length = 0
+
 			lt = localtime(start_time)
-			print "\t".join([fast5.filename, fast5.get_exp_start_time(),
+			print "\t".join([fast5.filename, 
+				str(read_length),
+				fast5.get_exp_start_time(),
 				str(start_time), \
 				strftime('%Y-%m-%dT%H:%M:%S%z', lt),
 				strftime('%d', lt),
 				strftime('%H', lt),
 				strftime('%M', lt)])
 			fast5.close()
+
+	plot_collectors(args.saveas, start_times, read_lengths)
+
