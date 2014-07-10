@@ -18,6 +18,7 @@ import tabular
 import winner
 import wiggle
 import times
+import yield_plot
 import poretools.version
 
 def main():
@@ -237,6 +238,26 @@ def main():
     parser_times.add_argument('files', metavar='FILES', nargs='+',
                                help='The input FAST5 files.')
     parser_times.set_defaults(func=times.run)
+
+    ############
+    # yield_plot
+    ############
+    parser_yield_plot = subparsers.add_parser('yield_plot',
+                                        help='Plot the yield over time for a set of FAST5 files')
+    parser_yield_plot.add_argument('files', metavar='FILES', nargs='+',
+                               help='The input FAST5 files.')
+    parser_yield_plot.add_argument('--saveas',
+                             dest='saveas',
+                             metavar='STRING',
+                             help='Save the wiggle plot to a file. Extension (.pdf or .png) drives type.',
+                             default=None)
+    parser_yield_plot.add_argument('--plot-type',
+                             dest='plot_type',
+                             metavar='STRING',
+                             choices=['reads', 'basepairs'],
+                             help='Save the wiggle plot to a file (def=reads).',
+                             default='reads')
+    parser_yield_plot.set_defaults(func=yield_plot.run)
 
     #######################################################
     # parse the args and call the selected function
