@@ -109,7 +109,7 @@ Create a tarball from a set of FAST5 (HDF5) files.
 
 ``poretools yield_plot``
 -------------------
-Make a collector's curve plot of the sequencing yields over a set of reads. There are two types of plots. The first is the yield of reads over time:
+Create a collector's curve reflecting the sequencing yield over time for a set of reads. There are two types of plots. The first is the yield of reads over time:
 
     poretools yield_plot --plot-type reads fast5/
 
