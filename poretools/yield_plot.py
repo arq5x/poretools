@@ -86,6 +86,7 @@ def run(parser, args):
 
 			fast5.close()
 
+	# sort the data by start time
 	start_times, read_lengths = (list(t) for t in zip(*sorted(zip(start_times, read_lengths))))
 	plot_collectors_curve(args, start_times, read_lengths)
 
