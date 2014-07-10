@@ -107,6 +107,37 @@ Create a tarball from a set of FAST5 (HDF5) files.
     # bzip2
     poretools combine -o foo.fast5.tar.bz2 fast5/*.fast5
 
+``poretools yield_plot``
+-------------------
+Make a collector's curve plot of the sequencing yields over a set of reads. There are two types of plots. The first is the yield of reads over time:
+
+    poretools yield_plot --plot-type reads fast5/
+
+The result should look something like:
+    
+![example wiggle plot](https://raw.github.com/arq5x/poretools/master/images/yield.reads.png)
+
+The second is the yield of base pairs over time:
+
+    poretools yield_plot --plot-type basepairs fast5/
+
+The result should look something like:
+    
+![example wiggle plot](https://raw.github.com/arq5x/poretools/master/images/yield.bp.png)
+
+Of course, you can save to PDF or PNG with `--saveas`:
+
+    poretools yield_plot \
+              --plot-type basepairs \
+              --saveas foo.pdf\
+              fast5/
+
+    poretools yield_plot \
+              --plot-type basepairs \
+              --saveas foo.png\
+              fast5/
+
+
 
 ``poretools wiggle``
 -------------------
