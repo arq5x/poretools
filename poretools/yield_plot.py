@@ -36,6 +36,14 @@ def plot_collectors_curve(args, start_times, read_lengths):
 		'cumul': cumulative}
 	df = robjects.DataFrame(d)
 
+
+	# title
+	total_reads = len(read_lengths)
+	total_bp = sum(read_lengths)
+	plot_title = "Yield: " \
+		+ str(total_reads) + " reads and " \
+		+ str(total_bp) + " base pairs."
+
 	# plot
 	gp = ggplot2.ggplot(df)
 	pp = gp + ggplot2.aes_string(x='start', y='cumul') \
@@ -43,6 +51,7 @@ def plot_collectors_curve(args, start_times, read_lengths):
 		+ ggplot2.geom_line() \
 		+ ggplot2.scale_x_continuous('Time (hours)') \
 		+ ggplot2.scale_y_continuous(y_label) \
+		+ ggplot2.ggtitle(plot_title)
 
 	if args.saveas is not None:
 		plot_file = args.saveas
