@@ -6,7 +6,7 @@ from rpy2.robjects.packages import importr
 
 import Fast5File
 
-def plot_wiggle(filename, saveas, start_times, mean_signals):
+def plot_wiggle(filename, saveas, num_facets, start_times, mean_signals):
 	"""
 	Use rpy2 to create a wiggle plot of the read
 	"""
@@ -20,8 +20,12 @@ def plot_wiggle(filename, saveas, start_times, mean_signals):
 	# adjust times to be relative to t_0
 	r_start_times = robjects.FloatVector([t - t_0 for t in start_times])
 	r_mean_signals = robjects.FloatVector(mean_signals)
+	
+	# infer the appropriate number of events given the number of facets
+	num_events = len(r_mean_signals)
+	events_per_facet = (num_events / num_facets) + 1
 	# dummy variable to control faceting
-	facet_category = robjects.FloatVector([i / 150 for i in range(len(start_times))])
+	facet_category = robjects.FloatVector([(i / events_per_facet) + 1 for i in range(len(start_times))])
 
 	# make a data frame of the start times and mean signals
 	d = {'start': r_start_times, 'mean': r_mean_signals, 'cat': facet_category}
@@ -29,7 +33,7 @@ def plot_wiggle(filename, saveas, start_times, mean_signals):
 
 	gp = ggplot2.ggplot(df)
 	pp = gp + ggplot2.aes_string(x='start', y='mean') \
-		+ ggplot2.geom_step() \
+		+ ggplot2.geom_step(size=0.25) \
 		+ ggplot2.facet_wrap(robjects.Formula('~cat'), ncol=1, scales="free_x") \
 		+ ggplot2.scale_x_continuous('Time (seconds)') \
 		+ ggplot2.scale_y_continuous('Mean signal (picoamps)') \
@@ -70,7 +74,7 @@ def run(parser, args):
 			mean_signals.append(event.mean)		
 
 		if start_times:
-			plot_wiggle(fast5.filename, args.saveas, start_times, mean_signals)
+			plot_wiggle(fast5.filename, args.saveas, args.num_facets, start_times, mean_signals)
 		else:
 			sys.stderr.write("Could not extract template events for read: %s.\n" \
 				% fast5.filename)

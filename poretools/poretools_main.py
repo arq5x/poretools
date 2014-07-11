@@ -228,6 +228,12 @@ def main():
                              choices=['pdf', 'png'],
                              help='Save the wiggle plot to a file.',
                              default=None)
+    parser_wiggle.add_argument('--num-facets',
+                              dest='num_facets',
+                              metavar='INTEGER',
+                              default=6,
+                              type=int,
+                              help=('The number of plot facets (sub-plots). More is better for long reads. (def=6)'))
     parser_wiggle.set_defaults(func=wiggle.run)
 
     ##########
