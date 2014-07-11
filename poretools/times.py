@@ -42,5 +42,5 @@ def run(parser, args):
 				strftime('%M', lt)])
 			fast5.close()
 
-	plot_collectors(args.saveas, start_times, read_lengths)
+#	plot_collectors(args.saveas, start_times, read_lengths)
 
