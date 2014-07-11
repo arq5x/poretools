@@ -141,6 +141,11 @@ def main():
                               default=50,
                               type=int,
                               help=('The number of histogram bins.'))
+    parser_hist.add_argument('--saveas',
+                             dest='saveas',
+                             metavar='STRING',
+                             help='Save the wiggle plot to a file.',
+                             default=None)
     parser_hist.set_defaults(func=hist.run)
 
 
