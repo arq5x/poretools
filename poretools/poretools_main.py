@@ -9,47 +9,36 @@ import poretools.version
 
 def run_subtool(parser, args):
     if args.command == 'combine':
-        import combine
-        combine.run(parser, args)
+        import combine as submodule
     elif args.command == 'events':
-        import events
-        events.run(parser, args)
+        import events as submodule
     elif args.command == 'fasta':
-        import fasta
-        fasta.run(parser, args)
+        import fasta as submodule
     elif args.command == 'fastq':
-        import fastq
-        fastq.run(parser, args)
+        import fastq as submodule
     elif args.command == 'hist':
-        import hist
-        hist.run(parser, args)
+        import hist as submodule
     elif args.command == 'nucdist':
-        import nucdist
-        nucdist.run(parser, args)
+        import nucdist as submodule
     elif args.command == 'qualdist':
-        import qualdist
-        qualdist.run(parser, args)
+        import qualdist as submodule
     elif args.command == 'readstats':
-        import readstats
-        readstats.run(parser, args)
+        import readstats as submodule
     elif args.command == 'stats':
-        import stats
-        stats.run(parser, args)
+        import stats as submodule
     elif args.command == 'tabular':
-        import tabular
-        tabular.run(parser, args)
+        import tabular as submodule
     elif args.command == 'times':
-        import times
-        times.run(parser, args)
+        import times as submodule
     elif args.command == 'wiggle':
-        import wiggle
-        wiggle.run(parser, args)
+        import wiggle as submodule
     elif args.command == 'winner':
-        import winner
-        winner.run(parser, args)
+        import winner as submodule
     elif args.command == 'yield_plot':
-        import yield_plot
-        yield_plot.run(parser, args)
+        import yield_plot as submodule
+
+    # run the chosen submodule.
+    submodule.run(parser, args)
 
 
 
