@@ -5,21 +5,53 @@ import sys
 import argparse
 
 # poretools imports
-import combine
-import stats
-import hist
-import fasta
-import fastq
-import nucdist
-import qualdist
-import readstats
-import events
-import tabular
-import winner
-import wiggle
-import times
-import yield_plot
 import poretools.version
+
+def run_subtool(parser, args):
+    if args.command == 'combine':
+        import combine
+        combine.run(parser, args)
+    elif args.command == 'events':
+        import events
+        events.run(parser, args)
+    elif args.command == 'fasta':
+        import fasta
+        fasta.run(parser, args)
+    elif args.command == 'fastq':
+        import fastq
+        fastq.run(parser, args)
+    elif args.command == 'hist':
+        import hist
+        hist.run(parser, args)
+    elif args.command == 'nucdist':
+        import nucdist
+        nucdist.run(parser, args)
+    elif args.command == 'qualdist':
+        import qualdist
+        qualdist.run(parser, args)
+    elif args.command == 'readstats':
+        import readstats
+        readstats.run(parser, args)
+    elif args.command == 'stats':
+        import stats
+        stats.run(parser, args)
+    elif args.command == 'tabular':
+        import tabular
+        tabular.run(parser, args)
+    elif args.command == 'times':
+        import times
+        times.run(parser, args)
+    elif args.command == 'wiggle':
+        import wiggle
+        wiggle.run(parser, args)
+    elif args.command == 'winner':
+        import winner
+        winner.run(parser, args)
+    elif args.command == 'yield_plot':
+        import yield_plot
+        yield_plot.run(parser, args)
+
+
 
 def main():
 
@@ -48,7 +80,7 @@ def main():
                               metavar='STRING',
                               required=True,
                               help='The name of the output TAR archive for the set of FAST5 files.')
-    parser_combine.set_defaults(func=combine.run)
+    parser_combine.set_defaults(func=run_subtool)
 
 
     ##########
@@ -69,7 +101,7 @@ def main():
                               default=0,
                               type=int,
                               help=('Minimum read length for FASTQ entry to be reported.'))
-    parser_fastq.set_defaults(func=fastq.run)
+    parser_fastq.set_defaults(func=run_subtool)
 
 
     ##########
@@ -100,7 +132,7 @@ def main():
                               default=0,
                               type=int,
                               help=('Minimum read length for FASTA entry to be reported.'))
-    parser_fasta.set_defaults(func=fasta.run)
+    parser_fasta.set_defaults(func=run_subtool)
 
 
     ##########
@@ -116,7 +148,7 @@ def main():
                               choices=['all', 'fwd', 'rev', '2D', 'fwd,rev'],
                               default='all',
                               help='Which type of FASTQ entries should be reported? Def.=all')
-    parser_stats.set_defaults(func=stats.run)
+    parser_stats.set_defaults(func=run_subtool)
 
 
     ##########
@@ -146,7 +178,7 @@ def main():
                              metavar='STRING',
                              help='Save the wiggle plot to a file.',
                              default=None)
-    parser_hist.set_defaults(func=hist.run)
+    parser_hist.set_defaults(func=run_subtool)
 
 
     ###########
@@ -156,7 +188,7 @@ def main():
                                         help='Extract each nanopore event for each read.')
     parser_events.add_argument('files', metavar='FILES', nargs='+',
                              help='The input FAST5 files.')
-    parser_events.set_defaults(func=events.run)
+    parser_events.set_defaults(func=run_subtool)
 
     
     ###########
@@ -166,7 +198,7 @@ def main():
                                         help='Extract signal information for each read over time.')
     parser_readstats.add_argument('files', metavar='FILES', nargs='+',
                              help='The input FAST5 files.')
-    parser_readstats.set_defaults(func=readstats.run)
+    parser_readstats.set_defaults(func=run_subtool)
 
 
     ##########
@@ -182,7 +214,7 @@ def main():
                               choices=['all', 'fwd', 'rev', '2D', 'fwd,rev'],
                               default='all',
                               help='Which type of FASTA entries should be reported? Def.=all')
-    parser_tabular.set_defaults(func=tabular.run)
+    parser_tabular.set_defaults(func=run_subtool)
 
     
     #########
@@ -192,7 +224,7 @@ def main():
                                         help='Get the nucl. composition of a set of FAST5 files')
     parser_nucdist.add_argument('files', metavar='FILES', nargs='+',
                              help='The input FAST5 files.')
-    parser_nucdist.set_defaults(func=nucdist.run)
+    parser_nucdist.set_defaults(func=run_subtool)
 
     
     ##########
@@ -202,7 +234,7 @@ def main():
                                         help='Get the qual score composition of a set of FAST5 files')
     parser_qualdist.add_argument('files', metavar='FILES', nargs='+',
                              help='The input FAST5 files.')
-    parser_qualdist.set_defaults(func=qualdist.run)
+    parser_qualdist.set_defaults(func=run_subtool)
 
 
     ##########
@@ -218,7 +250,7 @@ def main():
                               choices=['all', 'fwd', 'rev', '2D', 'fwd,rev'],
                               default='all',
                               help='Which type of FASTA entries should be reported? Def.=all')
-    parser_winner.set_defaults(func=winner.run)
+    parser_winner.set_defaults(func=run_subtool)
 
     ###########
     # wiggle
@@ -239,7 +271,7 @@ def main():
                               default=6,
                               type=int,
                               help=('The number of plot facets (sub-plots). More is better for long reads. (def=6)'))
-    parser_wiggle.set_defaults(func=wiggle.run)
+    parser_wiggle.set_defaults(func=run_subtool)
 
     ##########
     # times
@@ -248,7 +280,7 @@ def main():
                                         help='Return the start times from a set of FAST5 files in tabular format')
     parser_times.add_argument('files', metavar='FILES', nargs='+',
                                help='The input FAST5 files.')
-    parser_times.set_defaults(func=times.run)
+    parser_times.set_defaults(func=run_subtool)
 
     ############
     # yield_plot
@@ -268,12 +300,8 @@ def main():
                              choices=['reads', 'basepairs'],
                              help='Save the wiggle plot to a file (def=reads).',
                              default='reads')
-    parser_yield_plot.set_defaults(func=yield_plot.run)
+    parser_yield_plot.set_defaults(func=run_subtool)
 
-    #######################################################
-    # parse the args and call the selected function
-    #######################################################
-    args = parser.parse_args()
     #######################################################
     # parse the args and call the selected function
     #######################################################
