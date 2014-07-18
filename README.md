@@ -138,6 +138,10 @@ Of course, you can save to PDF or PNG with `--saveas`:
               --saveas foo.png\
               fast5/
 
+If you don't like the default aesthetics, try `--theme-bw`:
+
+    poretools yield_plot --theme-bw fast5/
+
 
 
 ``poretools squiggle``
@@ -150,6 +154,10 @@ Make a "squiggle" plot of the signal over time for a given read or set of reads
 The result should look something like:
     
 ![example squiggle plot](https://raw.github.com/arq5x/poretools/master/images/foo.fast5.png)
+
+If you don't like the default aesthetics, try `--theme-bw`:
+
+    poretools squiggle --theme-bw fast5/
 
 
 Other options:
@@ -196,6 +204,10 @@ Plot a histogram of read sizes from a set of FAST5 files.
     poretools hist --min-length 1000 --max-length 10000 fast5/
 
     poretools hist --num-bins 20 --max-length 10000 fast5/
+
+If you don't like the default aesthetics, try `--theme-bw`:
+
+    poretools hist --theme-bw fast5/
 
 ``poretools nucdist``
 ---------------------
