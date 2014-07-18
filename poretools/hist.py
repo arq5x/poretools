@@ -25,8 +25,14 @@ def plot_hist(sizes, args):
 
         # plot
         gp = ggplot2.ggplot(df)
-        pp = gp + ggplot2.aes_string(x='sizes') \
-                + ggplot2.geom_histogram(binwidth=binwidth)
+
+        if not args.theme_bw:
+            pp = gp + ggplot2.aes_string(x='sizes') \
+	                + ggplot2.geom_histogram(binwidth=binwidth)
+        else:
+            pp = gp + ggplot2.aes_string(x='sizes') \
+                + ggplot2.geom_histogram(binwidth=binwidth) \
+                + ggplot2.theme_bw()	    	
 
 	if args.saveas is not None:
 		plot_file = args.saveas

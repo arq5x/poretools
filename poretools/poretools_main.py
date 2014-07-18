@@ -167,6 +167,12 @@ def main():
                              metavar='STRING',
                              help='Save the plot to a file.',
                              default=None)
+    parser_hist.add_argument('--theme-bw',
+                             dest='theme_bw',
+                             default=False,
+                             action='store_true',
+                             help="Use the ggplot2 black and white theme.")
+
     parser_hist.set_defaults(func=run_subtool)
 
 
@@ -260,6 +266,12 @@ def main():
                               default=6,
                               type=int,
                               help=('The number of plot facets (sub-plots). More is better for long reads. (def=6)'))
+    parser_squiggle.add_argument('--theme-bw',
+                             dest='theme_bw',
+                             default=False,
+                             action='store_true',
+                             help="Use the ggplot2 black and white theme.")
+
     parser_squiggle.set_defaults(func=run_subtool)
 
     ##########
@@ -289,6 +301,11 @@ def main():
                              choices=['reads', 'basepairs'],
                              help='Save the wiggle plot to a file (def=reads).',
                              default='reads')
+    parser_yield_plot.add_argument('--theme-bw',
+                             dest='theme_bw',
+                             default=False,
+                             action='store_true',
+                             help="Use the ggplot2 black and white theme.")
     parser_yield_plot.set_defaults(func=run_subtool)
 
     #######################################################

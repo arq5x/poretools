@@ -6,7 +6,7 @@ from rpy2.robjects.packages import importr
 
 import Fast5File
 
-def plot_squiggle(filename, saveas, num_facets, start_times, mean_signals):
+def plot_squiggle(args, filename, start_times, mean_signals):
 	"""
 	Use rpy2 to create a squiggle plot of the read
 	"""
@@ -23,7 +23,7 @@ def plot_squiggle(filename, saveas, num_facets, start_times, mean_signals):
 	
 	# infer the appropriate number of events given the number of facets
 	num_events = len(r_mean_signals)
-	events_per_facet = (num_events / num_facets) + 1
+	events_per_facet = (num_events / args.num_facets) + 1
 	# dummy variable to control faceting
 	facet_category = robjects.FloatVector([(i / events_per_facet) + 1 for i in range(len(start_times))])
 
@@ -32,16 +32,26 @@ def plot_squiggle(filename, saveas, num_facets, start_times, mean_signals):
 	df = robjects.DataFrame(d)
 
 	gp = ggplot2.ggplot(df)
-	pp = gp + ggplot2.aes_string(x='start', y='mean') \
-		+ ggplot2.geom_step(size=0.25) \
-		+ ggplot2.facet_wrap(robjects.Formula('~cat'), ncol=1, scales="free_x") \
-		+ ggplot2.scale_x_continuous('Time (seconds)') \
-		+ ggplot2.scale_y_continuous('Mean signal (picoamps)') \
-		+ ggplot2.ggtitle('Squiggle plot for read: ' + filename + "\nTotal time (sec): " + str(total_time)) \
-		+ ggplot2.theme(**{'plot.title': ggplot2.element_text(size=11)})
+	if not args.theme_bw:
+		pp = gp + ggplot2.aes_string(x='start', y='mean') \
+			+ ggplot2.geom_step(size=0.25) \
+			+ ggplot2.facet_wrap(robjects.Formula('~cat'), ncol=1, scales="free_x") \
+			+ ggplot2.scale_x_continuous('Time (seconds)') \
+			+ ggplot2.scale_y_continuous('Mean signal (picoamps)') \
+			+ ggplot2.ggtitle('Squiggle plot for read: ' + filename + "\nTotal time (sec): " + str(total_time)) \
+			+ ggplot2.theme(**{'plot.title': ggplot2.element_text(size=11)})
+	else:
+		pp = gp + ggplot2.aes_string(x='start', y='mean') \
+			+ ggplot2.geom_step(size=0.25) \
+			+ ggplot2.facet_wrap(robjects.Formula('~cat'), ncol=1, scales="free_x") \
+			+ ggplot2.scale_x_continuous('Time (seconds)') \
+			+ ggplot2.scale_y_continuous('Mean signal (picoamps)') \
+			+ ggplot2.ggtitle('Squiggle plot for read: ' + filename + "\nTotal time (sec): " + str(total_time)) \
+			+ ggplot2.theme(**{'plot.title': ggplot2.element_text(size=11)}) \
+			+ ggplot2.theme_bw()
 
-	if saveas is not None:
-		plot_file = filename + "." + saveas
+	if args.saveas is not None:
+		plot_file = args.filename + "." + args.saveas
 		if saveas == "pdf":
 			grdevices.pdf(plot_file, width = 8.5, height = 11)
 		elif saveas == "png":
@@ -74,7 +84,7 @@ def run(parser, args):
 			mean_signals.append(event.mean)		
 
 		if start_times:
-			plot_squiggle(fast5.filename, args.saveas, args.num_facets, start_times, mean_signals)
+			plot_squiggle(args, fast5.filename, start_times, mean_signals)
 		else:
 			sys.stderr.write("Could not extract template events for read: %s.\n" \
 				% fast5.filename)

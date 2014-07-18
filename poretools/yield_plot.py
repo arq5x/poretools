@@ -46,12 +46,21 @@ def plot_collectors_curve(args, start_times, read_lengths):
 
 	# plot
 	gp = ggplot2.ggplot(df)
-	pp = gp + ggplot2.aes_string(x='start', y='cumul') \
-		+ ggplot2.geom_point() \
-		+ ggplot2.geom_line() \
-		+ ggplot2.scale_x_continuous('Time (hours)') \
-		+ ggplot2.scale_y_continuous(y_label) \
-		+ ggplot2.ggtitle(plot_title)
+	if not args.theme_bw:
+		pp = gp + ggplot2.aes_string(x='start', y='cumul') \
+			+ ggplot2.geom_point() \
+			+ ggplot2.geom_line() \
+			+ ggplot2.scale_x_continuous('Time (hours)') \
+			+ ggplot2.scale_y_continuous(y_label) \
+			+ ggplot2.ggtitle(plot_title)
+	else:
+		pp = gp + ggplot2.aes_string(x='start', y='cumul') \
+			+ ggplot2.geom_point() \
+			+ ggplot2.geom_line() \
+			+ ggplot2.scale_x_continuous('Time (hours)') \
+			+ ggplot2.scale_y_continuous(y_label) \
+			+ ggplot2.ggtitle(plot_title) \
+			+ ggplot2.theme_bw()	
 
 	if args.saveas is not None:
 		plot_file = args.saveas
