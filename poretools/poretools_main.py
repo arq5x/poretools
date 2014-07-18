@@ -30,8 +30,8 @@ def run_subtool(parser, args):
         import tabular as submodule
     elif args.command == 'times':
         import times as submodule
-    elif args.command == 'wiggle':
-        import wiggle as submodule
+    elif args.command == 'squiggle':
+        import squiggle as submodule
     elif args.command == 'winner':
         import winner as submodule
     elif args.command == 'yield_plot':
@@ -165,7 +165,7 @@ def main():
     parser_hist.add_argument('--saveas',
                              dest='saveas',
                              metavar='STRING',
-                             help='Save the wiggle plot to a file.',
+                             help='Save the plot to a file.',
                              default=None)
     parser_hist.set_defaults(func=run_subtool)
 
@@ -242,25 +242,25 @@ def main():
     parser_winner.set_defaults(func=run_subtool)
 
     ###########
-    # wiggle
+    # squiggle
     ###########
-    parser_wiggle = subparsers.add_parser('wiggle',
+    parser_squiggle = subparsers.add_parser('squiggle',
                                         help='Plot the observed signals for FAST5 reads.')
-    parser_wiggle.add_argument('files', metavar='FILES', nargs='+',
+    parser_squiggle.add_argument('files', metavar='FILES', nargs='+',
                              help='The input FAST5 files.')
-    parser_wiggle.add_argument('--saveas',
+    parser_squiggle.add_argument('--saveas',
                              dest='saveas',
                              metavar='STRING',
                              choices=['pdf', 'png'],
-                             help='Save the wiggle plot to a file.',
+                             help='Save the squiggle plot to a file.',
                              default=None)
-    parser_wiggle.add_argument('--num-facets',
+    parser_squiggle.add_argument('--num-facets',
                               dest='num_facets',
                               metavar='INTEGER',
                               default=6,
                               type=int,
                               help=('The number of plot facets (sub-plots). More is better for long reads. (def=6)'))
-    parser_wiggle.set_defaults(func=run_subtool)
+    parser_squiggle.set_defaults(func=run_subtool)
 
     ##########
     # times

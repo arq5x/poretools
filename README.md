@@ -50,7 +50,7 @@ Usage
         nucdist             Get the nucl. composition of a set of FAST5 files
         qualdist            Get the qual score composition of a set of FAST5 files
         winner              Get the longest read from a set of FAST5 files
-        wiggle              Plot the observed signals for FAST5 reads
+        squiggle            Plot the observed signals for FAST5 reads
         times               Return the start times from a set of FAST5 files in
                             tabular format
         yield_plot          Plot the yield over time for a set of FAST5 files
@@ -140,28 +140,28 @@ Of course, you can save to PDF or PNG with `--saveas`:
 
 
 
-``poretools wiggle``
+``poretools squiggle``
 -------------------
-Make a "wiggle" plot of the signal over time for a given read or set of reads
+Make a "squiggle" plot of the signal over time for a given read or set of reads
 
-    poretools wiggle fast5/foo.fast5
+    poretools squiggle fast5/foo.fast5
 
 
 The result should look something like:
     
-![example wiggle plot](https://raw.github.com/arq5x/poretools/master/images/foo.fast5.png)
+![example squiggle plot](https://raw.github.com/arq5x/poretools/master/images/foo.fast5.png)
 
 
 Other options:
 
     # save as PNG
-    poretools wiggle --saveas png fast5/foo.fast5
+    poretools squiggle --saveas png fast5/foo.fast5
 
     # save as PDF
-    poretools wiggle --saveas pdf fast5/foo.fast5
+    poretools squiggle --saveas pdf fast5/foo.fast5
 
     # make a PNG for each FAST5 file in a directory
-    poretools wiggle --saveas png fast5/
+    poretools squiggle --saveas png fast5/
 
 
 ``poretools winner``

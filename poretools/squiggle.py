@@ -6,9 +6,9 @@ from rpy2.robjects.packages import importr
 
 import Fast5File
 
-def plot_wiggle(filename, saveas, num_facets, start_times, mean_signals):
+def plot_squiggle(filename, saveas, num_facets, start_times, mean_signals):
 	"""
-	Use rpy2 to create a wiggle plot of the read
+	Use rpy2 to create a squiggle plot of the read
 	"""
 	r = robjects.r
 	r.library("ggplot2")
@@ -37,7 +37,7 @@ def plot_wiggle(filename, saveas, num_facets, start_times, mean_signals):
 		+ ggplot2.facet_wrap(robjects.Formula('~cat'), ncol=1, scales="free_x") \
 		+ ggplot2.scale_x_continuous('Time (seconds)') \
 		+ ggplot2.scale_y_continuous('Mean signal (picoamps)') \
-		+ ggplot2.ggtitle('Wiggle plot for read: ' + filename + "\nTotal time (sec): " + str(total_time)) \
+		+ ggplot2.ggtitle('Squiggle plot for read: ' + filename + "\nTotal time (sec): " + str(total_time)) \
 		+ ggplot2.theme(**{'plot.title': ggplot2.element_text(size=11)})
 
 	if saveas is not None:
@@ -59,7 +59,7 @@ def run(parser, args):
 
 	fast5_set = Fast5File.Fast5FileSet(args.files)
 
-	# only create a wiggle plot for multiple reads if saving to file.
+	# only create a squiggle plot for multiple reads if saving to file.
 	if fast5_set.get_num_files() > 1 and args.saveas is None:
 		sys.exit("""Please use --saveas when plotting"""
 			     """ multiple FAST5 files as input.\n""")
@@ -74,7 +74,7 @@ def run(parser, args):
 			mean_signals.append(event.mean)		
 
 		if start_times:
-			plot_wiggle(fast5.filename, args.saveas, args.num_facets, start_times, mean_signals)
+			plot_squiggle(fast5.filename, args.saveas, args.num_facets, start_times, mean_signals)
 		else:
 			sys.stderr.write("Could not extract template events for read: %s.\n" \
 				% fast5.filename)
