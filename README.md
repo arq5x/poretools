@@ -22,6 +22,31 @@ Installation
     # or
     sudo python setup.py install
 
+Installation from scratch on Ubuntu 12.04.2
+===========================================
+
+Package dependencies
+
+	sudo apt-get install git python-tables python-setuptools python-pip python-dev cython libhdf5-serial-dev
+
+Then install R 3.0, this requires a bit of hacking. You need to replace 'precise' with the appropriate version if you are on a different Ubuntu version, see <http://cran.r-project.org/bin/linux/ubuntu/README> for more details.
+
+	sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E084DAB9
+	sudo su -c "echo 'deb http://www.stats.bris.ac.uk/R/bin/linux/ubuntu precise/' >> /etc/apt/sources.list”
+	sudo apt-get update
+	sudo apt-get install r-base python-rpy2
+
+In R 3.0, run the following command and follow prompts:
+
+	install.packages("ggplot2")
+
+Then install poretools, finally:
+
+	sudo pip install numexpr —upgrade
+	git clone https://github.com/arq5x/poretools
+	cd poretools
+	sudo python setup.py install
+	poretools
 
 Usage
 =====
