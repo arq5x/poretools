@@ -1,6 +1,11 @@
 import Fast5File
 import sys
 
+#logging
+import logging
+logger = logging.getLogger('poretools')
+
+
 def run(parser, args):
 	longest_size = 0
 	longest_read = None
@@ -15,6 +20,6 @@ def run(parser, args):
 
 		fast5.close()
 
-	print >>sys.stderr, "Wow, it's a whopper: your longest read is %d bases." % (longest_size,)
+	logger.info("Wow, it's a whopper: your longest read is %d bases." % (longest_size,))
 	print longest_read
 

@@ -4,6 +4,10 @@ import rpy2.robjects as robjects
 import rpy2.robjects.lib.ggplot2 as ggplot2
 from rpy2.robjects.packages import importr
 
+#logging
+import logging
+logger = logging.getLogger('poretools')
+
 def plot_hist(sizes, args):
 	"""
 	Use rpy2 to plot a histogram of the read sizes
@@ -42,7 +46,7 @@ def plot_hist(sizes, args):
 			grdevices.png(plot_file, width = 8.5, height = 8.5, 
 				units = "in", res = 300)
 		else:
-			print >>sys.stderr, "Unrecognized extension for %s!" % (plot_file)
+			logger.error("Unrecognized extension for %s!" % (plot_file))
 			sys.exit()
 
 		pp.plot()
@@ -62,7 +66,7 @@ def run(parser, args):
 			sizes.append(len(fq.seq))
 		files_processed += 1
 		if files_processed % 100 == 0:
-			sys.stderr.write("LOG: %d files processed.\n" % files_processed)
+			logger.info("%d files processed." % files_processed)
 		fast5.close()
 
 	plot_hist(sizes, args)

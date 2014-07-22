@@ -5,6 +5,10 @@ import tarfile
 import shutil
 import tables as pyhdf5
 
+#logging
+import logging
+logger = logging.getLogger('poretools')
+
 
 # poretools imports
 import formats
@@ -67,7 +71,7 @@ class Fast5FileSet(object):
 				self.num_files_in_set = len(files)
 				self.set_type = FAST5SET_DIRECTORY
 				if not len(files):
-					print >>sys.stderr, "Directory is empty!"
+					logger.warning("Directory is empty!")
 
 			# is it a tarball?
 			elif tarfile.is_tarfile(f):
@@ -87,7 +91,7 @@ class Fast5FileSet(object):
 				self.num_files_in_set = 1
 				self.set_type = FAST5SET_SINGLEFILE
 		else:
-			sys.stderr.write("Directory %s could not be opened. Exiting.\n" % dir)
+			logger.error("Directory %s could not be opened. Exiting.\n" % dir)
 			sys.exit()
 
 
@@ -122,7 +126,7 @@ class Fast5File(object):
 			self.hdf5file = pyhdf5.open_file(self.filename, 'r')
 			return True
 		except Exception, e:
-			sys.stderr.write("Cannot open file: %s. Perhaps it is corrupt? Moving on.\n" % self.filename)
+			logger.warning("Cannot open file: %s. Perhaps it is corrupt? Moving on.\n" % self.filename)
 			return False
 			
 	def close(self):
@@ -302,7 +306,7 @@ class Fast5File(object):
 		try:
 			newpath = self.hdf5file.getNode(path)
 		except Exception:
-			print >>sys.stderr, "Cannot find inputevents"
+			logger.warning("Cannot find inputevents")
 			return None
 
 		# the soft link target seems broken?
@@ -477,4 +481,4 @@ class Fast5File(object):
 				self.keyinfo = self.hdf5file.getNode('/Key')
 			except Exception, e:
 				self.keyinfo = None
-				sys.stderr.write("Cannot find keyinfo. Exiting.\n")
+				logger.warning("Cannot find keyinfo. Exiting.\n")

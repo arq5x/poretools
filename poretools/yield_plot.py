@@ -5,6 +5,10 @@ import rpy2.robjects as robjects
 from rpy2.robjects.packages import importr
 import sys
 
+#logging
+import logging
+logger = logging.getLogger('poretools')
+
 def plot_collectors_curve(args, start_times, read_lengths):
 	"""
 	Use rpy2 to create a collectors curve of the run
@@ -70,7 +74,7 @@ def plot_collectors_curve(args, start_times, read_lengths):
 			grdevices.png(plot_file, width = 8.5, height = 8.5, 
 				units = "in", res = 300)
 		else:
-			print >>sys.stderr, "Unrecognized extension for %s!" % (plot_file)
+			logger.error("Unrecognized extension for %s!" % (plot_file))
 			sys.exit()
 
 		pp.plot()
@@ -92,7 +96,7 @@ def run(parser, args):
 			
 			start_time = fast5.get_start_time()
 			if start_time is None:
-				print >>sys.stderr, "No start time for %s!" % (fast5.filename)
+				logger.warning("No start time for %s!" % (fast5.filename))
 				fast5.close()
 				continue
 

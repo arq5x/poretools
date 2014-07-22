@@ -12,6 +12,10 @@ import Fast5File
 from time import strftime, localtime
 import sys
 
+#logging
+import logging
+logger = logging.getLogger('poretools')
+
 def run(parser, args):
 	print '\t'.join(['filename', 'read_length', 'exp_starttime', 'unix_timestamp', 'iso_timestamp', 'day', 'hour', 'minute'])
 	
@@ -22,7 +26,7 @@ def run(parser, args):
 			
 			start_time = fast5.get_start_time()
 			if start_time is None:
-				print >>sys.stderr, "No start time for %s!" % (fast5.filename)
+				logger.warning("No start time for %s!" % (fast5.filename))
 				fast5.close()
 				continue
 

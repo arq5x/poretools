@@ -4,6 +4,10 @@ import rpy2.robjects as robjects
 import rpy2.robjects.lib.ggplot2 as ggplot2
 from rpy2.robjects.packages import importr
 
+#logging
+import logging
+logger = logging.getLogger('poretools')
+
 import Fast5File
 
 def plot_squiggle(args, filename, start_times, mean_signals):
@@ -51,10 +55,10 @@ def plot_squiggle(args, filename, start_times, mean_signals):
 			+ ggplot2.theme_bw()
 
 	if args.saveas is not None:
-		plot_file = args.filename + "." + args.saveas
-		if saveas == "pdf":
+		plot_file = filename + "." + args.saveas
+		if args.saveas == "pdf":
 			grdevices.pdf(plot_file, width = 8.5, height = 11)
-		elif saveas == "png":
+		elif args.saveas == "png":
 			grdevices.png(plot_file, width = 8.5, height = 11, 
 				units = "in", res = 300)
 		pp.plot()
@@ -86,7 +90,7 @@ def run(parser, args):
 		if start_times:
 			plot_squiggle(args, fast5.filename, start_times, mean_signals)
 		else:
-			sys.stderr.write("Could not extract template events for read: %s.\n" \
+			logger.warning("Could not extract template events for read: %s.\n" \
 				% fast5.filename)
 
 		fast5.close()

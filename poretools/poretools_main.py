@@ -4,6 +4,10 @@ import os.path
 import sys
 import argparse
 
+#logger
+import logging
+logger = logging.getLogger('poretools')
+
 # poretools imports
 import poretools.version
 
@@ -40,9 +44,15 @@ def run_subtool(parser, args):
     # run the chosen submodule.
     submodule.run(parser, args)
 
-
+class ArgumentParserWithDefaults(argparse.ArgumentParser):
+    def __init__(self, *args, **kwargs):
+        super(ArgumentParserWithDefaults, self).__init__(*args, **kwargs)
+	self.add_argument("-q", "--quiet", help="Do not output warnings to stderr",
+                        action="store_true",
+                        dest="quiet")
 
 def main():
+    logging.basicConfig()
 
     #########################################
     # create the top-level parser
@@ -51,7 +61,7 @@ def main():
     parser.add_argument("-v", "--version", help="Installed poretools version",
                         action="version",
                         version="%(prog)s " + str(poretools.version.__version__))
-    subparsers = parser.add_subparsers(title='[sub-commands]', dest='command')
+    subparsers = parser.add_subparsers(title='[sub-commands]', dest='command', parser_class=ArgumentParserWithDefaults)
 
     #########################################
     # create the individual tool parsers
@@ -312,6 +322,9 @@ def main():
     # parse the args and call the selected function
     #######################################################
     args = parser.parse_args()
+
+    if args.quiet:
+        logger.setLevel(logging.ERROR)
 
     try:
       args.func(parser, args)
