@@ -22,8 +22,8 @@ Installation
     # or
     sudo python setup.py install
 
-Installation from scratch on Ubuntu 12.04.2
-===========================================
+Installing dependencies on Ubuntu 12.04.2
+=========================================
 
 Package dependencies
 
