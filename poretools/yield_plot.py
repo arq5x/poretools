@@ -33,7 +33,7 @@ def plot_collectors_curve(args, start_times, read_lengths):
 	elif args.plot_type == 'basepairs':
 		y_label = "Total base pairs"
 		cumulative = r.cumsum(r_read_lengths)
-	
+
 	# make a data frame of the lists
 	d = {'start': r_start_times, 
 		'lengths': r_read_lengths,
@@ -51,7 +51,7 @@ def plot_collectors_curve(args, start_times, read_lengths):
 	# plot
 	gp = ggplot2.ggplot(df)
 	pp = gp + ggplot2.aes_string(x='start', y='cumul') \
-		+ ggplot2.geom_point(stat='sum') \
+		+ ggplot2.geom_step(size=2) \
 		+ ggplot2.scale_x_continuous('Time (hours)') \
 		+ ggplot2.scale_y_continuous(y_label) \
 		+ ggplot2.ggtitle(plot_title)

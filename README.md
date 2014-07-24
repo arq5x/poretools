@@ -32,12 +32,28 @@ Package dependencies
 Then install R 3.0, this requires a bit of hacking. You need to replace 'precise' with the appropriate version if you are on a different Ubuntu version, see <http://cran.r-project.org/bin/linux/ubuntu/README> for more details.
 
 	sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E084DAB9
-	sudo su -c "echo 'deb http://www.stats.bris.ac.uk/R/bin/linux/ubuntu precise/' >> /etc/apt/sources.list”
+
+Open in a text editor (as sudo) the file ``/etc/apt/sources.list`` and add the following line to the bottom, for Ubuntu 12.04:
+
+	deb http://www.stats.bris.ac.uk/R/bin/linux/ubuntu precise/
+
+Or, for Ubuntu 14.04:
+
+	deb http://www.stats.bris.ac.uk/R/bin/linux/ubuntu trusty/ 
+
+Then, run the following commands to install R 3.0:
+
 	sudo apt-get update
 	sudo apt-get install r-base python-rpy2
 
-In R 3.0, run the following command and follow prompts:
+Start R
 
+	R
+
+Then run the following commands within the R programme, and follow any prompts:
+
+	install.packages("codetools")
+	install.packages("MASS")
 	install.packages("ggplot2")
 
 Then install poretools, finally:
