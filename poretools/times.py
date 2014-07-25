@@ -17,7 +17,7 @@ import logging
 logger = logging.getLogger('poretools')
 
 def run(parser, args):
-	print '\t'.join(['filename', 'read_length', 'exp_starttime', 'unix_timestamp', 'iso_timestamp', 'day', 'hour', 'minute'])
+	print '\t'.join(['filename', 'read_length', 'exp_starttime', 'unix_timestamp', 'duration', 'unix_timestamp_end', 'iso_timestamp', 'day', 'hour', 'minute'])
 	
 	for fast5 in Fast5File.Fast5FileSet(args.files):
 		if fast5.is_open:
@@ -40,6 +40,8 @@ def run(parser, args):
 				str(read_length),
 				fast5.get_exp_start_time(),
 				str(start_time), \
+				str(fast5.get_duration()),
+				str(fast5.get_end_time()),
 				strftime('%Y-%m-%dT%H:%M:%S%z', lt),
 				strftime('%d', lt),
 				strftime('%H', lt),
