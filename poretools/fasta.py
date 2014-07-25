@@ -6,10 +6,11 @@ def run(parser, args):
 	for fast5 in Fast5File.Fast5FileSet(args.files):
 		if args.start_time or args.end_time:
 			read_start_time = fast5.get_start_time()
+			read_end_time = fast5.get_end_time()
 			if args.start_time and args.start_time > read_start_time:
 				fast5.close()
 				continue
-			if args.end_time and args.end_time < read_start_time:
+			if args.end_time and args.end_time < read_end_time:
 				fast5.close()
 				continue
 

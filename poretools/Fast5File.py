@@ -278,46 +278,66 @@ class Fast5File(object):
 		except:
 			return None
 
-	### seems to be broken/absent in latest metrichor files
+	def find_read_number_block(self):
+		path = "/Analyses/Basecall_2D_000/InputEvents"
+		try:
+			newpath = self.hdf5file.getNode(path)
+
+			# the soft link target seems broken?
+			newpath = "/" + "/".join(newpath.target.split("/")[:-1])
+# + '/Events'
+
+			node = self.hdf5file.getNode(newpath)
+
+			return node
+		except Exception:
+			pass
+
+	def find_event_timing_block(self):
+		path = "/Analyses/Basecall_2D_000/BaseCalled_template/Events"
+		try:
+			return self.hdf5file.getNode(path)
+		except Exception:
+			pass
+		
+		return None
+
 	def get_read_number(self):
 		"""
 		Return the read number for the pore representing the given read.
 		"""
-		if self.have_metadata is False:
-			self._get_metadata()
-			self.have_metadata = True
+		node = self.find_read_number_block()
+		if node:
+			try:
+				return node._f_getAttr('read_number')
+			except:
+				return None
+		return None
 
-		try:
-			return self.keyinfo.channel_id._f_getAttr('read_number')
-		except:
-			return None
+	def get_duration(self):
+		node = self.find_event_timing_block()
+		if node:
+			return int(node._f_getAttr('duration'))
+		return None
 
 	def get_start_time(self):
 		exp_start_time	= self.get_exp_start_time()
 	
-		path = "/Analyses/Basecall_2D_000/BaseCalled_template/Events"
-		try:
-			return int(exp_start_time) + int(self.hdf5file.getNode(path)._f_getAttr('start_time'))
-		except Exception:
-			pass
-		
-		path = "/Analyses/Basecall_2D_000/InputEvents"
+		node = self.find_event_timing_block()
+		if node:
+			return int(exp_start_time) + int(node._f_getAttr('start_time'))
+	
+		return None
 
-		try:
-			newpath = self.hdf5file.getNode(path)
-		except Exception:
-			logger.warning("Cannot find inputevents")
+	def get_end_time(self):
+		exp_start_time	= self.get_exp_start_time()
+		start_time = self.get_start_time()
+		duration = self.get_duration()
+
+		if start_time and duration:
+			return start_time + duration
+		else:
 			return None
-
-		# the soft link target seems broken?
-		newpath = "/" + "/".join(newpath.target.split("/")[:-1]) + '/Events'
-
-		try:
-			start_time = self.hdf5file.getNode(newpath)._f_getAttr('start_time')
-		except Exception:
-			return None
-
-		return int(exp_start_time) + int(start_time)
 
 	def get_version_name(self):
 		"""
