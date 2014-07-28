@@ -316,6 +316,17 @@ def main():
                              default=False,
                              action='store_true',
                              help="Use the ggplot2 black and white theme.")
+    parser_yield_plot.add_argument('--extrapolate',
+                             dest='extrapolate',
+                             metavar='INTEGER',
+                             default=0,
+                             help="Fit a curve and extrapolate to n hours")
+    parser_yield_plot.add_argument('--savedf',
+                             dest='savedf',
+                             metavar='STRING',
+                             help='Save the data frame used to construct plot to a file.',
+                             default=None)
+                             
     parser_yield_plot.set_defaults(func=run_subtool)
 
     #######################################################
