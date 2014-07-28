@@ -1,4 +1,4 @@
-import numpy
+import statistics as stat
 import Fast5File
 
 def run(parser, args):
@@ -10,7 +10,7 @@ def run(parser, args):
 
 	print "total reads\t%d" % (len(sizes))
 	print "total base pairs\t%d" % (sum(sizes))
-	print "mean\t%.2f" % (numpy.mean(sizes))
-	print "median\t%d" % (numpy.median(sizes))
-	print "min\t%d" % (numpy.min(sizes))
-	print "max\t%d" % (numpy.max(sizes))
+	print "mean\t%.2f" % (stat.mean(sizes))
+	print "median\t%d" % (stat.median(sizes))
+	print "min\t%d" % (min(sizes))
+	print "max\t%d" % (max(sizes))

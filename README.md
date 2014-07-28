@@ -7,11 +7,10 @@
 Requirements
 ===================
 - Python 2.7+
-- R
 - HDF5 >=1.8.7 (http://www.hdfgroup.org/HDF5/)
+- R >= 3.0.0
 - rpy2
 - Pytables 3.x
-- NUMPY
 
 
 Installation
