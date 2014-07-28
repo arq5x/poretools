@@ -52,6 +52,7 @@ Start R
 
 Then run the following commands within the R programme, and follow any prompts:
 
+	options("repos" = c(CRAN = "http://cran.rstudio.com/"))
 	install.packages("codetools")
 	install.packages("MASS")
 	install.packages("ggplot2")
