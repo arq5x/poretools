@@ -64,6 +64,11 @@ Then install poretools, finally:
 	sudo python setup.py install
 	poretools
 
+In the cloud
+============
+
+Amazon Web Services machine image ID: ami-4c0ec424
+
 Usage
 =====
 
