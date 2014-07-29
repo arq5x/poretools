@@ -51,17 +51,23 @@ Start R
 
 Then run the following commands within the R programme, and follow any prompts:
 
+	options("repos" = c(CRAN = "http://cran.rstudio.com/"))
 	install.packages("codetools")
 	install.packages("MASS")
 	install.packages("ggplot2")
 
 Then install poretools, finally:
 
-	sudo pip install numexpr —upgrade
+	sudo pip install numexpr --upgrade
 	git clone https://github.com/arq5x/poretools
 	cd poretools
 	sudo python setup.py install
 	poretools
+
+In the cloud
+============
+
+Amazon Web Services machine image ID: ami-4c0ec424
 
 Usage
 =====

@@ -3,7 +3,6 @@ from time import strftime, localtime
 import rpy2.robjects.lib.ggplot2 as ggplot2
 import rpy2.robjects as robjects
 from rpy2.robjects.packages import importr
-import sys
 
 #logging
 import logging
@@ -21,7 +20,7 @@ def plot_collectors_curve(args, start_times, read_lengths):
 	t_0 = start_times[0]
 
 	# adjust times to be relative to t_0
-	r_start_times = robjects.FloatVector([float(t - t_0) / float(3600) \
+	r_start_times = robjects.FloatVector([float(t - t_0) / float(3600) + 0.00000001 \
 		for t in start_times])
 	r_read_lengths = robjects.IntVector(read_lengths)
 
@@ -40,6 +39,8 @@ def plot_collectors_curve(args, start_times, read_lengths):
 		'cumul': cumulative}
 	df = robjects.DataFrame(d)
 
+	if args.savedf:
+		robjects.r("write.table")(df, file=args.savedf, sep="\t")
 
 	# title
 	total_reads = len(read_lengths)
@@ -55,6 +56,14 @@ def plot_collectors_curve(args, start_times, read_lengths):
 		+ ggplot2.scale_x_continuous('Time (hours)') \
 		+ ggplot2.scale_y_continuous(y_label) \
 		+ ggplot2.ggtitle(plot_title)
+
+        # extrapolation
+	if args.extrapolate:
+		start = robjects.ListVector({'a': 1, 'b': 1})
+                pp = pp + ggplot2.stat_smooth(fullrange='TRUE', method='nls',
+                                              formula='y~a*I((x*3600)^b)',
+                                              se='FALSE', start=start) \
+                        + ggplot2.xlim(0, float(args.extrapolate))
 
 	if args.theme_bw:
 		pp = pp + ggplot2.theme_bw()	
