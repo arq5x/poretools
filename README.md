@@ -58,7 +58,7 @@ Then run the following commands within the R programme, and follow any prompts:
 
 Then install poretools, finally:
 
-	sudo pip install numexpr —upgrade
+	sudo pip install numexpr --upgrade
 	git clone https://github.com/arq5x/poretools
 	cd poretools
 	sudo python setup.py install
