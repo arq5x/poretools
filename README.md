@@ -13,6 +13,10 @@ Requirements
 - Pytables 3.x
 - NUMPY
 
+Please note that Anaconda and Python(x,y) already have all these dependencies installed, other than R/Rpy2:
+
+Anaconda (Linux, Windows, OS X): <https://store.continuum.io/cshop/anaconda/>
+Python(x,y) (Windows): <https://code.google.com/p/pythonxy/>
 
 Installation
 ========
