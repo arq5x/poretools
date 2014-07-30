@@ -3,7 +3,10 @@ def mean(l):
 	Return the mean of a list of numbers
 	"""
 	if isinstance(l, list):
-		return float(sum(l)) / float(len(l))
+		if len(l):
+			return float(sum(l)) / float(len(l))
+		else:
+			return None
 	else:
 		return None
 
