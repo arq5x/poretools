@@ -1,13 +1,3 @@
-## parse the output of this to make a collectors curve of reads
-## this only works with >=1.10 metrichor output
-
-#a=read.table("/tmp/times.txt", header=T, sep="\t")
-#b=cbind(a, "start" = a$timestamp - min(a$timestamp))
-#c=cut(b$start, seq(3600, 259200, by=3600)
-#cumfreq0=c(0, cumsum(f))
-#breaks = seq(3600, 259200, by=3600)
-#plot(breaks/3600, cumfreq0)
-#lines(breaks/3600, cumfreq0)
 import Fast5File
 from time import strftime, localtime
 import sys
@@ -47,6 +37,3 @@ def run(parser, args):
 				strftime('%H', lt),
 				strftime('%M', lt)])
 			fast5.close()
-
-#	plot_collectors(args.saveas, start_times, read_lengths)
-
