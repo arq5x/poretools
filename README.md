@@ -69,6 +69,17 @@ In the cloud
 
 Amazon Web Services machine image ID: ami-4c0ec424
 
+
+Via docker
+==========
+
+Using the [docker image](https://registry.hub.docker.com/u/stephenturner/poretools/)
+
+```
+docker pull stephenturner/poretools
+docker run stephenturner/poretools poretools --help
+```
+
 Usage
 =====
 
