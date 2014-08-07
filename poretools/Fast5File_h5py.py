@@ -123,7 +123,12 @@ class Fast5File(object):
 		Open an ONT Fast5 file, assuming HDF5 format
 		"""
 		try:
-			self.hdf5file = h5py.File(self.filename, 'r')
+			# SEC2 driver for speed.
+			# These docs imply POSIX only:
+			#	http://docs.h5py.org/en/latest/high/file.html#file-drivers
+			# Yet these docs imply standard on Windows???
+			#	http://docs.h5py.org/en/latest/faq.html#what-file-drivers-are-available
+			self.hdf5file = h5py.File(self.filename, 'r', driver='sec2')
 			return True
 		except Exception, e:
 			logger.warning("Cannot open file: %s. Perhaps it is corrupt? Moving on.\n" % self.filename)
