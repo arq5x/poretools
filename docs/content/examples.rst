@@ -33,7 +33,7 @@ Extract sequences in FASTQ format from a set of FAST5 files.
 
 
 ===================
-``poretools fasta``
+poretools ``fasta``
 ===================
 Extract sequences in FASTA format from a set of FAST5 files.
 
@@ -48,7 +48,7 @@ Extract sequences in FASTA format from a set of FAST5 files.
     poretools fasta --type fwd,rev fast5/
 
 =====================
-``poretools combine``
+poretools ``combine``
 =====================
 Create a tarball from a set of FAST5 (HDF5) files.
 
@@ -64,7 +64,7 @@ Create a tarball from a set of FAST5 (HDF5) files.
     poretools combine -o foo.fast5.tar.bz2 fast5/*.fast5
 
 ========================
-``poretools yield_plot``
+poretools ``yield_plot``
 ========================
 Create a collector's curve reflecting the sequencing yield over time for a set of reads. There are two types of plots. The first is the yield of reads over time:
 
@@ -110,7 +110,7 @@ If you don't like the default aesthetics, try `--theme-bw`:
 
 
 ======================
-``poretools squiggle``
+poretools ``squiggle``
 ======================
 Make a "squiggle" plot of the signal over time for a given read or set of reads
 
@@ -145,7 +145,7 @@ Other options:
     poretools squiggle --saveas png fast5/
 
 ====================
-``poretools winner``
+poretools ``winner``
 ====================
 Report the longest read among a set of FAST5 files.
 
@@ -159,7 +159,7 @@ Report the longest read among a set of FAST5 files.
     poretools winner --type fwd,rev fast5/
 
 ===================
-``poretools stats``
+poretools ``stats``
 ===================
 Collect read size statistics from a set of FAST5 files.
 
@@ -174,7 +174,7 @@ Collect read size statistics from a set of FAST5 files.
     max 6864.000000
 
 ===================
-``poretools hist``
+poretools ``hist``
 ===================
 Plot a histogram of read sizes from a set of FAST5 files.
 
@@ -192,7 +192,7 @@ If you don't like the default aesthetics, try `--theme-bw`:
     poretools hist --theme-bw fast5/
 
 =====================
-``poretools nucdist``
+poretools ``nucdist``
 =====================
 Look at the nucleotide composition of a set of FAST5 files.
 
@@ -206,7 +206,7 @@ Look at the nucleotide composition of a set of FAST5 files.
     N   4405    335291  0.0131378414571
 
 ======================
-``poretools qualdist``
+poretools ``qualdist``
 ======================
 Look at the quality score composition of a set of FAST5 files.
 
@@ -252,7 +252,7 @@ Look at the quality score composition of a set of FAST5 files.
     F   37  3   335291  8.94745161666e-06
 
 =====================
-``poretools tabular``
+poretools ``tabular``
 =====================
 Dump the length, name, seq, and qual of the sequence in one or a set of FAST5 files.
 
@@ -263,7 +263,7 @@ Dump the length, name, seq, and qual of the sequence in one or a set of FAST5 fi
     10    @channel_100_read_14_complement   GTCCCCAACAACAC    $%%'"$"%!)
 
 ====================
-``poretools events``
+poretools ``events``
 ====================
 Extract the raw nanopore events from each FAST5 file.
 
@@ -278,6 +278,6 @@ Extract the raw nanopore events from each FAST5 file.
     burn-in-run-2/ch100_file15_strand.fast5  template    51.7633085659   6595.9748   1.04743182078   0.0456  TAGCA   52.6955397413   1   0.192582310652  TAGCA   0.192582310652  0.250481934498  0.311756355221  0.311208716953  0.12343821687   4
 
 ===================
-``poretools times``
+poretools ``times``
 ===================
 Extract the start time of each detected molecule into tabular format.
