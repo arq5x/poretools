@@ -8,11 +8,11 @@ Complete installation instructions and usage examples can be found on the [poret
 
 Requirements
 ===================
-- Python 2.7+
-- HDF5 >=1.8.7 (http://www.hdfgroup.org/HDF5/)
+- HDF5 >= 1.8.7 (http://www.hdfgroup.org/HDF5/)
 - R >= 3.0.0
-- rpy2
-- Pytables 3.x
+- Python >= 2.7
+- rpy2 >= 2.4.2
+- h5py >= 2.0
 
 
 

@@ -1,3 +1,2 @@
-numexpr>=2.0
-tables>=3.1.1
+h5py>=2.0.0
 rpy2>=2.4.2

@@ -3,7 +3,7 @@ import os
 import glob
 import tarfile
 import shutil
-import h5py
+import tables as pyhdf5
 
 #logging
 import logging
@@ -123,12 +123,7 @@ class Fast5File(object):
 		Open an ONT Fast5 file, assuming HDF5 format
 		"""
 		try:
-			# SEC2 driver for speed.
-			# These docs imply POSIX only:
-			#	http://docs.h5py.org/en/latest/high/file.html#file-drivers
-			# Yet these docs imply standard on Windows???
-			#	http://docs.h5py.org/en/latest/faq.html#what-file-drivers-are-available
-			self.hdf5file = h5py.File(self.filename, 'r', driver='sec2')
+			self.hdf5file = pyhdf5.open_file(self.filename, 'r')
 			return True
 		except Exception, e:
 			logger.warning("Cannot open file: %s. Perhaps it is corrupt? Moving on.\n" % self.filename)
@@ -265,7 +260,7 @@ class Fast5File(object):
 			self.have_metadata = True
 
 		try:
-			return self.keyinfo['tracking_id'].attrs['exp_start_time']
+			return self.keyinfo.tracking_id._f_getAttr('exp_start_time')
 		except:
 			return None
 
@@ -279,31 +274,33 @@ class Fast5File(object):
 			self.have_metadata = True
 
 		try:
-			return self.keyinfo['channel_id'].attrs['channel_number']
+			return self.keyinfo.channel_id._f_getAttr('channel_number')
 		except:
 			return None
 
 	def find_read_number_block(self):
-		path = "/Analyses/Basecall_2D_000"
-		basecall = self.hdf5file[path]
-		path = basecall.get('InputEvents', getlink=True)
+		path = "/Analyses/Basecall_2D_000/InputEvents"
+		try:
+			newpath = self.hdf5file.getNode(path)
 
-		# the soft link target seems broken?
-		newpath = "/" + "/".join(path.path.split("/")[:-1])
+			# the soft link target seems broken?
+			newpath = "/" + "/".join(newpath.target.split("/")[:-1])
+# + '/Events'
 
-		node = self.hdf5file[newpath]
+			node = self.hdf5file.getNode(newpath)
 
-		return node
+			return node
+		except Exception:
+			pass
 
 	def find_event_timing_block(self):
-		path = "/Analyses/Basecall_2D_000/BaseCalled_template"
+		path = "/Analyses/Basecall_2D_000/BaseCalled_template/Events"
 		try:
-			node = self.hdf5file[path]
-			path = node.get('Events')
-#, getlink=True)
-			return path
+			return self.hdf5file.getNode(path)
 		except Exception:
-			return None
+			pass
+		
+		return None
 
 	def get_read_number(self):
 		"""
@@ -312,7 +309,7 @@ class Fast5File(object):
 		node = self.find_read_number_block()
 		if node:
 			try:
-				return node.attrs['read_number']
+				return node._f_getAttr('read_number')
 			except:
 				return None
 		return None
@@ -320,7 +317,7 @@ class Fast5File(object):
 	def get_duration(self):
 		node = self.find_event_timing_block()
 		if node:
-			return int(node.attrs['duration'])
+			return int(node._f_getAttr('duration'))
 		return None
 
 	def get_start_time(self):
@@ -328,7 +325,7 @@ class Fast5File(object):
 	
 		node = self.find_event_timing_block()
 		if node:
-			return int(exp_start_time) + int(node.attrs['start_time'])
+			return int(exp_start_time) + int(node._f_getAttr('start_time'))
 	
 		return None
 
@@ -351,7 +348,7 @@ class Fast5File(object):
 			self.have_metadata = True
 
 		try:
-			return self.keyinfo['tracking_id'].attrs['version_name']
+			return self.keyinfo.tracking_id._f_getAttr('version_name')
 		except:
 			return None
 
@@ -364,7 +361,7 @@ class Fast5File(object):
 			self.have_metadata = True
 
 		try:
-			return self.keyinfo['tracking_id'].attrs['run_id']
+			return self.keyinfo.tracking_id._f_getAttr('run_id')
 		except:
 			return None
 
@@ -377,7 +374,7 @@ class Fast5File(object):
 			self.have_metadata = True
 
 		try:
-			return self.keyinfo['tracking_id'].attrs['heatsink_temp']
+			return self.keyinfo.tracking_id._f_getAttr('heatsink_temp')
 		except:
 			return None
 
@@ -390,7 +387,7 @@ class Fast5File(object):
 			self.have_metadata = True
 
 		try:
-			return self.keyinfo['tracking_id'].attrs['asic_temp']
+			return self.keyinfo.tracking_id._f_getAttr('asic_temp')
 		except:
 			return None
 
@@ -403,7 +400,7 @@ class Fast5File(object):
 			self.have_metadata = True
 
 		try:
-			return self.keyinfo['tracking_id'].attrs['flowcell_id']
+			return self.keyinfo.tracking_id._f_getAttr('flowcell_id')
 		except:
 			return None
 
@@ -416,7 +413,7 @@ class Fast5File(object):
 			self.have_metadata = True
 
 		try:
-			return self.keyinfo['tracking_id'].attrs['exp_script_purpose']
+			return self.keyinfo.tracking_id._f_getAttr('exp_script_purpose')
 		except:
 			return None
 
@@ -429,7 +426,7 @@ class Fast5File(object):
 			self.have_metadata = True
 
 		try:
-			return self.keyinfo['tracking_id'].attrs['asic_id']
+			return self.keyinfo.tracking_id._f_getAttr('asic_id')
 		except:
 			return None
 
@@ -442,30 +439,9 @@ class Fast5File(object):
 		Return the flowcell's device id.
 		"""
 		try:
-			return self.keyinfo['tracking_id'].attrs['device_id']
+			return self.keyinfo.tracking_id._f_getAttr('device_id')
 		except:
 			return None
-
-
-	def get_template_events_count(self):
-		"""
-		Pull out the event count for the template strand
-		"""
-		try:
-			table = self.hdf5file[fastq_paths['template']]
-			return len(table['Events'][()])
-		except Exception, e:
-			return 0
-
-	def get_complement_events_count(self):
-		"""
-		Pull out the event count for the complementary strand
-		"""
-		try:
-			table = self.hdf5file[fastq_paths['complement']]
-			return len(table['Events'][()])
-		except Exception, e:
-			return 0
 
 	####################################################################
 	# Private API methods
@@ -477,8 +453,8 @@ class Fast5File(object):
 		"""
 		for id, h5path in fastq_paths.iteritems(): 
 			try:
-				table = self.hdf5file[h5path]
-				fq = formats.Fastq(table['Fastq'][()])
+				table = self.hdf5file.getNode(h5path)
+				fq = formats.Fastq(table.Fastq[()])
 				fq.name += "_" + id + ":" + self.filename
 				self.fastqs[id] = fq
 			except Exception, e:
@@ -490,8 +466,8 @@ class Fast5File(object):
 		"""
 		for id, h5path in fastq_paths.iteritems(): 
 			try:
-				table = self.hdf5file[h5path]
-				fa = formats.Fasta(table['Fastq'][()])
+				table = self.hdf5file.getNode(h5path)
+				fa = formats.Fasta(table.Fastq[()])
 				fa.name += "_" + id + " " + self.filename
 				self.fastas[id] = fa
 			except Exception, e:
@@ -502,8 +478,8 @@ class Fast5File(object):
 		Pull out the event information for the template strand
 		"""
 		try:
-			table = self.hdf5file[fastq_paths['template']]
-			self.template_events = [Event(x) for x in table['Events'][()]]
+			table = self.hdf5file.getNode(fastq_paths['template'])
+			self.template_events = [Event(x) for x in table.Events]
 		except Exception, e:
 			self.template_events = []
 
@@ -512,17 +488,17 @@ class Fast5File(object):
 		Pull out the event information for the complementary strand
 		"""
 		try:
-			table = self.hdf5file[fastq_paths['complement']]
-			self.complement_events = [Event(x) for x in table['Events'][()]]
+			table = self.hdf5file.getNode(fastq_paths['complement'])
+			self.complement_events = [Event(x) for x in table.Events]
 		except Exception, e:
 			self.complement_events = []
 
 	def _get_metadata(self):
 		try:
-			self.keyinfo = self.hdf5file['/UniqueGlobalKey']
+			self.keyinfo = self.hdf5file.getNode('/UniqueGlobalKey')
 		except Exception, e:
 			try:
-				self.keyinfo = self.hdf5file['/Key']
+				self.keyinfo = self.hdf5file.getNode('/Key')
 			except Exception, e:
 				self.keyinfo = None
 				logger.warning("Cannot find keyinfo. Exiting.\n")
