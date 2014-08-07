@@ -1,56 +1,10 @@
-########
-Usage
-########
+###############
+Usage examples
+###############
 
-==========
-Help menu
-==========
-
-.. code-block:: bash
-
-    poretools --help
-    usage: poretools [-h] [-v]
-
-                     {combine,fastq,fasta,stats,hist,events,readstats,tabular,nucdist,qualdist,winner,wiggle,times}
-                     ...
-
-    optional arguments:
-      -h, --help            show this help message and exit
-      -v, --version         Installed poretools version
-
-    [sub-commands]:
-      {combine,fastq,fasta,stats,hist,events,readstats,tabular,nucdist,qualdist,winner,wiggle,times}
-        combine             Combine a set of FAST5 files in a TAR achive
-        fastq               Extract FASTQ sequences from a set of FAST5 files
-        fasta               Extract FASTA sequences from a set of FAST5 files
-        stats               Get read size stats for a set of FAST5 files
-        hist                Plot read size histogram for a set of FAST5 files
-        events              Extract each nanopore event for each read
-        readstats           Extract signal information for each read over time.
-        tabular             Extract the lengths and name/seq/quals from a set of
-                            FAST5 files in TAB delimited format
-        nucdist             Get the nucl. composition of a set of FAST5 files
-        qualdist            Get the qual score composition of a set of FAST5 files
-        winner              Get the longest read from a set of FAST5 files
-        squiggle            Plot the observed signals for FAST5 reads
-        times               Return the start times from a set of FAST5 files in
-                            tabular format
-        yield_plot          Plot the yield over time for a set of FAST5 files
-
-
-===================================
-IPython notebook of poretools usage
-===================================
-
-An IPython notebook demonstrating the functionality and output of ``poretools`` is available in the repository. Use this link to view it via the ``nbviewer`` service: <http://nbviewer.ipython.org/github/arq5x/poretools/blob/master/poretools/ipynb/test_run_report.ipynb>
-
-=================================
-Examples of poretools subcommands
-=================================
-
--------------------
-``fastq``
--------------------
+===================
+``poretools fastq``
+===================
 Extract sequences in FASTQ format from a set of FAST5 files.
 
 .. code-block:: bash
@@ -78,9 +32,9 @@ Extract sequences in FASTQ format from a set of FAST5 files.
     poretools fastq --type fwd,rev fast5/
 
 
--------------------
-``fasta``
--------------------
+===================
+``poretools fasta``
+===================
 Extract sequences in FASTA format from a set of FAST5 files.
 
 .. code-block:: bash
@@ -93,9 +47,9 @@ Extract sequences in FASTA format from a set of FAST5 files.
     poretools fasta --type 2D fast5/
     poretools fasta --type fwd,rev fast5/
 
----------------------
-``combine``
----------------------
+=====================
+``poretools combine``
+=====================
 Create a tarball from a set of FAST5 (HDF5) files.
 
 .. code-block:: bash
@@ -109,9 +63,9 @@ Create a tarball from a set of FAST5 (HDF5) files.
     # bzip2
     poretools combine -o foo.fast5.tar.bz2 fast5/*.fast5
 
--------------------------
-``yield_plot``
--------------------------
+========================
+``poretools yield_plot``
+========================
 Create a collector's curve reflecting the sequencing yield over time for a set of reads. There are two types of plots. The first is the yield of reads over time:
 
 .. code-block:: bash
@@ -155,9 +109,9 @@ If you don't like the default aesthetics, try `--theme-bw`:
     poretools yield_plot --theme-bw fast5/
 
 
-----------------------
-``squiggle``
-----------------------
+======================
+``poretools squiggle``
+======================
 Make a "squiggle" plot of the signal over time for a given read or set of reads
 
 .. code-block:: bash
@@ -190,9 +144,9 @@ Other options:
     # make a PNG for each FAST5 file in a directory
     poretools squiggle --saveas png fast5/
 
---------------------
-``winner``
---------------------
+====================
+``poretools winner``
+====================
 Report the longest read among a set of FAST5 files.
 
 .. code-block:: bash
@@ -204,9 +158,9 @@ Report the longest read among a set of FAST5 files.
     poretools winner --type 2D fast5/
     poretools winner --type fwd,rev fast5/
 
--------------------
-``stats``
--------------------
+===================
+``poretools stats``
+===================
 Collect read size statistics from a set of FAST5 files.
 
 .. code-block:: bash
@@ -219,9 +173,9 @@ Collect read size statistics from a set of FAST5 files.
     min 13.000000
     max 6864.000000
 
--------------------
-``hist``
--------------------
+===================
+``poretools hist``
+===================
 Plot a histogram of read sizes from a set of FAST5 files.
 
 .. code-block:: bash
@@ -237,9 +191,9 @@ If you don't like the default aesthetics, try `--theme-bw`:
 
     poretools hist --theme-bw fast5/
 
----------------------
-``nucdist``
----------------------
+=====================
+``poretools nucdist``
+=====================
 Look at the nucleotide composition of a set of FAST5 files.
 
 .. code-block:: bash
@@ -251,9 +205,9 @@ Look at the nucleotide composition of a set of FAST5 files.
     G   84754   335291  0.252777438106
     N   4405    335291  0.0131378414571
 
-----------------------
-``qualdist``
-----------------------
+======================
+``poretools qualdist``
+======================
 Look at the quality score composition of a set of FAST5 files.
 
 .. code-block:: bash
@@ -297,9 +251,9 @@ Look at the quality score composition of a set of FAST5 files.
     D   35  6   335291  1.78949032333e-05
     F   37  3   335291  8.94745161666e-06
 
----------------------
-``tabular``
----------------------
+=====================
+``poretools tabular``
+=====================
 Dump the length, name, seq, and qual of the sequence in one or a set of FAST5 files.
 
 .. code-block:: bash
@@ -308,9 +262,9 @@ Dump the length, name, seq, and qual of the sequence in one or a set of FAST5 fi
     length  name    sequence    quals
     10    @channel_100_read_14_complement   GTCCCCAACAACAC    $%%'"$"%!)
 
----------------------
-``events``
----------------------
+====================
+``poretools events``
+====================
 Extract the raw nanopore events from each FAST5 file.
 
 .. code-block:: bash
@@ -323,7 +277,7 @@ Extract the raw nanopore events from each FAST5 file.
     burn-in-run-2/ch100_file15_strand.fast5  template    49.6976788934   6595.9384   1.03634357984   0.0364  ATAGC   51.1117557194   1   0.181952967376  ATAGC   0.181952967376  0.296106771209  0.408638426765  0.0754069980523 0.217721405945  3
     burn-in-run-2/ch100_file15_strand.fast5  template    51.7633085659   6595.9748   1.04743182078   0.0456  TAGCA   52.6955397413   1   0.192582310652  TAGCA   0.192582310652  0.250481934498  0.311756355221  0.311208716953  0.12343821687   4
 
---------------------
-``times``
---------------------
+===================
+``poretools times``
+===================
 Extract the start time of each detected molecule into tabular format.

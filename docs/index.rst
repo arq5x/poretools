@@ -41,6 +41,8 @@ Table of contents
    :maxdepth: 3
 
    content/installation
+   content/help
+   content/notebook
    content/examples
 
 =================
