@@ -3,7 +3,7 @@ Usage examples
 ###############
 
 ===================
-``poretools fastq``
+poretools ``fastq``
 ===================
 Extract sequences in FASTQ format from a set of FAST5 files.
 
