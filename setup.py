@@ -1,15 +1,6 @@
-import ez_setup
-ez_setup.use_setuptools()
-
-import glob
 import os
 import sys
 from setuptools import setup
-from distutils.extension import Extension
-
-if 'setuptools.extension' in sys.modules:
-    m = sys.modules['setuptools.extension']
-    m.Extension.__dict__ = m._Extension.__dict__
 
 version_py = os.path.join(os.path.dirname(__file__), 'poretools', 'version.py')
 version = open(version_py).read().strip().split('=')[-1].replace('"','')
