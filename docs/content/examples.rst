@@ -38,11 +38,15 @@ Help menu
         yield_plot          Plot the yield over time for a set of FAST5 files
 
 
-==========
-Examples
-==========
+===================================
+IPython notebook of poretools usage
+===================================
 
 An IPython notebook demonstrating the functionality and output of ``poretools`` is available in the repository. Use this link to view it via the ``nbviewer`` service: <http://nbviewer.ipython.org/github/arq5x/poretools/blob/master/poretools/ipynb/test_run_report.ipynb>
+
+=================================
+Examples of poretools subcommands
+=================================
 
 -------------------
 ``fastq``

@@ -1,10 +1,6 @@
 ==========================================================================================
 **poretools**: *a toolkit for working with nanopore sequencing data from Oxford Nanopore.*
 ==========================================================================================
-
-:Authors: - Nick Loman
-          - Aaron Quinlan
-
 The MinION (TM) from Oxford Nanopore Technologies (ONT) is the first nanopore sequencer to be 
 commercialised and is now available to early-access users. The MinION (TM) is a USB-connected, 
 portable nanopore sequencer which permits real-time analysis of streaming event data. 
@@ -14,15 +10,16 @@ We have therefore develped ``poretools``, a flexible toolkit for exploring datas
 nanopore sequencing devices from MinION for the purposes of quality control and downstream analysis. 
 ``Poretools`` operates directly on the native FAST5 (a variant of the HDF5 standard) file format produced 
 by ONT and provides a wealth of format conversion utilities and data exploration and visualization tools. 
-Below are a few examples.
+
+A preprint of the ``poretools`` manuscript is available on bioarxiv: http://biorxiv.org/content/early/2014/07/23/007401
+
+Below are a few examples of common usage.
 
 1. Extract sequences in FASTQ format from a set of FAST5 files.
     
 .. code-block:: bash
 
     poretools fastq fast5/
-    poretools fastq --type fwd fast5/
-    poretools fastq --type rev fast5/
 
 2. Make a collector's curve of the yield from a sequencing run.
 
@@ -35,13 +32,16 @@ Below are a few examples.
 .. code-block:: bash
 
     poretools hist fast5/
-    poretools hist --min-length 1000 --max-length 10000 fast5/
 
 =================
-Manuscript
+Table of contents
 =================
-A preprint of the ``poretools`` manuscript is available on bioarxiv: 
-http://biorxiv.org/content/early/2014/07/23/007401
+
+.. toctree::
+   :maxdepth: 3
+
+   content/installation
+   content/examples
 
 =================
 Requirements
@@ -56,11 +56,4 @@ Requirements
     Please note that Anaconda and Python(x,y) already have all these dependencies installed, other than R/Rpy2:
     Anaconda (Linux, Windows, OS X): https://store.continuum.io/cshop/anaconda/ Python(x,y) (Windows): https://code.google.com/p/pythonxy/
 
-=================
-Table of contents
-=================
-.. toctree::
-   :maxdepth: 3
 
-   content/installation
-   content/examples
