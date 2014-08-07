@@ -4,7 +4,7 @@
 
 **Note:** this software is in an alpha state; the code is changing rapidly and the API and CLI may change at any time.
 
-Complete installation instructions and usage examples can be found on the [poretools documentation site](poretools.readthedocs.org).
+Complete installation instructions and usage examples can be found on the [poretools documentation site](http://poretools.readthedocs.org).
 
 Requirements
 ===================
