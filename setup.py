@@ -26,7 +26,12 @@ setup(
         package_data = {'poretools': []},
         zip_safe = False,
         include_package_data=True,
-        scripts = ['poretools/scripts/poretools'],
+        #scripts = ['poretools/scripts/poretools'],
+        entry_points = {
+            'console_scripts' : [
+                 'poretools = poretools.poretools_main:main', 
+            ],
+        },  
         author_email="arq5x@virginia.edu",
         classifiers=[
             'Development Status :: 4 - Beta',
