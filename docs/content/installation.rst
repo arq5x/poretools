@@ -21,8 +21,6 @@ Installing on Windows with MinKNOW installed
 
 MinKNOW installs the Anaconda distribution of Python, which means that h5py is already installed.
 
-To install poretools, download the ZIP file from Github, or clone via Github for Windows.
-
 The only additional dependency that is required is rpy2 and R.
 
 Download rpy2 from the pre-built binary page at: <http://www.lfd.uci.edu/~gohlke/pythonlibs/>. You want the version for Python 2.7 on 64-bit Windows. Run the installer.
@@ -44,9 +42,13 @@ You need to set two environment variables to run poretools currently:
 
 Replace MY USER with your Windows user name (same as set USERNAME)
 
-Need to copy poretools.bat and poretools-script.py into c:\Anaconda\Scripts for ease of use.
+To install poretools, download and run the Windows installer:
 
-To install poretools, download the ZIP file from Github, or clone via Github for Windows.
+	<https://github.com/arq5x/poretools/blob/master/dist/poretools-0.3.0.win-amd64.exe>
+
+.. code-block:: bash
+
+	python setup.py install
 
 =================================
 Installing dependencies on Ubuntu
