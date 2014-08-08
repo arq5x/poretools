@@ -25,6 +25,16 @@ The only additional dependency that is required is rpy2 and R.
 
 Download rpy2 from the pre-built binary page at: <http://www.lfd.uci.edu/~gohlke/pythonlibs/>. You want the version for Python 2.7 on 64-bit Windows. Run the installer.
 
+To install poretools, simply download and run the Windows installer:
+
+        <https://github.com/arq5x/poretools/blob/master/dist/poretools-0.3.0.win-amd64.exe?raw=true>
+
+==================================
+Plotting with R on Windows
+==================================
+
+If you wish to use the R plots (experimental, on Windows) you also need to:
+
 Download R for Windows from: <http://cran.r-project.org/bin/windows/base/>
 
 Run the installer, then start up R and install ggplot2:
@@ -39,12 +49,6 @@ You need to set two environment variables to run poretools currently:
 
 	set R_HOME=c:\Program Files\R\R-3.1.1
 	set R_USER=c:\Users\MY USER\Documents
-
-Replace MY USER with your Windows user name (same as set USERNAME)
-
-To install poretools, simply download and run the Windows installer:
-
-	<https://github.com/arq5x/poretools/blob/master/dist/poretools-0.3.0.win-amd64.exe?raw=true>
 
 =================================
 Installing dependencies on Ubuntu
