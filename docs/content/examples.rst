@@ -32,6 +32,12 @@ Extract sequences in FASTQ format from a set of FAST5 files.
     poretools fastq --type fwd,rev fast5/
 
 
+Only extract sequence with more complement events than templte.
+
+.. code-block:: bash
+
+    poretools fastq --type 2D --high-quality fast5/
+
 ===================
 poretools ``fasta``
 ===================
