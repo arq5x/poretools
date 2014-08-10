@@ -10,10 +10,25 @@ Basic Installation
 
 	git clone https://github.com/arq5x/poretools
 	cd poretools
+
+Install as root:
+
+.. code-block:: bash
+
 	python setup.py install
-	# or
+
+Install as a plain old user who has root access:
+
+.. code-block:: bash
+
 	sudo python setup.py install
 
+Install as a plain old who lacks ``sudo`` priveleges:
+
+.. code-block:: bash
+
+	# details: https://docs.python.org/2/install/index.html#alternate-installation-the-user-scheme
+	python setup.py install --user
 
 =================================
 Installing on Windows with MinKNOW installed
