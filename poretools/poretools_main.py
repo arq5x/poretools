@@ -95,11 +95,26 @@ def main():
                               choices=['all', 'fwd', 'rev', '2D', 'fwd,rev'],
                               default='all',
                               help='Which type of FASTA entries should be reported? Def.=all')
+    parser_fastq.add_argument('--start',
+                              dest='start_time',
+                              default=None,
+                              type=int,
+                              help='Only report reads from after start timestamp')
+    parser_fastq.add_argument('--end',
+                              dest='end_time',
+                              default=None,
+                              type=int,
+                              help='Only report reads from before end timestamp')
     parser_fastq.add_argument('--min-length',
                               dest='min_length',
                               default=0,
                               type=int,
-                              help=('Minimum read length for FASTQ entry to be reported.'))
+                              help=('Minimum read length for FASTA entry to be reported.'))
+    parser_fastq.add_argument('--high-quality',
+                              dest='high_quality',
+                              default=False,
+                              action='store_true',
+                              help=('Only report reads with more complement events than template.'))
     parser_fastq.set_defaults(func=run_subtool)
 
 
@@ -131,6 +146,11 @@ def main():
                               default=0,
                               type=int,
                               help=('Minimum read length for FASTA entry to be reported.'))
+    parser_fasta.add_argument('--high-quality',
+                              dest='high_quality',
+                              default=False,
+                              action='store_true',
+                              help=('Only report reads with more complement events than template.'))
     parser_fasta.set_defaults(func=run_subtool)
 
 
