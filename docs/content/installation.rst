@@ -36,11 +36,17 @@ Installing on Windows with MinKNOW installed
 
 MinKNOW installs the Anaconda distribution of Python, which means that h5py is already installed.
 
+However, currently MinKNOW does not update the Windows registry to specify that Anaconda is the default version of Python, which makes installing packages tricky. To address this, some changes need to be made to the registry. This can be fixed by downloading the following file:
+
+	<https://github.com/arq5x/poretools/blob/master/dist/poretools.reg>
+
+Ensure it is named 'poretools.reg' and then run it (by double-clicking). Windows will prompt you about making changes to the registry, which you should agree to.
+
 The only additional dependency that is required is rpy2 and R.
 
 Download rpy2 from the pre-built binary page at: <http://www.lfd.uci.edu/~gohlke/pythonlibs/>. You want the version for Python 2.7 on 64-bit Windows. Run the installer.
 
-To install poretools, simply download and run the Windows installer:
+Then, to install poretools, simply download and run the Windows installer:
 
         <https://github.com/arq5x/poretools/blob/master/dist/poretools-0.3.0.win-amd64.exe?raw=true>
 
