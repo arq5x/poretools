@@ -38,7 +38,7 @@ MinKNOW installs the Anaconda distribution of Python, which means that h5py is a
 
 However, currently MinKNOW does not update the Windows registry to specify that Anaconda is the default version of Python, which makes installing packages tricky. To address this, some changes need to be made to the registry. This can be fixed by downloading the following file:
 
-	<https://github.com/arq5x/poretools/blob/master/dist/poretools.reg>
+	<https://raw.githubusercontent.com/arq5x/poretools/master/dist/poretools.reg>
 
 Ensure it is named 'poretools.reg' and then run it (by double-clicking). Windows will prompt you about making changes to the registry, which you should agree to.
 
