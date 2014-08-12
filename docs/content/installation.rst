@@ -36,11 +36,17 @@ Installing on Windows with MinKNOW installed
 
 MinKNOW installs the Anaconda distribution of Python, which means that h5py is already installed.
 
+However, currently MinKNOW does not update the Windows registry to specify that Anaconda is the default version of Python, which makes installing packages tricky. To address this, some changes need to be made to the registry. This can be fixed by downloading the following file:
+
+	<https://raw.githubusercontent.com/arq5x/poretools/master/dist/poretools.reg>
+
+Ensure it is named 'poretools.reg' and then run it (by double-clicking). Windows will prompt you about making changes to the registry, which you should agree to.
+
 The only additional dependency that is required is rpy2 and R.
 
 Download rpy2 from the pre-built binary page at: <http://www.lfd.uci.edu/~gohlke/pythonlibs/>. You want the version for Python 2.7 on 64-bit Windows. Run the installer.
 
-To install poretools, simply download and run the Windows installer:
+Then, to install poretools, simply download and run the Windows installer:
 
         <https://github.com/arq5x/poretools/blob/master/dist/poretools-0.3.0.win-amd64.exe?raw=true>
 
@@ -115,7 +121,7 @@ Package dependencies
 
 .. code-block:: bash
 
-	sudo apt-get install git python-tables python-setuptools python-pip python-dev cython libhdf5-serial-dev
+	sudo apt-get install apt-get git python-setuptools python-dev cython libhdf5-serial-dev
 
 Then install R 3.0, this requires a bit of hacking. You need to replace 'precise' with the appropriate version if you are on a different Ubuntu version, see <http://cran.r-project.org/bin/linux/ubuntu/README> for more details.
 
@@ -161,7 +167,6 @@ Then install poretools, finally:
 
 .. code-block:: bash
 
-	sudo pip install numexpr --upgrade
 	git clone https://github.com/arq5x/poretools
 	cd poretools
 	sudo python setup.py install

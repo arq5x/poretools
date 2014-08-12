@@ -1,0 +1,8 @@
+Windows Registry Editor Version 5.00
+[HKEY_LOCAL_MACHINE\Software\Python]
+[HKEY_LOCAL_MACHINE\Software\Python\Pythoncore]
+[HKEY_LOCAL_MACHINE\Software\Python\Pythoncore\2.7]
+[HKEY_LOCAL_MACHINE\Software\Python\Pythoncore\2.7\InstallPath]
+ @="C:\\Anaconda"
+[HKEY_LOCAL_MACHINE\Software\Python\Pythoncore\2.7\PythonPath]
+ @="C:\\Anaconda;C:\\Anaconda\\Lib\\;C:\\Anaconda\\DLLs\\"
