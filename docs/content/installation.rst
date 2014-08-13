@@ -182,9 +182,19 @@ Amazon Web Services machine image ID: ami-4c0ec424
 Via docker
 ==========
 
-Using the [docker image](https://registry.hub.docker.com/u/stephenturner/poretools/)
+Build the docker container yourself (preferred):
+
+.. code-block:: bash
+	git clone https://github.com/arq5x/poretools
+	cd poretools
+	docker build -t poretools .
+	docker run poretools --help
+
+Or use the pre-built `image from Docker Hub <https://registry.hub.docker.com/u/stephenturner/poretools/>`_: 
 
 .. code-block:: bash
 
 	docker pull stephenturner/poretools
-	docker run stephenturner/poretools poretools --help
+	docker run stephenturner/poretools --help
+
+To run the poretools container on data residing on the host machine, run ``docker run -h`` and look at the help for the ``-v`` option.
