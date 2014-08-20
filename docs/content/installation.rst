@@ -71,6 +71,48 @@ You need to set two environment variables to run poretools currently:
 	set R_HOME=c:\Program Files\R\R-3.1.1
 	set R_USER=c:\Users\MY USER\Documents
 
+
+=================================
+Installing on OS X
+=================================
+
+First, you should install a proper package manager for OS X. In our experience, `HomeBrew <http://brew.sh/>`_ works extremely well.
+
+To install HomeBrew, you run the following command (lifted from the HomeBrew site):
+
+.. code-block:: bash
+
+	ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
+
+Using HomeBrew, install HDF5 from the HomeBrew Science "tap";
+
+.. code-block:: bash
+	
+	brew tap homebrew/science 
+	brew install hdf5
+
+Now, you will need to install the R statistical analysis software (you may already have this...). The `CRAN <http://cran.r-project.org/bin/macosx/>`_ website houses automatic installation packages for different versions of OS X.  Here are links to such packages for `Snow Leopard and higher <http://cran.r-project.org/bin/macosx/R-3.1.1-snowleopard.pkg>`_ as well as `Mavericks <http://cran.r-project.org/bin/macosx/R-3.1.1-mavericks.pkg>`_.
+
+At this point, you can install poretools.
+
+.. code-block:: bash
+
+	git clone https://github.com/arq5x/poretools
+	cd poretools
+
+Install as an administrator of your machine:
+
+.. code-block:: bash
+
+	sudo python setup.py install
+
+Install as a plain old who lacks ``sudo`` priveleges:
+
+.. code-block:: bash
+
+	# details: https://docs.python.org/2/install/index.html#alternate-installation-the-user-scheme
+	python setup.py install --user
+
 =================================
 Installing dependencies on Ubuntu
 =================================
@@ -140,9 +182,19 @@ Amazon Web Services machine image ID: ami-4c0ec424
 Via docker
 ==========
 
-Using the [docker image](https://registry.hub.docker.com/u/stephenturner/poretools/)
+Build the docker container yourself (preferred):
+
+.. code-block:: bash
+	git clone https://github.com/arq5x/poretools
+	cd poretools
+	docker build -t poretools .
+	docker run poretools --help
+
+Or use the pre-built `image from Docker Hub <https://registry.hub.docker.com/u/stephenturner/poretools/>`_: 
 
 .. code-block:: bash
 
 	docker pull stephenturner/poretools
-	docker run stephenturner/poretools poretools --help
+	docker run stephenturner/poretools --help
+
+To run the poretools container on data residing on the host machine, run ``docker run -h`` and look at the help for the ``-v`` option.
