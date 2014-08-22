@@ -276,6 +276,11 @@ class Fast5File(object):
 		try:
 			return self.keyinfo['channel_id'].attrs['channel_number']
 		except:
+			pass
+
+		try:
+			return self.keyinfo['read_id'].attrs['channel_number']
+		except:
 			return None
 
 	def find_read_number_block(self):

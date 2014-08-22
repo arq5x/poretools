@@ -24,6 +24,8 @@ def run_subtool(parser, args):
         import hist as submodule
     elif args.command == 'nucdist':
         import nucdist as submodule
+    elif args.command == 'occupancy':
+        import occupancy as submodule
     elif args.command == 'qualdist':
         import qualdist as submodule
     elif args.command == 'readstats':
@@ -323,7 +325,7 @@ def main():
     parser_yield_plot.add_argument('--saveas',
                              dest='saveas',
                              metavar='STRING',
-                             help='Save the wiggle plot to a file. Extension (.pdf or .png) drives type.',
+                             help='Save the plot to a file. Extension (.pdf or .png) drives type.',
                              default=None)
     parser_yield_plot.add_argument('--plot-type',
                              dest='plot_type',
@@ -348,6 +350,28 @@ def main():
                              default=None)
                              
     parser_yield_plot.set_defaults(func=run_subtool)
+
+    ############
+    # yield_plot
+    ############
+    parser_occupancy = subparsers.add_parser('occupancy',
+                                        help='Inspect pore activity over time for a set of FAST5 files')
+    parser_occupancy.add_argument('files', metavar='FILES', nargs='+',
+                               help='The input FAST5 files.')
+    parser_occupancy.add_argument('--saveas',
+                             dest='saveas',
+                             metavar='STRING',
+                             help='Save the plot to a file. Extension (.pdf or .png) drives type.',
+                             default=None)
+    parser_occupancy.add_argument('--plot-type',
+                             dest='plot_type',
+                             metavar='STRING',
+                             choices=['read_count', 'total_bp'],
+                             help='The type of plot to generate',
+                             default='read_count')
+
+
+    parser_occupancy.set_defaults(func=run_subtool)
 
     #######################################################
     # parse the args and call the selected function
