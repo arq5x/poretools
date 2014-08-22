@@ -53,10 +53,10 @@ def plot_read_count(parser, args, tot_reads_per_pore):
 	gp = gg.ggplot(df)
 	pp = gp + gg.aes_string(y = 'factor(rownum, rev(rownum))', \
 		                         x = 'factor(colnum)') \
-            + gg.geom_point(gg.aes_string(color='tot_reads'), size = 5) \
+            + gg.geom_point(gg.aes_string(color='tot_reads'), size = 7) \
             + gg.geom_text(gg.aes_string(label ='labels'), colour="white", size = 2) \
             + gg.scale_colour_gradient2(low = "black", mid= "black", high="red") \
-            + gg.coord_fixed(ratio=1.4) \
+            + gg.coord_fixed(ratio=1) \
             + gg.labs(x=gg.NULL, y=gg.NULL)
 
 	if args.saveas is not None:
