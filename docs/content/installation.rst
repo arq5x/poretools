@@ -29,7 +29,15 @@ Install as a plain old who lacks ``sudo`` priveleges:
 
 	# details: https://docs.python.org/2/install/index.html#alternate-installation-the-user-scheme
 	python setup.py install --user
-
+	
+	# now update your PATH such that it includes the directory to which poretools was just copied.
+	# look for a line in the installation log like: Installing poretools script to /home/arq5x/.local/bin
+        # in this case, I would either add that path to the PATH environment variable for the current session:
+        export PATH=$PATH:/home/arq5x/.local/bin
+        
+        # or, better yet add it to your .bashrc file.
+        # at this point you should be able to run the poretools executable from anywhere on your system.
+        poretools --help
 =================================
 Installing on Windows with MinKNOW installed
 =================================
