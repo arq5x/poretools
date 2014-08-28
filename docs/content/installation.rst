@@ -129,7 +129,7 @@ Package dependencies
 
 .. code-block:: bash
 
-	sudo apt-get install apt-get git python-setuptools python-dev cython libhdf5-serial-dev
+	sudo apt-get install git python-setuptools python-dev cython libhdf5-serial-dev
 
 Then install R 3.0, this requires a bit of hacking. You need to replace 'precise' with the appropriate version if you are on a different Ubuntu version, see <http://cran.r-project.org/bin/linux/ubuntu/README> for more details.
 
