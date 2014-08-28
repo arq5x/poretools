@@ -1,0 +1,58 @@
+_poretools()
+{
+  local cur prev opts
+  COMPREPLY=()
+  cur="${COMP_WORDS[COMP_CWORD]}"
+  prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+  opts="combine fastq fasta stats hist events readstats tabular nucdist
+        qualdist winner squiggle times yield_plot occupancy -h --help
+        -v --version"
+
+  defaultOpts="-h --help -q --quiet"
+
+  combineOpts="-o $defaultOpts"
+
+  fastxOpts="--type --start --end --min-length --high-quality $defaultOpts"
+
+  histOpts="--min-length --max-length --num-bins --saveas --theme-bw $defaultOpts"
+
+  occupancyOpts="--saveas --plot-type $defaultOpts"
+
+  squiggleOpts="--saveas --num-facets --theme-bw $defaultOpts"
+
+  typeOpts="--type $defaultOpts"
+
+  yieldOpts="--saveas --plot-type --theme-bw --extrapolate --savedf $defaultOpts"
+
+  case $prev in
+      combine)
+          COMPREPLY=( $(compgen -W "${combineOpts}" -- "$cur") )
+          ;;
+      events|readstats|nucdist|qualdist)
+          COMPREPLY=( $(compgen -W "${defaultOpts}" -- "$cur") )
+          ;;
+      fast[aq])
+          COMPREPLY=( $(compgen -W "${fastxOpts}" -- "$cur") )
+          ;;
+      hist)
+          COMPREPLY=( $(compgen -W "${histOpts}" -- "$cur") )
+          ;;
+      occupancy)
+          COMPREPLY=( $(compgen -W "${occupancyOpts}" -- "$cur") )
+          ;;
+      stats|tabular|times|winner)
+          COMPREPLY=( $(compgen -W "${typeOpts}" -- "$cur") )
+          ;;
+      yield_plot)
+          COMPREPLY=( $(compgen -W "${yieldOpts}" -- "$cur") )
+          ;;
+
+
+      poretools)
+          COMPREPLY=( $(compgen -W "${opts}" -- "$cur") )
+          ;;
+  esac
+  return 0
+}
+complete -F _poretools -o default poretools
