@@ -56,7 +56,7 @@ Download rpy2 from the pre-built binary page at: <http://www.lfd.uci.edu/~gohlke
 
 Then, to install poretools, simply download and run the Windows installer:
 
-        <https://github.com/arq5x/poretools/blob/master/dist/poretools-0.3.0.win-amd64.exe?raw=true>
+        <https://github.com/arq5x/poretools/blob/master/dist/poretools-0.3.1.win-amd64.exe?raw=true>
 
 ==================================
 Plotting with R on Windows
