@@ -62,9 +62,9 @@ def plot_read_count(parser, args, tot_reads_per_pore):
 	if args.saveas is not None:
 		plot_file = args.saveas
 		if plot_file.endswith(".pdf"):
-			grdevices.pdf(plot_file, width = 8.5, height = 8.5)
+			grdevices.pdf(plot_file, width = 11, height = 8.5)
 		elif plot_file.endswith(".png"):
-			grdevices.png(plot_file, width = 8.5, height = 8.5, 
+			grdevices.png(plot_file, width = 11, height = 8.5, 
 				units = "in", res = 300)
 		else:
 			logger.error("Unrecognized extension for %s!" % (plot_file))
@@ -117,9 +117,9 @@ def plot_total_bp(parser, args, tot_bp_per_pore):
 	if args.saveas is not None:
 		plot_file = args.saveas
 		if plot_file.endswith(".pdf"):
-			grdevices.pdf(plot_file, width = 8.5, height = 8.5)
+			grdevices.pdf(plot_file, width = 11, height = 8.5)
 		elif plot_file.endswith(".png"):
-			grdevices.png(plot_file, width = 8.5, height = 8.5, 
+			grdevices.png(plot_file, width = 11, height = 8.5, 
 				units = "in", res = 300)
 		else:
 			logger.error("Unrecognized extension for %s!" % (plot_file))
@@ -139,7 +139,7 @@ def run(parser, args):
 	tot_reads_per_pore = Counter()
 	tot_bp_per_pore = Counter()
 
-	print "\t".join(['channel_number', 'exp_start_time', 'start_time', 'duration'])
+	print "\t".join(['channel_number', 'start_time', 'duration'])
 	for fast5 in Fast5File.Fast5FileSet(args.files):
 		if fast5.is_open:
 			fq = fast5.get_fastq()
