@@ -79,6 +79,13 @@ You need to set two environment variables to run poretools currently:
 	set R_HOME=c:\Program Files\R\R-3.1.1
 	set R_USER=c:\Users\MY USER\Documents
 
+You may also need to add the following directory to your PATH:
+
+.. code-block:: bash
+
+        C:\Program Files\R\R-3.1.1\bin\x64
+        
+Instructions for updating your PATH on Windows can be found here: http://geekswithblogs.net/renso/archive/2009/10/21/how-to-set-the-windows-path-in-windows-7.aspx
 
 =================================
 Installing on OS X
