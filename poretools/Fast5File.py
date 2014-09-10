@@ -190,6 +190,16 @@ class Fast5File(object):
 
 		return fas
 
+	def get_fastas_dict(self):
+                """
+                Return the set of base called sequences in the FAST5
+                in FASTQ format.
+                """
+                if self.have_fastas is False:
+                        self._extract_fastas_from_fast5()
+                        self.have_fastas = True
+
+		return self.fastas
 
 	def get_fastq(self):
 		"""
@@ -466,6 +476,13 @@ class Fast5File(object):
 			return len(table['Events'][()])
 		except Exception, e:
 			return 0
+
+	def is_high_quality(self):
+		if self.get_complement_events_count() > \
+		   self.get_template_events_count():
+			return True
+		else:
+			return False
 
 	####################################################################
 	# Private API methods
