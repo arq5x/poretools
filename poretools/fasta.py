@@ -22,6 +22,12 @@ def run(parser, args):
 				fast5.close()
 				continue
 
+		if args.normal_quality:
+			if fast5.get_complement_events_count() > \
+			   fast5.get_template_events_count():
+				fast5.close()
+				continue
+
 		for fa in fas:
 			if fa is None or \
 			len(fa.seq) < args.min_length:			

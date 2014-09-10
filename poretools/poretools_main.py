@@ -153,6 +153,11 @@ def main():
                               default=False,
                               action='store_true',
                               help=('Only report reads with more complement events than template.'))
+    parser_fasta.add_argument('--normal-quality',
+                              dest='normal_quality',
+                              default=False,
+                              action='store_true',
+                              help=('Only report reads with fewer complement events than template.'))
     parser_fasta.set_defaults(func=run_subtool)
 
 
@@ -169,6 +174,11 @@ def main():
                               choices=['all', 'fwd', 'rev', '2D', 'fwd,rev'],
                               default='all',
                               help='Which type of FASTQ entries should be reported? Def.=all')
+    parser_stats.add_argument('--full-tsv',
+                              dest='full_tsv',
+                              default=False,
+                              action='store_true',
+                              help=('Verbose output in tab-separated format.'))
     parser_stats.set_defaults(func=run_subtool)
 
 
