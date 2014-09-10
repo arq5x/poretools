@@ -7,6 +7,7 @@ from rpy2.robjects.packages import importr
 #logging
 import logging
 logger = logging.getLogger('poretools')
+logger.setLevel(logging.INFO)
 
 def plot_hist(sizes, args):
 	"""

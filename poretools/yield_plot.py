@@ -7,6 +7,7 @@ from rpy2.robjects.packages import importr
 #logging
 import logging
 logger = logging.getLogger('poretools')
+logger.setLevel(logging.INFO)
 
 def plot_collectors_curve(args, start_times, read_lengths):
 	"""
@@ -91,6 +92,7 @@ def run(parser, args):
 	
 	start_times = []
 	read_lengths = []
+	files_processed = 0
 	for fast5 in Fast5File.Fast5FileSet(args.files):
 		if fast5.is_open:
 			
@@ -107,8 +109,13 @@ def run(parser, args):
 				read_lengths.append(len(fq.seq))
 			else:
 				read_lengths.append(0)
-
 			fast5.close()
+
+		files_processed += 1
+		if files_processed % 100 == 0:
+			logger.info("%d files processed." % files_processed)
+	
+
 
 	# sort the data by start time
 	start_times, read_lengths = (list(t) for t in zip(*sorted(zip(start_times, read_lengths))))
