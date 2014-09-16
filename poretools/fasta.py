@@ -17,8 +17,8 @@ def run(parser, args):
 
 		fas = fast5.get_fastas(args.type)
 		if args.high_quality:
-			if fast5.get_complement_events_count() <= \
-			   fast5.get_template_events_count():
+			if (fast5.get_complement_events_count() <= \
+			   fast5.get_template_events_count()) or not fast5.has_2D():
 				fast5.close()
 				continue
 

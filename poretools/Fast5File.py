@@ -136,6 +136,18 @@ class Fast5File(object):
 		if self.is_open:
 			self.hdf5file.close()
 
+	def has_2D(self):
+		"""
+		Return TRUE if the FAST5 has a 2D base-called sequence.
+		Return FALSE otherwise.
+		"""
+		if self.have_fastas is False:
+			self._extract_fastas_from_fast5()
+			self.have_fastas = True
+
+		if self.fastas.get('twodirections') is not None:
+			return True
+		return False
 
 	def get_fastqs(self, choice):
 		"""
