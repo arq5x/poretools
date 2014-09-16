@@ -7,10 +7,13 @@ logger = logging.getLogger('poretools')
 def run(parser, args):
 	if args.full_tsv:
 		files = 0
+		basecalled_files = 0
 		stats = defaultdict(list)
 		for fast5 in Fast5File.Fast5FileSet(args.files):
 			files += 1
 			fas = fast5.get_fastas_dict()
+			if len(fas) > 0:
+				basecalled_files += 1
 			for category, fa in fas.iteritems():
 				if fa is not None:
 					stats[category].append(len(fa.seq))
@@ -21,7 +24,7 @@ def run(parser, args):
 			fast5.close()
 
 		print "files\ttotal reads\t%d" % (files)
-
+		print "files\ttotal base-called reads\t%d" % (basecalled_files)
 		for category in sorted(stats.keys()):
 			sizes = stats[category]
 
