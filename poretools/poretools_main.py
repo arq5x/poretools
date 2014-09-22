@@ -353,6 +353,12 @@ def main():
                              metavar='INTEGER',
                              default=0,
                              help="Fit a curve and extrapolate to n hours")
+    parser_yield_plot.add_argument('--skip',
+                             dest='skip',
+                             metavar='INTEGER',
+                             type=int,
+                             default=1,
+                             help="Only plot every n points to reduce size")
     parser_yield_plot.add_argument('--savedf',
                              dest='savedf',
                              metavar='STRING',
