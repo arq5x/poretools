@@ -36,10 +36,11 @@ def plot_collectors_curve(args, start_times, read_lengths):
 
 	step = args.skip
 	# make a data frame of the lists
-	d = {'start': robjects.IntVector([r_start_times[n] for n in xrange(0, len(r_start_times), step)]), 
+	d = {'start': robjects.FloatVector([r_start_times[n] for n in xrange(0, len(r_start_times), step)]), 
 		'lengths': robjects.IntVector([r_read_lengths[n] for n in xrange(0, len(r_read_lengths), step)]),
 		'cumul': robjects.IntVector([cumulative[n] for n in xrange(0, len(cumulative), step)])}
 	df = robjects.DataFrame(d)
+
 
 	if args.savedf:
 		robjects.r("write.table")(df, file=args.savedf, sep="\t")
