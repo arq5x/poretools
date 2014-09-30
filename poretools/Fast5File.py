@@ -106,11 +106,12 @@ class TarballFileIterator:
 		return self
 
 	def next(self):
-		tarinfo = self._tarfile.next()
-		while not tarinfo == None or self._fast5_filename_filter(tarinfo.name):
+		while True:
 			tarinfo = self._tarfile.next()
-		if tarinfo == None:
-			return None
+			if tarinfo is None:
+				raise StopIteration
+			elif self._fast5_filename_filter(tarinfo.name):
+				break
 		self._tarfile.extract(tarinfo, path=PORETOOLS_TMPDIR)
 		return os.path.join(PORETOOLS_TMPDIR, tarinfo.name)
 
