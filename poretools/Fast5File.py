@@ -15,8 +15,8 @@ import formats
 from Event import Event
 
 fastq_paths = {'template' : '/Analyses/Basecall_2D_000/BaseCalled_template',
-			   'complement' : '/Analyses/Basecall_2D_000/BaseCalled_complement',
-			   'twodirections' : '/Analyses/Basecall_2D_000/BaseCalled_2D'}
+               'complement' : '/Analyses/Basecall_2D_000/BaseCalled_complement',
+               'twodirections' : '/Analyses/Basecall_2D_000/BaseCalled_2D'}
 
 FAST5SET_FILELIST = 0
 FAST5SET_DIRECTORY = 1
@@ -51,8 +51,6 @@ class Fast5FileSet(object):
 			# cleanup our mess
 			if self.set_type == FAST5SET_TARBALL:
 				shutil.rmtree(PORETOOLS_TMPDIR)
-
-			logger.exception("Problem reading from file set")
 			raise StopIteration
 
 	def _extract_fast5_files(self):
@@ -109,10 +107,10 @@ class TarballFileIterator:
 
 	def next(self):
 		tarinfo = self._tarfile.next()
-        while not tarinfo == None or self._fast5_filename_filter(tarinfo.name):
+		while not tarinfo == None or self._fast5_filename_filter(tarinfo.name):
 			tarinfo = self._tarfile.next()
-        if tarinfo == None:
-            return None
+		if tarinfo == None:
+			return None
 		self._tarfile.extract(tarinfo, path=PORETOOLS_TMPDIR)
 		return os.path.join(PORETOOLS_TMPDIR, tarinfo.name)
 
@@ -151,7 +149,7 @@ class Fast5File(object):
 			self.hdf5file = h5py.File(self.filename, 'r')
 			return True
 		except Exception, e:
-			logger.exception("Cannot open file: %s. Perhaps it is corrupt? Moving on.\n" % self.filename)
+			logger.warning("Cannot open file: %s. Perhaps it is corrupt? Moving on.\n" % self.filename)
 			return False
 			
 	def close(self):
@@ -228,13 +226,13 @@ class Fast5File(object):
 		return fas
 
 	def get_fastas_dict(self):
-		"""
-		Return the set of base called sequences in the FAST5
-		in FASTQ format.
-		"""
-		if self.have_fastas is False:
-				self._extract_fastas_from_fast5()
-				self.have_fastas = True
+                """
+                Return the set of base called sequences in the FAST5
+                in FASTQ format.
+                """
+                if self.have_fastas is False:
+                        self._extract_fastas_from_fast5()
+                        self.have_fastas = True
 
 		return self.fastas
 
