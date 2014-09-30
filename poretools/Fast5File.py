@@ -15,14 +15,14 @@ import formats
 from Event import Event
 
 fastq_paths = {'template' : '/Analyses/Basecall_2D_000/BaseCalled_template',
-               'complement' : '/Analyses/Basecall_2D_000/BaseCalled_complement',
-               'twodirections' : '/Analyses/Basecall_2D_000/BaseCalled_2D'}
+			   'complement' : '/Analyses/Basecall_2D_000/BaseCalled_complement',
+			   'twodirections' : '/Analyses/Basecall_2D_000/BaseCalled_2D'}
 
 FAST5SET_FILELIST = 0
 FAST5SET_DIRECTORY = 1
 FAST5SET_SINGLEFILE = 2
 FAST5SET_TARBALL = 3
-PORETOOOLS_TMPDIR = '.poretools_tmp'
+PORETOOLS_TMPDIR = '.poretools_tmp'
 
 class Fast5FileSet(object):
 
@@ -49,8 +49,10 @@ class Fast5FileSet(object):
 			return Fast5File(self.files.next())
 		except Exception as e:
 			# cleanup our mess
-			if self.set_type ==	 FAST5SET_TARBALL:
-				shutil.rmtree(PORETOOOLS_TMPDIR)
+			if self.set_type == FAST5SET_TARBALL:
+				shutil.rmtree(PORETOOLS_TMPDIR)
+
+			logger.exception("Problem reading from file set")
 			raise StopIteration
 
 	def _extract_fast5_files(self):
@@ -75,14 +77,12 @@ class Fast5FileSet(object):
 
 			# is it a tarball?
 			elif tarfile.is_tarfile(f):
-				if os.path.isdir(PORETOOOLS_TMPDIR):
-					shutil.rmtree(PORETOOOLS_TMPDIR)
-				os.mkdir(PORETOOOLS_TMPDIR)
-				
-				tar = tarfile.open(f)
-				tar.extractall(PORETOOOLS_TMPDIR)
-				self.files = (PORETOOOLS_TMPDIR + '/' + f for f in tar.getnames())
-				self.num_files_in_set = len(tar.getnames())
+				if os.path.isdir(PORETOOLS_TMPDIR):
+					shutil.rmtree(PORETOOLS_TMPDIR)
+				os.mkdir(PORETOOLS_TMPDIR)
+
+				self.files = TarballFileIterator(f)
+				self.num_files_in_set = len(self.files)
 				self.set_type = FAST5SET_TARBALL
 
 			# just a single FAST5 file.
@@ -93,6 +93,31 @@ class Fast5FileSet(object):
 		else:
 			logger.error("Directory %s could not be opened. Exiting.\n" % dir)
 			sys.exit()
+
+class TarballFileIterator:
+	def _fast5_filename_filter(self, filename):
+		return os.path.basename(filename).endswith('.fast5') and not os.path.basename(filename).startswith('.')
+
+	def __init__(self, tarball):
+		self._tarfile = tarfile.open(tarball)
+		self._file_names = [name for name in self._tarfile.getnames() if self._fast5_filename_filter(name)]
+		self._tarfile.close()
+		self._tarfile = tarfile.open(tarball)
+
+	def __iter__(self):
+		return self
+
+	def next(self):
+		tarinfo = self._tarfile.next()
+        while not tarinfo == None or self._fast5_filename_filter(tarinfo.name):
+			tarinfo = self._tarfile.next()
+        if tarinfo == None:
+            return None
+		self._tarfile.extract(tarinfo, path=PORETOOLS_TMPDIR)
+		return os.path.join(PORETOOLS_TMPDIR, tarinfo.name)
+
+	def __len__(self):
+		return len(self._file_names)
 
 
 class Fast5File(object):
@@ -126,7 +151,7 @@ class Fast5File(object):
 			self.hdf5file = h5py.File(self.filename, 'r')
 			return True
 		except Exception, e:
-			logger.warning("Cannot open file: %s. Perhaps it is corrupt? Moving on.\n" % self.filename)
+			logger.exception("Cannot open file: %s. Perhaps it is corrupt? Moving on.\n" % self.filename)
 			return False
 			
 	def close(self):
@@ -203,13 +228,13 @@ class Fast5File(object):
 		return fas
 
 	def get_fastas_dict(self):
-                """
-                Return the set of base called sequences in the FAST5
-                in FASTQ format.
-                """
-                if self.have_fastas is False:
-                        self._extract_fastas_from_fast5()
-                        self.have_fastas = True
+		"""
+		Return the set of base called sequences in the FAST5
+		in FASTQ format.
+		"""
+		if self.have_fastas is False:
+				self._extract_fastas_from_fast5()
+				self.have_fastas = True
 
 		return self.fastas
 
