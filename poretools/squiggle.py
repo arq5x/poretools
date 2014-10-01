@@ -69,30 +69,37 @@ def plot_squiggle(args, filename, start_times, mean_signals):
 		print('Type enter to exit.')
 		raw_input()
 
+def do_plot_squiggle(args, fast5):
+	start_times = []
+	mean_signals = []
+
+	for event in fast5.get_template_events():
+		start_times.append(event.start)
+		mean_signals.append(event.mean)
+
+	if start_times:
+		plot_squiggle(args, fast5.filename, start_times, mean_signals)
+	else:
+		logger.warning("Could not extract template events for read: %s.\n" \
+			% fast5.filename)
+
+	fast5.close()
+
+
 def run(parser, args):
 
 	fast5_set = Fast5File.Fast5FileSet(args.files)
 
-	# only create a squiggle plot for multiple reads if saving to file.
-	if fast5_set.get_num_files() > 1 and args.saveas is None:
-		sys.exit("""Please use --saveas when plotting"""
-			     """ multiple FAST5 files as input.\n""")
-	
+	first_fast5 = fast5_set.next()
 	for fast5 in fast5_set:
+		# only create a squiggle plot for multiple reads if saving to file.
+		if args.saveas is None:
+			sys.exit("""Please use --saveas when plotting"""
+					 """ multiple FAST5 files as input.\n""")
+		if first_fast5 is not None:
+			do_plot_squiggle(args, first_fast5)
+			first_fast5 = None
+		do_plot_squiggle(args, fast5)
 
-		start_times = []
-		mean_signals = []
-		
-		for event in fast5.get_template_events():
-			start_times.append(event.start)
-			mean_signals.append(event.mean)		
-
-		if start_times:
-			plot_squiggle(args, fast5.filename, start_times, mean_signals)
-		else:
-			logger.warning("Could not extract template events for read: %s.\n" \
-				% fast5.filename)
-
-		fast5.close()
-
-
+	if first_fast5 is not None:
+		do_plot_squiggle(args, first_fast5)
