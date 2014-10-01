@@ -39,6 +39,8 @@ class Fast5FileSet(object):
 		"""
 		Return the number of files in the FAST5 set.
 		"""
+		if self.num_files_in_set is None and self.set_type == FAST5SET_TARBALL:
+			self.num_files_in_set = len(self.files)
 		return self.num_files_in_set
 
 	def __iter__(self):
@@ -80,7 +82,8 @@ class Fast5FileSet(object):
 				os.mkdir(PORETOOLS_TMPDIR)
 
 				self.files = TarballFileIterator(f)
-				self.num_files_in_set = len(self.files)
+				# set to None to delay initialisation
+				self.num_files_in_set = None
 				self.set_type = FAST5SET_TARBALL
 
 			# just a single FAST5 file.
@@ -97,10 +100,11 @@ class TarballFileIterator:
 		return os.path.basename(filename).endswith('.fast5') and not os.path.basename(filename).startswith('.')
 
 	def __init__(self, tarball):
+		self._tarball = tarball
 		self._tarfile = tarfile.open(tarball)
-		self._file_names = [name for name in self._tarfile.getnames() if self._fast5_filename_filter(name)]
+
+	def __del__(self):
 		self._tarfile.close()
-		self._tarfile = tarfile.open(tarball)
 
 	def __iter__(self):
 		return self
@@ -116,7 +120,8 @@ class TarballFileIterator:
 		return os.path.join(PORETOOLS_TMPDIR, tarinfo.name)
 
 	def __len__(self):
-		return len(self._file_names)
+		with tarfile.open(self._tarball) as tar:
+			return len(tar.getnames())
 
 
 class Fast5File(object):
