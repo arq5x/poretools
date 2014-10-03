@@ -22,7 +22,7 @@ FAST5SET_FILELIST = 0
 FAST5SET_DIRECTORY = 1
 FAST5SET_SINGLEFILE = 2
 FAST5SET_TARBALL = 3
-PORETOOOLS_TMPDIR = '.poretools_tmp'
+PORETOOLS_TMPDIR = '.poretools_tmp'
 
 class Fast5FileSet(object):
 
@@ -39,6 +39,8 @@ class Fast5FileSet(object):
 		"""
 		Return the number of files in the FAST5 set.
 		"""
+		if self.num_files_in_set is None and self.set_type == FAST5SET_TARBALL:
+			self.num_files_in_set = len(self.files)
 		return self.num_files_in_set
 
 	def __iter__(self):
@@ -49,8 +51,8 @@ class Fast5FileSet(object):
 			return Fast5File(self.files.next())
 		except Exception as e:
 			# cleanup our mess
-			if self.set_type ==	 FAST5SET_TARBALL:
-				shutil.rmtree(PORETOOOLS_TMPDIR)
+			if self.set_type == FAST5SET_TARBALL:
+				shutil.rmtree(PORETOOLS_TMPDIR)
 			raise StopIteration
 
 	def _extract_fast5_files(self):
@@ -75,14 +77,13 @@ class Fast5FileSet(object):
 
 			# is it a tarball?
 			elif tarfile.is_tarfile(f):
-				if os.path.isdir(PORETOOOLS_TMPDIR):
-					shutil.rmtree(PORETOOOLS_TMPDIR)
-				os.mkdir(PORETOOOLS_TMPDIR)
-				
-				tar = tarfile.open(f)
-				tar.extractall(PORETOOOLS_TMPDIR)
-				self.files = (PORETOOOLS_TMPDIR + '/' + f for f in tar.getnames())
-				self.num_files_in_set = len(tar.getnames())
+				if os.path.isdir(PORETOOLS_TMPDIR):
+					shutil.rmtree(PORETOOLS_TMPDIR)
+				os.mkdir(PORETOOLS_TMPDIR)
+
+				self.files = TarballFileIterator(f)
+				# set to None to delay initialisation
+				self.num_files_in_set = None
 				self.set_type = FAST5SET_TARBALL
 
 			# just a single FAST5 file.
@@ -93,6 +94,34 @@ class Fast5FileSet(object):
 		else:
 			logger.error("Directory %s could not be opened. Exiting.\n" % dir)
 			sys.exit()
+
+class TarballFileIterator:
+	def _fast5_filename_filter(self, filename):
+		return os.path.basename(filename).endswith('.fast5') and not os.path.basename(filename).startswith('.')
+
+	def __init__(self, tarball):
+		self._tarball = tarball
+		self._tarfile = tarfile.open(tarball)
+
+	def __del__(self):
+		self._tarfile.close()
+
+	def __iter__(self):
+		return self
+
+	def next(self):
+		while True:
+			tarinfo = self._tarfile.next()
+			if tarinfo is None:
+				raise StopIteration
+			elif self._fast5_filename_filter(tarinfo.name):
+				break
+		self._tarfile.extract(tarinfo, path=PORETOOLS_TMPDIR)
+		return os.path.join(PORETOOLS_TMPDIR, tarinfo.name)
+
+	def __len__(self):
+		with tarfile.open(self._tarball) as tar:
+			return len(tar.getnames())
 
 
 class Fast5File(object):
