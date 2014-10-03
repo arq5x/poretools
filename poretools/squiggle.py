@@ -55,7 +55,9 @@ def plot_squiggle(args, filename, start_times, mean_signals):
 			+ ggplot2.theme_bw()
 
 	if args.saveas is not None:
-		plot_file = filename + "." + args.saveas
+		plot_file = os.path.basename(filename) + "." + args.saveas
+		if os.path.isfile(plot_file):
+			raise Exception('Cannot create plot for %s: plot file %s already exists' % (filename, plot_file))
 		if args.saveas == "pdf":
 			grdevices.pdf(plot_file, width = 8.5, height = 11)
 		elif args.saveas == "png":
