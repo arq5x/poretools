@@ -31,7 +31,7 @@ def NX(l, x=[25,50,75]):
         Returns NX for all x for a list of numbers l.
         Default: N25, N50, N75
         Assumes all values in list x are between 0 and 100.
-        Interpretation: X% of data is contained in reads at least NX_value long.
+        Interpretation: When NX = NX_value, X% of data (in bp) is contained in reads at least NX_value bp long.
         """
 	if isinstance(l, list) and isinstance(x, list):
 		l = sorted(l)
