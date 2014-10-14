@@ -35,6 +35,10 @@ def run(parser, args):
 				print "%s\tmedian\t%d" % (category, stat.median(sizes))
 				print "%s\tmin\t%d" % (category, min(sizes))
 				print "%s\tmax\t%d" % (category, max(sizes))
+				nxvalues = stat.NX(sizes, [25,50,75])
+				print "%s\tN25\t%d" % (category, nxvalues[25])
+				print "%s\tN50\t%d" % (category, nxvalues[50])
+				print "%s\tN75\t%d" % (category, nxvalues[75])
 			else:
 				logger.warning("No valid sequences observed.\n")
 	else:
@@ -51,5 +55,9 @@ def run(parser, args):
 			print "median\t%d" % (stat.median(sizes))
 			print "min\t%d" % (min(sizes))
 			print "max\t%d" % (max(sizes))
+                        nxvalues = stat.NX(sizes, [25,50,75])
+                        print "N25\t%d" % (nxvalues[25])
+                        print "N50\t%d" % (nxvalues[50])
+                        print "N75\t%d" % (nxvalues[75])
 		else:
 			logger.warning("No valid sequences observed.\n")
