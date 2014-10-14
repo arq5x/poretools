@@ -22,6 +22,8 @@ def run_subtool(parser, args):
         import fastq as submodule
     elif args.command == 'hist':
         import hist as submodule
+    elif args.command == 'data_conc':
+        import dataconc as submodule
     elif args.command == 'nucdist':
         import nucdist as submodule
     elif args.command == 'occupancy':
@@ -217,6 +219,37 @@ def main():
 
     parser_hist.set_defaults(func=run_subtool)
 
+
+    ##########
+    # data_conc (data concentration plot)
+    ##########
+    parser_dataconc = subparsers.add_parser('data_conc',
+                                        help='''Plot sum of read lengths in each bin for a given set of bins for a set of FAST5 files.
+                                        This is the type of plot seen in MinKNOW while sequencing.''')
+    parser_dataconc.add_argument('files', metavar='FILES', nargs='+',
+                             help='The input FAST5 files.')
+    parser_dataconc.add_argument('--min-length',
+                              dest='min_length',
+                              default=0,
+                              type=int,
+                              help=('Minimum read length to be included in histogram.'))
+    parser_dataconc.add_argument('--max-length',
+                              dest='max_length',
+                              default=1000000000,
+                              type=int,
+                              help=('Maximum read length to be included in histogram.'))
+    parser_dataconc.add_argument('--bin-width',
+                              dest='bin_width',
+                              default=500,
+                              type=int,
+                              help=('The width of bins (default: 500 bp).'))
+    parser_dataconc.add_argument('--saveas',
+                             dest='saveas',
+                             metavar='STRING',
+                             help='''Save the plot to a file named filename.extension (e.g. pdf, jpg)''',
+                             default=None)
+
+    parser_dataconc.set_defaults(func=run_subtool)
 
     ###########
     # events
