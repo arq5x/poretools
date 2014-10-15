@@ -57,16 +57,45 @@ def plot_data_conc(sizes, args):
 	
 
 def run(parser, args):
-	sizes = []
-	files_processed = 0
-	for fast5 in Fast5File.Fast5FileSet(args.files):
-		fq = fast5.get_fastq()
-		if fq is not None:
-			sizes.append(len(fq.seq))
-		files_processed += 1
-		if files_processed % 100 == 0:
-			logger.info("%d files processed." % files_processed)
-		fast5.close()
+        if args.simulate:
+                if args.parameters:
+                        parameters = args.parameters.split(",")
+                        readcount = int(parameters[0])
+                        minsize = int(parameters[1])
+                        maxsize = int(parameters[2])
+                        sizes = list(np.random.random_integers(minsize, maxsize, readcount))
+                else:
+                        readcount = 0
+                        files_processed = 0
+                        minsize = float('inf')
+                        maxsize = 0
+                        for fast5 in Fast5File.Fast5FileSet(args.files):
+                                fq = fast5.get_fastq()
+                                if fq is not None:
+                                        readcount += 1
+                                        size = len(fq.seq)
+                                        if size > maxsize:
+                                                maxsize = size
+                                        elif size < minsize:
+                                                minsize = size
+                                files_processed += 1
+                                if files_processed % 100 == 0:
+                                        logger.info("%d files processed." % files_processed)
+                                fast5.close()
+                        sizes = list(np.random.random_integers(minsize, maxsize, readcount))
+                logger.info("parameters: N=%d, minsize=%d, maxsize=%d" % (readcount, minsize, maxsize))
+
+        else:
+                sizes = []
+                files_processed = 0
+                for fast5 in Fast5File.Fast5FileSet(args.files):
+                        fq = fast5.get_fastq()
+                        if fq is not None:
+                                sizes.append(len(fq.seq))
+                        files_processed += 1
+                        if files_processed % 100 == 0:
+                                logger.info("%d files processed." % files_processed)
+                        fast5.close()
 
 	plot_data_conc(sizes, args)
 

@@ -30,6 +30,8 @@ def run_subtool(parser, args):
         import occupancy as submodule
     elif args.command == 'qualdist':
         import qualdist as submodule
+    elif args.command == 'qualpos':
+        import qual_v_pos as submodule
     elif args.command == 'readstats':
         import readstats as submodule
     elif args.command == 'stats':
@@ -256,6 +258,17 @@ def main():
                              action="store_true",
                              help='''Plot as percentge of all data.''',
                              default=False)
+    parser_dataconc.add_argument('--simulate',
+                             action="store_true",
+                             help='''This will randomly sample N read lengths in the size range from min to max (or according parameters set by --parameters),
+                                    where N is the number of reads in the fast5 dir (or N specified with --parameters). 
+                                    Then it will plot the simulation lengths. INFO about parameters used is printed so that
+                                    it can be reproduced with --parameters in the future (much faster).''',
+                             default=False)
+    parser_dataconc.add_argument('--parameters',
+                             type=str,
+                             help='''--simulate by default will use N=readcount, range=min-to-max. Override this with --parameters N,min,max. e.g. --parameters 350,500,48502''',
+                             default=False)
 
     parser_dataconc.set_defaults(func=run_subtool)
 
@@ -313,6 +326,7 @@ def main():
     parser_qualdist.add_argument('files', metavar='FILES', nargs='+',
                              help='The input FAST5 files.')
     parser_qualdist.set_defaults(func=run_subtool)
+
 
 
     ##########
