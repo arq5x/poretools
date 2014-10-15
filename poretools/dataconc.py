@@ -3,7 +3,6 @@ import Fast5File
 import numpy as np
 import pandas
 import matplotlib.pyplot as plt
-from matplotlib.backends.backend_pdf import PdfPages
 
 #logging
 import logging
