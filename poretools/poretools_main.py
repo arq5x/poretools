@@ -30,8 +30,6 @@ def run_subtool(parser, args):
         import occupancy as submodule
     elif args.command == 'qualdist':
         import qualdist as submodule
-    elif args.command == 'qualpos':
-        import qual_v_pos as submodule
     elif args.command == 'readstats':
         import readstats as submodule
     elif args.command == 'stats':
