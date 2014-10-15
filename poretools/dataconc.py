@@ -18,18 +18,31 @@ def plot_data_conc(sizes, args):
 	binwidth = args.bin_width
 	reads = pandas.DataFrame(data=dict(lengths=sizes))
         high = max(reads['lengths'])
-
+        if args.percent:
+                scale = 100/float(sum(reads['lengths']))
+        else:
+                scale = 1
         # plot - taking a polygon approach
         # for each bin, get sum of read lengths that fall within that bin region
         # and plot bar/rectangle of that height over the bin region
+        height = 0
         for i in range(0,high,binwidth):
-            height = sum(reads['lengths'][reads['lengths'] > i][reads['lengths'] <= i+binwidth])
-            x = [i, i, i+binwidth,i+binwidth, i] # define x-dims of bar/rectangle (left, left, right, right, left)
-            y = [0,height,height,0,0] # define y-dims of bar/rectangle (bottom, top, top, bottom, bottom).
-            plt.fill(x, y, 'r') #plot bar/rectangle (color is red for now)
-        plt.title("Data Concentration Plot")
+                if args.cumulative:
+                        height += scale*sum(reads['lengths'][reads['lengths'] > i][reads['lengths'] <= i+binwidth])
+                else:
+                        height = scale*sum(reads['lengths'][reads['lengths'] > i][reads['lengths'] <= i+binwidth])
+                x = [i, i, i+binwidth,i+binwidth, i] # define x-dims of bar/rectangle (left, left, right, right, left)
+                y = [0,height,height,0,0] # define y-dims of bar/rectangle (bottom, top, top, bottom, bottom).
+                plt.fill(x, y, 'r') #plot bar/rectangle (color is red for now)
+        if args.cumulative:
+                plt.title("Cumulative Data Concentration Plot")
+        else:
+                plt.title("Data Concentration Plot")
         plt.xlabel("Read length (bp)")
-        plt.ylabel("Data (bp)")	    	
+        if args.percent:
+                plt.ylabel("Percent of Data")	
+        else:
+                plt.ylabel("Data (bp)")	    	
 
         # saving or plotting to screen (user can save it from there as well)
 	if args.saveas is not None:

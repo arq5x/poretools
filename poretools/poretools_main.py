@@ -248,6 +248,14 @@ def main():
                              metavar='STRING',
                              help='''Save the plot to a file named filename.extension (e.g. pdf, jpg)''',
                              default=None)
+    parser_dataconc.add_argument('--cumulative',
+                                action="store_true",
+                             help='''For cumulative plot.''',
+                             default=False)
+    parser_dataconc.add_argument('--percent',
+                             action="store_true",
+                             help='''Plot as percentge of all data.''',
+                             default=False)
 
     parser_dataconc.set_defaults(func=run_subtool)
 
