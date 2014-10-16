@@ -17,7 +17,7 @@ import os
 sys.path.insert(0, os.path.abspath('../'))
 
 #from poretools import __version__ as version
-version = '0.2.0'
+version = '0.5.0'
 # -- General configuration -----------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.

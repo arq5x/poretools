@@ -21,7 +21,6 @@ class Event(object):
 		self.p_C = row['p_C']
 		self.p_G = row['p_G']
 		self.p_T = row['p_T']
-		self.raw_index = row['raw_index']
 
 	def __repr__(self):
 		return '\t'.join([str(s) for s in [self.mean, self.start, self.stdv,
@@ -30,5 +29,4 @@ class Event(object):
 										   self.p_model_state, 
 										   self.mp_state, self.p_mp_state,
 										   self.p_A, self.p_C, 
-										   self.p_G, self.p_T,
-										   self.raw_index]])
+										   self.p_G, self.p_T]])
