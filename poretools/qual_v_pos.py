@@ -46,7 +46,8 @@ def run(parser, args):
     data = [qualpos[e] for e in sorted(qualpos.keys())]
     logger.info("Constructing box plot...")
     plt.boxplot(data)
-    plt.xlabel("Position in read")
+    xdetail = " (" + str(bin_width) + " bp bins)"
+    plt.xlabel("Bin number in read" + xdetail)
     plt.ylabel("Quality score")
     plt.xticks(rotation=65, fontsize=8)
     if args.saveas is not None:
