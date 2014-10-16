@@ -32,7 +32,8 @@ Extract sequences in FASTQ format from a set of FAST5 files.
     poretools fastq --type fwd,rev fast5/
 
 
-Only extract sequence with more complement events than templte.
+Only extract sequence with more complement events than template. These are the so-called "high quality 2D reads" and are the most accurate sequences from a 
+given run.
 
 .. code-block:: bash
 
@@ -197,6 +198,11 @@ If you don't like the default aesthetics, try `--theme-bw`:
 
     poretools hist --theme-bw fast5/
 
+The result should look something like:
+
+.. image:: _images/hist.png
+    :width: 400pt    
+
 =====================
 poretools ``nucdist``
 =====================
@@ -287,3 +293,17 @@ Extract the raw nanopore events from each FAST5 file.
 poretools ``times``
 ===================
 Extract the start time of each detected molecule into tabular format.
+
+=======================
+poretools ``occupancy``
+=======================
+Plot the throughput performance of each pore on the flowcell during a given sequencing run.
+
+.. code-block:: bash
+
+    poretools occupancy fast5/
+
+The result should look something like:
+
+.. image:: _images/occupancy.png
+    :width: 400pt    
