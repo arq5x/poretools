@@ -4,6 +4,7 @@ import glob
 import tarfile
 import shutil
 import h5py
+from watchdog.events import RegexMatchingEventHandler
 
 #logging
 import logging
@@ -23,6 +24,40 @@ FAST5SET_DIRECTORY = 1
 FAST5SET_SINGLEFILE = 2
 FAST5SET_TARBALL = 3
 PORETOOLS_TMPDIR = '.poretools_tmp'
+
+
+class Fast5DirHandler(RegexMatchingEventHandler):
+
+    patterns = ["*.fast5"]
+
+    def __init__(self, dir):
+        self.dir = dir
+        self.files = []
+        super(Fast5DirHandler, self).__init__()
+
+        if os.path.isdir(self.dir):
+            pattern = self.dir + '/' + '*.fast5'
+            files = glob.glob(pattern)
+            self.files = files
+
+    def process(self, event):
+        self.files.append(event.src_path)
+
+    def on_created(self, event):
+        self.process(event)
+
+    def clear(self):
+        self.files = []
+
+    def __iter__(self):
+        return self
+
+    def next(self):
+        if len(self.files) > 0:
+            return self.files.pop(0)
+        else:
+            raise StopIteration()
+
 
 class Fast5FileSet(object):
 

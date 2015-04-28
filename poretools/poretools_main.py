@@ -214,7 +214,11 @@ def main():
                              default=False,
                              action='store_true',
                              help="Use the ggplot2 black and white theme.")
-
+    parser_hist.add_argument('--watch',
+                             dest='watch',
+                             default=False,
+                             action='store_true',
+                             help="Monitor a directory.")
     parser_hist.set_defaults(func=run_subtool)
 
 
