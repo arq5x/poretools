@@ -22,6 +22,8 @@ def run_subtool(parser, args):
         import fastq as submodule
     elif args.command == 'hist':
         import hist as submodule
+    elif args.command == 'data_conc':
+        import dataconc as submodule
     elif args.command == 'nucdist':
         import nucdist as submodule
     elif args.command == 'occupancy':
@@ -222,6 +224,89 @@ def main():
     parser_hist.set_defaults(func=run_subtool)
 
 
+    ##########
+    # data_conc (data concentration plot)
+    ##########
+    parser_dataconc = subparsers.add_parser('data_conc',
+                                        help='''Plot sum of read lengths in each bin for a given set of bins for a set of FAST5 files.
+                                        This is the type of plot seen in MinKNOW while sequencing.''')
+    parser_dataconc.add_argument('files', metavar='FILES', nargs='+',
+                             help='The input FAST5 files.')
+    parser_dataconc.add_argument('--min-length',
+                              dest='min_length',
+                              default=0,
+                              type=int,
+                              help=('Minimum read length to be included in analysis.'))
+    parser_dataconc.add_argument('--max-length',
+                              dest='max_length',
+                              default=1000000000,
+                              type=int,
+                              help=('Maximum read length to be included in analysis.'))
+    parser_dataconc.add_argument('--bin-width',
+                              dest='bin_width',
+                              default=500,
+                              type=int,
+                              help=('The width of bins (default: 500 bp).'))
+    parser_dataconc.add_argument('--saveas',
+                             dest='saveas',
+                             metavar='STRING',
+                             help='''Save the plot to a file named filename.extension (e.g. pdf, jpg)''',
+                             default=None)
+    parser_dataconc.add_argument('--cumulative',
+                                action="store_true",
+                             help='''For cumulative plot.''',
+                             default=False)
+    parser_dataconc.add_argument('--percent',
+                             action="store_true",
+                             help='''Plot as percentge of all data.''',
+                             default=False)
+    parser_dataconc.add_argument('--simulate',
+                             action="store_true",
+                             help='''This will randomly sample N read lengths in the size range from min to max (or according parameters set by --parameters),
+                                    where N is the number of reads in the fast5 dir (or N specified with --parameters). 
+                                    Then it will plot the simulation lengths. INFO about parameters used is printed so that
+                                    it can be reproduced with --parameters in the future (much faster).''',
+                             default=False)
+    parser_dataconc.add_argument('--parameters',
+                             type=str,
+                             help='''--simulate by default will use N=readcount, range=min-to-max. Override this with --parameters N,min,max. e.g. --parameters 350,500,48502''',
+                             default=False)
+
+    parser_dataconc.add_argument('--start',
+                              dest='start_time',
+                              default=None,
+                              type=int,
+                              help='Only analyze reads from after start timestamp')
+    parser_dataconc.add_argument('--end',
+                              dest='end_time',
+                              default=None,
+                              type=int,
+                              help='Only analyze reads from before end timestamp')
+    parser_dataconc.add_argument('--high-quality',
+                              dest='high_quality',
+                              default=False,
+                              action='store_true',
+                              help='Only analyze reads with more complement events than template. Can be used with --type or --one-read-per-molecule to select a specific read type from high quality reads.')
+    parser_dataconc_readfilter = parser_dataconc.add_mutually_exclusive_group()
+    parser_dataconc_readfilter.add_argument('--type',
+                              dest='type',
+                              metavar='STRING',
+                              choices=['all', 'fwd', 'rev', '2D', 'fwd,rev'],
+                              default='all',
+                              help='Which type of reads should be analyzed? Def.=all, choices=[all, fwd, rev, 2D, fwd,rev]. Is mutually exclusive with --one-read-per-molecule.')
+    parser_dataconc_readfilter.add_argument('-1', '--one-read-per-molecule',
+                              dest='single_read',
+                              default=False,
+                              action='store_true',
+                              help='''Only analyze one read per molecule in priority order: 2D -> template -> complement.
+                                            That is, if there is a 2D read use that.If not, then try to use template. etc.
+                                            Is mutually exclusive with --type.''')
+    parser_dataconc.set_defaults(func=run_subtool)
+
+    parser_dataconc.set_defaults(func=run_subtool)
+
+
+
     ###########
     # events
     ###########
@@ -276,6 +361,7 @@ def main():
     parser_qualdist.add_argument('files', metavar='FILES', nargs='+',
                              help='The input FAST5 files.')
     parser_qualdist.set_defaults(func=run_subtool)
+
 
 
     ##########
