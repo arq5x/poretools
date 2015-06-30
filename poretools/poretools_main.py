@@ -112,7 +112,7 @@ def main():
                               default=0,
                               type=int,
                               help=('Minimum read length for FASTQ entry to be reported.'))
-    parser_fasta.add_argument('--max-length',
+    parser_fastq.add_argument('--max-length',
                               dest='max_length',
                               default=-1,
                               type=int,
