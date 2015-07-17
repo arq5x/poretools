@@ -49,13 +49,14 @@ Table of contents
 Requirements
 =================
   - HDF5 >= 1.8.7 (http://www.hdfgroup.org/HDF5/)
-  - R >= 3.0.0
   - Python >= 2.7
-  - rpy2 >= 2.4.2
   - h5py >= 2.0.0
+  - matplotlib
+  - seaborn
+  - watchdog>=0.8.3
 
 .. note::
-    Please note that Anaconda and Python(x,y) already have all these dependencies installed, other than R/Rpy2:
+    Please note that Anaconda and Python(x,y) already have all these dependencies installed:
     Anaconda (Linux, Windows, OS X): https://store.continuum.io/cshop/anaconda/ Python(x,y) (Windows): https://code.google.com/p/pythonxy/
 
 
