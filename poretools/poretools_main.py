@@ -215,7 +215,7 @@ def main():
                              dest='theme_bw',
                              default=False,
                              action='store_true',
-                             help="Use the ggplot2 black and white theme.")
+                             help="Use a black and white theme.")
     parser_hist.add_argument('--watch',
                              dest='watch',
                              default=False,
@@ -326,7 +326,7 @@ def main():
                              dest='theme_bw',
                              default=False,
                              action='store_true',
-                             help="Use the ggplot2 black and white theme.")
+                             help="Use a black and white theme.")
 
     parser_squiggle.set_defaults(func=run_subtool)
 
@@ -361,7 +361,7 @@ def main():
                              dest='theme_bw',
                              default=False,
                              action='store_true',
-                             help="Use the ggplot2 black and white theme.")
+                             help="Use a black and white theme.")
     parser_yield_plot.add_argument('--skip',
                              dest='skip',
                              metavar='INTEGER',
