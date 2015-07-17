@@ -178,6 +178,9 @@ class Fast5File(object):
 		self.have_complements = False
 		self.have_metadata = False
 
+	def __del__(self):
+		self.close()
+
 	####################################################################
 	# Public API methods
 	####################################################################
@@ -199,6 +202,7 @@ class Fast5File(object):
 		"""
 		if self.is_open:
 			self.hdf5file.close()
+			self.is_open = False
 
 	def has_2D(self):
 		"""
@@ -554,7 +558,7 @@ class Fast5File(object):
 			return 0
 
 	def is_high_quality(self):
-		if self.get_complement_events_count() > \
+		if self.get_complement_events_count() >= \
 		   self.get_template_events_count():
 			return True
 		else:
