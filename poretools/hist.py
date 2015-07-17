@@ -14,11 +14,12 @@ def plot_hist(sizes, args):
     """
     plot a histogram of the read sizes
     """
-    sizes = [s for s in sizes  if args.min_length < s < args.max_length]
+    sizes = [s for s in sizes if args.min_length < s < args.max_length]
 
     if args.theme_bw:
         sns.set_style("whitegrid")
     plt.hist(sizes, args.num_bins)
+    plt.xlabel('sizes')
 
     if args.saveas is not None:
         plt.savefig(args.saveas)

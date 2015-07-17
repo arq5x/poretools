@@ -2,6 +2,8 @@ import os
 import sys
 import pandas as pd
 import seaborn as sns
+from matplotlib import rcParams
+rcParams.update({'figure.autolayout': True})
 from matplotlib import pyplot as plt
 
 #logging
@@ -34,12 +36,12 @@ def plot_squiggle(args, filename, start_times, mean_signals):
     starts = df.groupby('cat')['start']
     mins, maxs = list(starts.min()), list(starts.max())
 
-    grid = sns.FacetGrid(df, row="cat", sharex=False, size=5)
+    grid = sns.FacetGrid(df, row="cat", sharex=False, size=8)
+    #plt.gcf().tight_layout()
+    grid.fig.suptitle('Squiggle plot for read: ' + filename + "\nTotal time (sec): " + str(total_time))
     grid.map(plt.step, "start", "mean", marker=',', lw=1.0, where="mid")
     for i, ax in enumerate(grid.axes.flat):
         ax.set_xlim(mins[i], maxs[i])
-    #grid.fig.tight_layout()
-    #plt.tight_layout()
 
     if args.saveas is not None:
         plot_file = os.path.basename(filename) + "." + args.saveas
