@@ -14,6 +14,7 @@ Requirements
 - matplotlib
 - seaborn
 - watchdog>=0.8.3
+- pandas
 
 
 

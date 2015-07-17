@@ -53,6 +53,7 @@ Requirements
   - h5py >= 2.0.0
   - matplotlib
   - seaborn
+  - pandas
   - watchdog>=0.8.3
 
 .. note::
