@@ -31,20 +31,15 @@ def plot_squiggle(args, filename, start_times, mean_signals):
     d = {'start': start_times, 'mean': mean_signals, 'cat': facet_category}
     df = pd.DataFrame(d)
 
-    grid = sns.FacetGrid(df, row="cat", sharex=False, size=4)
-    grid.map(plt.step, "start", "mean", marker=',', lw=1.5, where="mid")
-    grid.fig.tight_layout()
-    plt.tight_layout()
+    starts = df.groupby('cat')['start']
+    mins, maxs = list(starts.min()), list(starts.max())
 
-
-    #gp = ggplot(df)
-    #gp += aes_string(x='start', y='mean')
-    #gp += geom_step(size=0.25)
-    #gp += facet_wrap('cat', ncol=1, scales="free_x")
-    #gp += scale_x_continuous('Time (seconds)')
-    #gp += scale_y_continuous('Mean signal (picoamps)')
-    #gp += ggtitle('Squiggle plot for read: ' + filename + "\nTotal time (sec): " + str(total_time))
-    #gp += theme(**{'plot.title': ggplot.element_text(size=11)})
+    grid = sns.FacetGrid(df, row="cat", sharex=False, size=5)
+    grid.map(plt.step, "start", "mean", marker=',', lw=1.0, where="mid")
+    for i, ax in enumerate(grid.axes.flat):
+        ax.set_xlim(mins[i], maxs[i])
+    #grid.fig.tight_layout()
+    #plt.tight_layout()
 
     if args.saveas is not None:
         plot_file = os.path.basename(filename) + "." + args.saveas
@@ -64,7 +59,7 @@ def do_plot_squiggle(args, fast5):
         plot_squiggle(args, fast5.filename, start_times, mean_signals)
     else:
         logger.warning("Could not extract template events for read: %s.\n" \
-            % fast5.filename)
+                        % fast5.filename)
 
     fast5.close()
 
