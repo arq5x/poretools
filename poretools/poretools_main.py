@@ -22,6 +22,8 @@ def run_subtool(parser, args):
         import fastq as submodule
     elif args.command == 'hist':
         import hist as submodule
+    elif args.command == 'metadata':
+        import metadata as submodule
     elif args.command == 'nucdist':
         import nucdist as submodule
     elif args.command == 'occupancy':
@@ -257,7 +259,6 @@ def main():
                               help='Which type of FASTA entries should be reported? Def.=all')
     parser_tabular.set_defaults(func=run_subtool)
 
-    
     #########
     # nucdist
     #########
@@ -266,6 +267,15 @@ def main():
     parser_nucdist.add_argument('files', metavar='FILES', nargs='+',
                              help='The input FAST5 files.')
     parser_nucdist.set_defaults(func=run_subtool)
+
+    #########
+    # nucdist
+    #########
+    parser_metadata = subparsers.add_parser('metadata',
+                                        help='Return run metadata such as ASIC ID and temperature from a set of FAST5 files')
+    parser_metadata.add_argument('files', metavar='FILES', nargs='+',
+                             help='The input FAST5 files.')
+    parser_metadata.set_defaults(func=run_subtool)
 
     
     ##########

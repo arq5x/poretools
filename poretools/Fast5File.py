@@ -202,6 +202,7 @@ class Fast5File(object):
 		"""
 		if self.is_open:
 			self.hdf5file.close()
+			self.is_open = False
 
 	def has_2D(self):
 		"""
