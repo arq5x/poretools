@@ -231,7 +231,7 @@ def main():
                              help='The input FAST5 files.')
     parser_events.set_defaults(func=run_subtool)
 
-    
+
     ###########
     # readstats
     ###########
@@ -257,7 +257,7 @@ def main():
                               help='Which type of FASTA entries should be reported? Def.=all')
     parser_tabular.set_defaults(func=run_subtool)
 
-    
+
     #########
     # nucdist
     #########
@@ -267,7 +267,7 @@ def main():
                              help='The input FAST5 files.')
     parser_nucdist.set_defaults(func=run_subtool)
 
-    
+
     ##########
     # qualdist
     ##########
@@ -352,11 +352,6 @@ def main():
                              default=False,
                              action='store_true',
                              help="Use the ggplot2 black and white theme.")
-    parser_yield_plot.add_argument('--extrapolate',
-                             dest='extrapolate',
-                             metavar='INTEGER',
-                             default=0,
-                             help="Fit a curve and extrapolate to n hours")
     parser_yield_plot.add_argument('--skip',
                              dest='skip',
                              metavar='INTEGER',
@@ -368,7 +363,7 @@ def main():
                              metavar='STRING',
                              help='Save the data frame used to construct plot to a file.',
                              default=None)
-                             
+
     parser_yield_plot.set_defaults(func=run_subtool)
 
     ############
