@@ -9,7 +9,7 @@ import logging
 logger = logging.getLogger('poretools')
 
 # poretools imports
-import poretools.version
+import version
 
 def run_subtool(parser, args):
     if args.command == 'combine':
@@ -64,7 +64,7 @@ def main():
     parser = argparse.ArgumentParser(prog='poretools', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("-v", "--version", help="Installed poretools version",
                         action="version",
-                        version="%(prog)s " + str(poretools.version.__version__))
+                        version="%(prog)s " + str(version.__version__))
     subparsers = parser.add_subparsers(title='[sub-commands]', dest='command', parser_class=ArgumentParserWithDefaults)
 
     #########################################
@@ -118,7 +118,7 @@ def main():
                               dest='high_quality',
                               default=False,
                               action='store_true',
-                              help=('Only report reads with more complement events than template.'))
+                              help=('Only report reads with more complement events than template.'))   
     parser_fastq.set_defaults(func=run_subtool)
 
 
@@ -231,6 +231,11 @@ def main():
                                         help='Extract each nanopore event for each read.')
     parser_events.add_argument('files', metavar='FILES', nargs='+',
                              help='The input FAST5 files.')
+    parser_events.add_argument('--pre-basecalled',
+                              dest='pre_basecalled',
+                              default=False,
+                              action='store_true',
+                              help=('Report pre-basecalled events'))     
     parser_events.set_defaults(func=run_subtool)
 
     

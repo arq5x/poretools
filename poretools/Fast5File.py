@@ -17,7 +17,8 @@ from Event import Event
 
 fastq_paths = {'template' : '/Analyses/Basecall_2D_000/BaseCalled_template',
                'complement' : '/Analyses/Basecall_2D_000/BaseCalled_complement',
-               'twodirections' : '/Analyses/Basecall_2D_000/BaseCalled_2D'}
+               'twodirections' : '/Analyses/Basecall_2D_000/BaseCalled_2D',
+               'pre_basecalled' : '/Analyses/EventDetection_000/Reads/'}
 
 FAST5SET_FILELIST = 0
 FAST5SET_DIRECTORY = 1
@@ -176,6 +177,7 @@ class Fast5File(object):
 		self.have_fastas = False
 		self.have_templates = False
 		self.have_complements = False
+		self.have_pre_basecalled = False
 		self.have_metadata = False
 
 	def __del__(self):
@@ -335,6 +337,16 @@ class Fast5File(object):
 			self.have_complements = True
 		
 		return self.complement_events
+
+	def get_pre_basecalled_events(self):
+		"""
+		Return the table of pre-basecalled events
+		"""
+		if self.have_pre_basecalled is False:
+			self._extract_pre_basecalled_events()
+			self.have_pre_basecalled = True
+
+		return self.pre_basecalled_events		
 
 	####################################################################
 	# Flowcell Metadata methods
@@ -613,6 +625,19 @@ class Fast5File(object):
 			self.complement_events = [Event(x) for x in table['Events'][()]]
 		except Exception, e:
 			self.complement_events = []
+
+	def _extract_pre_basecalled_events(self):
+		"""
+		Pull out the pre-basecalled event information 
+		"""
+		# try:
+		table = self.hdf5file[fastq_paths['pre_basecalled']]
+		events = []
+		for read in table:
+			events.extend(table[read]["Events"][()])
+		self.pre_basecalled_events = [Event(x) for x in events]
+		# except Exception, e:
+			# self.pre_basecalled_events = []			
 
 	def _get_metadata(self):
 		try:
