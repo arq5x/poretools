@@ -7,10 +7,22 @@ class Event(object):
 	"""
 	def __init__(self, row):
 		self.row = row
-		self.mean = row['mean']
-		self.start = row['start']
-		self.stdv = row['stdv']
-		self.length = row['length']
+		try:
+			self.mean = row['mean']
+		except IndexError:
+			self.mean = ""
+		try:
+			self.start = row['start']
+		except IndexError:
+			self.start = ""
+		try:
+			self.stdv = row['stdv']
+		except IndexError:
+			self.stdv = ""
+		try:
+			self.length = row['length']
+		except IndexError:
+			self.length = ""
 		try:
 			self.model_state = row['model_state']
 		except IndexError:

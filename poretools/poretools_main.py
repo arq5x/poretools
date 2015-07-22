@@ -9,7 +9,7 @@ import logging
 logger = logging.getLogger('poretools')
 
 # poretools imports
-import version
+import poretools.version
 
 def run_subtool(parser, args):
     if args.command == 'combine':
@@ -64,7 +64,7 @@ def main():
     parser = argparse.ArgumentParser(prog='poretools', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("-v", "--version", help="Installed poretools version",
                         action="version",
-                        version="%(prog)s " + str(version.__version__))
+                        version="%(prog)s " + str(poretools.version.__version__))
     subparsers = parser.add_subparsers(title='[sub-commands]', dest='command', parser_class=ArgumentParserWithDefaults)
 
     #########################################
