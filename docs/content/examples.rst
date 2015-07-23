@@ -289,6 +289,16 @@ Extract the raw nanopore events from each FAST5 file.
     burn-in-run-2/ch100_file15_strand.fast5  template    49.6976788934   6595.9384   1.03634357984   0.0364  ATAGC   51.1117557194   1   0.181952967376  ATAGC   0.181952967376  0.296106771209  0.408638426765  0.0754069980523 0.217721405945  3
     burn-in-run-2/ch100_file15_strand.fast5  template    51.7633085659   6595.9748   1.04743182078   0.0456  TAGCA   52.6955397413   1   0.192582310652  TAGCA   0.192582310652  0.250481934498  0.311756355221  0.311208716953  0.12343821687   4
 
+Extract the pre basecalled events from each FAST5 file. 
+
+.. code-block:: bash
+    poretools events --pre-basecalled burn-in-run-2 | head -5
+    file    strand  mean    start   stdv    length  model_state     model_level     move    p_model_state   mp_model_state  p_mp_model_state        p_A     p_C     p_G     p_T     raw_index
+    burn-in-run-2/ch100_file15_strand.fast5     pre_basecalled  51.4652695313   5352344 0.655003995591      35
+    burn-in-run-2/ch100_file15_strand.fast5     pre_basecalled  60.1776123047   5352379 1.05143911309       18
+    burn-in-run-2/ch100_file15_strand.fast5     pre_basecalled  48.9152374359   5352397 0.864834628834      67
+    burn-in-run-2/ch100_file15_strand.fast5     pre_basecalled  55.4002178596   5352464 1.75915620083       17    
+
 ===================
 poretools ``times``
 ===================

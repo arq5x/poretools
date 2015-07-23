@@ -118,7 +118,7 @@ def main():
                               dest='high_quality',
                               default=False,
                               action='store_true',
-                              help=('Only report reads with more complement events than template.'))
+                              help=('Only report reads with more complement events than template.'))   
     parser_fastq.set_defaults(func=run_subtool)
 
 
@@ -231,6 +231,11 @@ def main():
                                         help='Extract each nanopore event for each read.')
     parser_events.add_argument('files', metavar='FILES', nargs='+',
                              help='The input FAST5 files.')
+    parser_events.add_argument('--pre-basecalled',
+                              dest='pre_basecalled',
+                              default=False,
+                              action='store_true',
+                              help=('Report pre-basecalled events'))     
     parser_events.set_defaults(func=run_subtool)
 
     
