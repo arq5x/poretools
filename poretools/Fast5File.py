@@ -643,13 +643,13 @@ class Fast5File(object):
 	def read_metadata(self):
 		try:
 			table = self.hdf5file[fastq_paths['pre_basecalled']]
-			metadata = []
+			metadata_list = []
 			for read in table:
 				md = Fast5ReadMetaData(table[read])
-				metadata.extend(md)
+				metadata_list.append(md)
 		except Exception, e:
 			metadata = []	
-		return [md.metadata_dict for md in metadata]
+		return [md.metadata_dict for md in metadata_list]
 
 
 	def _get_metadata(self):
@@ -674,7 +674,6 @@ class Fast5ReadMetaData(object):
 	def _extract_metadata_attributes(self):
 		for k in self.read.attrs.keys():
 			self.metadata_dict[k] = self.read.attrs[k]
-		print self.metadata_dict
 
 
 

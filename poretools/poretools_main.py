@@ -280,6 +280,11 @@ def main():
                                         help='Return run metadata such as ASIC ID and temperature from a set of FAST5 files')
     parser_metadata.add_argument('files', metavar='FILES', nargs='+',
                              help='The input FAST5 files.')
+    parser_metadata.add_argument('--read',
+                              dest='read',
+                              default=False,
+                              action='store_true',
+                              help=('Report read level metadata'))      
     parser_metadata.set_defaults(func=run_subtool)
 
     

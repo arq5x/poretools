@@ -316,4 +316,25 @@ Plot the throughput performance of each pore on the flowcell during a given sequ
 The result should look something like:
 
 .. image:: _images/occupancy.png
-    :width: 400pt    
+    :width: 400pt  
+
+
+===================
+poretools ``metadata``
+===================
+Extract the metadata from the fast5 file
+
+.. code-block:: bash
+
+    poretools metadata  013731_11rx_v2_3135_1_ch20_file19_strand.fast5
+
+    asic_id asic_temp   heatsink_temp
+    31037   28.11   37.88
+
+    poretools metadata --read  013731_11rx_v2_3135_1_ch20_file19_strand.fast5
+    filename    scaling_used    abasic_peak_height  hairpin_polyt_level median_before   start_time  read_id read_number hairpin_peak_height abasic_found    abasic_event_index  duration    start_mux   hairpin_found   hairpin_event_index
+    013731_11rx_v2_3135_1_ch20_file19_strand.fast5    1   124.31769966    0.413218809334  226.393825112   4648221 3b4e45bf-6d42-45bc-9314-1d8a630971c2    19  125.783167256   1   2   195322  4   1   1478
+
+
+
+
