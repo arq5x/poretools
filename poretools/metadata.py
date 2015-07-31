@@ -3,7 +3,6 @@ import Fast5File
 def run(parser, args):
 
 	if args.read:
-		# print "asic_id\tasic_temp\theatsink_temp"
 		for i, fast5 in enumerate(Fast5File.Fast5FileSet(args.files)):
 			for metadata_dict in fast5.read_metadata:
 				if i == 0:
