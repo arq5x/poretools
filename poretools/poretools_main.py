@@ -119,6 +119,11 @@ def main():
                               default=False,
                               action='store_true',
                               help=('Only report reads with more complement events than template.'))   
+    parser_fastq.add_argument('--group',
+                              dest='group',
+                              default=0,
+                              type=int,
+                              help=('Base calling group serial number to extract, default 000'))
     parser_fastq.set_defaults(func=run_subtool)
 
 
@@ -160,6 +165,11 @@ def main():
                               default=False,
                               action='store_true',
                               help=('Only report reads with fewer complement events than template.'))
+    parser_fasta.add_argument('--group',
+                              dest='group',
+                              default=0,
+                              type=int,
+                              help=('Base calling group serial number to extract, default 000'))
     parser_fasta.set_defaults(func=run_subtool)
 
 

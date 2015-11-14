@@ -15,9 +15,9 @@ logger = logging.getLogger('poretools')
 import formats
 from Event import Event
 
-fastq_paths = {'template' : '/Analyses/Basecall_2D_000/BaseCalled_template',
-               'complement' : '/Analyses/Basecall_2D_000/BaseCalled_complement',
-               'twodirections' : '/Analyses/Basecall_2D_000/BaseCalled_2D',
+fastq_paths = {'template' : '/Analyses/Basecall_2D_%03d/BaseCalled_template',
+               'complement' : '/Analyses/Basecall_2D_%03d/BaseCalled_complement',
+               'twodirections' : '/Analyses/Basecall_2D_%03d/BaseCalled_2D',
                'pre_basecalled' : '/Analyses/EventDetection_000/Reads/'}
 
 FAST5SET_FILELIST = 0
@@ -62,13 +62,14 @@ class Fast5DirHandler(RegexMatchingEventHandler):
 
 class Fast5FileSet(object):
 
-	def __init__(self, fileset):
+	def __init__(self, fileset, group=0):
 		if isinstance(fileset, list):
 			self.fileset = fileset
 		elif isinstance(fileset, str):
 			self.fileset = [fileset]
 		self.set_type = None
 		self.num_files_in_set = None
+		self.group = group
 		self._extract_fast5_files()
 
 	def get_num_files(self):
@@ -84,7 +85,7 @@ class Fast5FileSet(object):
 
 	def next(self):
 		try:
-			return Fast5File(self.files.next())
+			return Fast5File(self.files.next(), self.group)
 		except Exception as e:
 			# cleanup our mess
 			if self.set_type == FAST5SET_TARBALL:
@@ -162,8 +163,9 @@ class TarballFileIterator:
 
 class Fast5File(object):
 
-	def __init__(self, filename):
+	def __init__(self, filename, group=0):
 		self.filename = filename
+		self.group = group
 		self.is_open = self.open()
 
 		self.fastas = {}
@@ -179,6 +181,7 @@ class Fast5File(object):
 		self.have_complements = False
 		self.have_pre_basecalled = False
 		self.have_metadata = False
+
 
 	def __del__(self):
 		self.close()
@@ -290,7 +293,7 @@ class Fast5File(object):
 		If all fail, return None
 		"""
 		if self.have_fastqs is False:
-			self._extract_fastqs_from_fast5()
+			self._extract_fastqs_from_fast5(self.group)
 			self.have_fastqs = True
 
 		if not self.fastqs:
@@ -554,7 +557,7 @@ class Fast5File(object):
 		Pull out the event count for the template strand
 		"""
 		try:
-			table = self.hdf5file[fastq_paths['template']]
+			table = self.hdf5file[fastq_paths['template'] % self.group]
 			return len(table['Events'][()])
 		except Exception, e:
 			return 0
@@ -564,7 +567,7 @@ class Fast5File(object):
 		Pull out the event count for the complementary strand
 		"""
 		try:
-			table = self.hdf5file[fastq_paths['complement']]
+			table = self.hdf5file[fastq_paths['complement'] % self.group]
 			return len(table['Events'][()])
 		except Exception, e:
 			return 0
@@ -586,7 +589,7 @@ class Fast5File(object):
 		"""
 		for id, h5path in fastq_paths.iteritems(): 
 			try:
-				table = self.hdf5file[h5path]
+				table = self.hdf5file[h5path % self.group]
 				fq = formats.Fastq(table['Fastq'][()])
 				fq.name += "_" + id + ":" + self.filename
 				self.fastqs[id] = fq
@@ -599,7 +602,7 @@ class Fast5File(object):
 		"""
 		for id, h5path in fastq_paths.iteritems(): 
 			try:
-				table = self.hdf5file[h5path]
+				table = self.hdf5file[h5path % self.group]
 				fa = formats.Fasta(table['Fastq'][()])
 				fa.name += "_" + id + " " + self.filename
 				self.fastas[id] = fa
@@ -611,7 +614,7 @@ class Fast5File(object):
 		Pull out the event information for the template strand
 		"""
 		try:
-			table = self.hdf5file[fastq_paths['template']]
+			table = self.hdf5file[fastq_paths['template'] % self.group]
 			self.template_events = [Event(x) for x in table['Events'][()]]
 		except Exception, e:
 			self.template_events = []
@@ -621,7 +624,7 @@ class Fast5File(object):
 		Pull out the event information for the complementary strand
 		"""
 		try:
-			table = self.hdf5file[fastq_paths['complement']]
+			table = self.hdf5file[fastq_paths['complement'] % self.group]
 			self.complement_events = [Event(x) for x in table['Events'][()]]
 		except Exception, e:
 			self.complement_events = []
