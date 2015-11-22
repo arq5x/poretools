@@ -287,13 +287,13 @@ class Fast5File(object):
 		return self.fastas
 
 	def get_fastq(self):
-		"""
+		""
 		Return the base called sequence in the FAST5
 		in FASTQ format. Try 2D then template, then complement.
 		If all fail, return None
 		"""
 		if self.have_fastqs is False:
-			self._extract_fastqs_from_fast5(self.group)
+			self._extract_fastqs_from_fast5()
 			self.have_fastqs = True
 
 		if not self.fastqs:
