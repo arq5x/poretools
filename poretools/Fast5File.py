@@ -15,10 +15,19 @@ logger = logging.getLogger('poretools')
 import formats
 from Event import Event
 
-fastq_paths = {'template' : '/Analyses/Basecall_2D_%03d/BaseCalled_template',
-               'complement' : '/Analyses/Basecall_2D_%03d/BaseCalled_complement',
-               'twodirections' : '/Analyses/Basecall_2D_%03d/BaseCalled_2D',
-               'pre_basecalled' : '/Analyses/EventDetection_000/Reads/'}
+fastq_paths = {
+  'metrichor1.16' : { 'template' : '/Analyses/Basecall_1D_%03d/BaseCalled_template',
+                      'complement' : '/Analyses/Basecall_1D_%03d/BaseCalled_complement',
+                      'twodirections' : '/Analyses/Basecall_2D_%03d/BaseCalled_2D',
+                      'pre_basecalled' : '/Analyses/EventDetection_000/Reads/'
+                    },
+  'classic' :       { 'template' : '/Analyses/Basecall_2D_%03d/BaseCalled_template',
+                      'complement' : '/Analyses/Basecall_2D_%03d/BaseCalled_complement',
+                      'twodirections' : '/Analyses/Basecall_2D_%03d/BaseCalled_2D',
+                      'pre_basecalled' : '/Analyses/EventDetection_000/Reads/'
+                    },
+  'prebasecalled' : {'pre_basecalled' : '/Analyses/EventDetection_000/Reads/'}
+}
 
 FAST5SET_FILELIST = 0
 FAST5SET_DIRECTORY = 1
@@ -167,6 +176,7 @@ class Fast5File(object):
 		self.filename = filename
 		self.group = group
 		self.is_open = self.open()
+		self.version = self.guess_version()
 
 		self.fastas = {}
 		self.fastqs = {}
@@ -200,6 +210,24 @@ class Fast5File(object):
 		except Exception, e:
 			logger.warning("Cannot open file: %s. Perhaps it is corrupt? Moving on.\n" % self.filename)
 			return False
+
+	def guess_version(self):
+		"""
+		Try and guess the location of template/complement blocks
+		"""
+		try:
+			self.hdf5file["/Analyses/Basecall_2D_%03d/BaseCalled_template" % (self.group)]
+			return 'classic'
+		except KeyError:
+			pass
+
+		try:
+			self.hdf5file["/Analyses/Basecall_1D_%03d/BaseCalled_template" % (self.group)]
+			return 'metrichor1.16'
+		except KeyError:
+			pass
+
+		return 'prebasecalled'
 			
 	def close(self):
 		"""
@@ -389,7 +417,11 @@ class Fast5File(object):
 			return None
 
 	def find_read_number_block(self):
-		path = "/Analyses/Basecall_2D_000"
+		if self.version == 'classic':
+			path = "/Analyses/Basecall_2D_000"
+		else:
+			path = "/Analyses/Basecall_1D_000"
+
 		basecall = self.hdf5file[path]
 		path = basecall.get('InputEvents', getlink=True)
 
@@ -401,7 +433,7 @@ class Fast5File(object):
 		return node
 
 	def find_event_timing_block(self):
-		path = "/Analyses/Basecall_2D_000/BaseCalled_template"
+		path = fastq_paths[self.version]['template'] % (self.group)
 		try:
 			node = self.hdf5file[path]
 			path = node.get('Events')
@@ -557,7 +589,7 @@ class Fast5File(object):
 		Pull out the event count for the template strand
 		"""
 		try:
-			table = self.hdf5file[fastq_paths['template'] % self.group]
+			table = self.hdf5file[fastq_paths[self.version]['template'] % self.group]
 			return len(table['Events'][()])
 		except Exception, e:
 			return 0
@@ -567,7 +599,7 @@ class Fast5File(object):
 		Pull out the event count for the complementary strand
 		"""
 		try:
-			table = self.hdf5file[fastq_paths['complement'] % self.group]
+			table = self.hdf5file[fastq_paths[self.version]['complement'] % self.group]
 			return len(table['Events'][()])
 		except Exception, e:
 			return 0
@@ -587,7 +619,7 @@ class Fast5File(object):
 		"""
 		Return the sequence in the FAST5 file in FASTQ format
 		"""
-		for id, h5path in fastq_paths.iteritems(): 
+		for id, h5path in fastq_paths[self.version].iteritems(): 
 			try:
 				table = self.hdf5file[h5path % self.group]
 				fq = formats.Fastq(table['Fastq'][()])
@@ -600,7 +632,7 @@ class Fast5File(object):
 		"""
 		Return the sequence in the FAST5 file in FASTA format
 		"""
-		for id, h5path in fastq_paths.iteritems(): 
+		for id, h5path in fastq_paths[self.version].iteritems(): 
 			try:
 				table = self.hdf5file[h5path % self.group]
 				fa = formats.Fasta(table['Fastq'][()])
@@ -614,7 +646,7 @@ class Fast5File(object):
 		Pull out the event information for the template strand
 		"""
 		try:
-			table = self.hdf5file[fastq_paths['template'] % self.group]
+			table = self.hdf5file[fastq_paths[self.version]['template'] % self.group]
 			self.template_events = [Event(x) for x in table['Events'][()]]
 		except Exception, e:
 			self.template_events = []
@@ -624,7 +656,7 @@ class Fast5File(object):
 		Pull out the event information for the complementary strand
 		"""
 		try:
-			table = self.hdf5file[fastq_paths['complement'] % self.group]
+			table = self.hdf5file[fastq_paths[self.version]['complement'] % self.group]
 			self.complement_events = [Event(x) for x in table['Events'][()]]
 		except Exception, e:
 			self.complement_events = []
@@ -634,7 +666,7 @@ class Fast5File(object):
 		Pull out the pre-basecalled event information 
 		"""
 		# try:
-		table = self.hdf5file[fastq_paths['pre_basecalled']]
+		table = self.hdf5file[fastq_paths[self.version]['pre_basecalled']]
 		events = []
 		for read in table:
 			events.extend(table[read]["Events"][()])
