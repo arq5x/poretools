@@ -4,6 +4,7 @@ import glob
 import tarfile
 import shutil
 import h5py
+from watchdog.events import RegexMatchingEventHandler
 
 #logging
 import logging
@@ -14,9 +15,19 @@ logger = logging.getLogger('poretools')
 import formats
 from Event import Event
 
-fastq_paths = {'template' : '/Analyses/Basecall_2D_000/BaseCalled_template',
-               'complement' : '/Analyses/Basecall_2D_000/BaseCalled_complement',
-               'twodirections' : '/Analyses/Basecall_2D_000/BaseCalled_2D'}
+fastq_paths = {
+  'metrichor1.16' : { 'template' : '/Analyses/Basecall_1D_%03d/BaseCalled_template',
+                      'complement' : '/Analyses/Basecall_1D_%03d/BaseCalled_complement',
+                      'twodirections' : '/Analyses/Basecall_2D_%03d/BaseCalled_2D',
+                      'pre_basecalled' : '/Analyses/EventDetection_000/Reads/'
+                    },
+  'classic' :       { 'template' : '/Analyses/Basecall_2D_%03d/BaseCalled_template',
+                      'complement' : '/Analyses/Basecall_2D_%03d/BaseCalled_complement',
+                      'twodirections' : '/Analyses/Basecall_2D_%03d/BaseCalled_2D',
+                      'pre_basecalled' : '/Analyses/EventDetection_000/Reads/'
+                    },
+  'prebasecalled' : {'pre_basecalled' : '/Analyses/EventDetection_000/Reads/'}
+}
 
 FAST5SET_FILELIST = 0
 FAST5SET_DIRECTORY = 1
@@ -24,15 +35,50 @@ FAST5SET_SINGLEFILE = 2
 FAST5SET_TARBALL = 3
 PORETOOLS_TMPDIR = '.poretools_tmp'
 
+
+class Fast5DirHandler(RegexMatchingEventHandler):
+
+    patterns = ["*.fast5"]
+
+    def __init__(self, dir):
+        self.dir = dir
+        self.files = []
+        super(Fast5DirHandler, self).__init__()
+
+        if os.path.isdir(self.dir):
+            pattern = self.dir + '/' + '*.fast5'
+            files = glob.glob(pattern)
+            self.files = files
+
+    def process(self, event):
+        self.files.append(event.src_path)
+
+    def on_created(self, event):
+        self.process(event)
+
+    def clear(self):
+        self.files = []
+
+    def __iter__(self):
+        return self
+
+    def next(self):
+        if len(self.files) > 0:
+            return self.files.pop(0)
+        else:
+            raise StopIteration()
+
+
 class Fast5FileSet(object):
 
-	def __init__(self, fileset):
+	def __init__(self, fileset, group=0):
 		if isinstance(fileset, list):
 			self.fileset = fileset
 		elif isinstance(fileset, str):
 			self.fileset = [fileset]
 		self.set_type = None
 		self.num_files_in_set = None
+		self.group = group
 		self._extract_fast5_files()
 
 	def get_num_files(self):
@@ -48,7 +94,7 @@ class Fast5FileSet(object):
 
 	def next(self):
 		try:
-			return Fast5File(self.files.next())
+			return Fast5File(self.files.next(), self.group)
 		except Exception as e:
 			# cleanup our mess
 			if self.set_type == FAST5SET_TARBALL:
@@ -126,9 +172,11 @@ class TarballFileIterator:
 
 class Fast5File(object):
 
-	def __init__(self, filename):
+	def __init__(self, filename, group=0):
 		self.filename = filename
+		self.group = group
 		self.is_open = self.open()
+		self.version = self.guess_version()
 
 		self.fastas = {}
 		self.fastqs = {}
@@ -141,7 +189,12 @@ class Fast5File(object):
 		self.have_fastas = False
 		self.have_templates = False
 		self.have_complements = False
+		self.have_pre_basecalled = False
 		self.have_metadata = False
+
+
+	def __del__(self):
+		self.close()
 
 	####################################################################
 	# Public API methods
@@ -157,6 +210,24 @@ class Fast5File(object):
 		except Exception, e:
 			logger.warning("Cannot open file: %s. Perhaps it is corrupt? Moving on.\n" % self.filename)
 			return False
+
+	def guess_version(self):
+		"""
+		Try and guess the location of template/complement blocks
+		"""
+		try:
+			self.hdf5file["/Analyses/Basecall_2D_%03d/BaseCalled_template" % (self.group)]
+			return 'classic'
+		except KeyError:
+			pass
+
+		try:
+			self.hdf5file["/Analyses/Basecall_1D_%03d/BaseCalled_template" % (self.group)]
+			return 'metrichor1.16'
+		except KeyError:
+			pass
+
+		return 'prebasecalled'
 			
 	def close(self):
 		"""
@@ -164,6 +235,7 @@ class Fast5File(object):
 		"""
 		if self.is_open:
 			self.hdf5file.close()
+			self.is_open = False
 
 	def has_2D(self):
 		"""
@@ -297,6 +369,16 @@ class Fast5File(object):
 		
 		return self.complement_events
 
+	def get_pre_basecalled_events(self):
+		"""
+		Return the table of pre-basecalled events
+		"""
+		if self.have_pre_basecalled is False:
+			self._extract_pre_basecalled_events()
+			self.have_pre_basecalled = True
+
+		return self.pre_basecalled_events		
+
 	####################################################################
 	# Flowcell Metadata methods
 	####################################################################
@@ -335,7 +417,11 @@ class Fast5File(object):
 			return None
 
 	def find_read_number_block(self):
-		path = "/Analyses/Basecall_2D_000"
+		if self.version == 'classic':
+			path = "/Analyses/Basecall_2D_000"
+		else:
+			path = "/Analyses/Basecall_1D_000"
+
 		basecall = self.hdf5file[path]
 		path = basecall.get('InputEvents', getlink=True)
 
@@ -347,7 +433,7 @@ class Fast5File(object):
 		return node
 
 	def find_event_timing_block(self):
-		path = "/Analyses/Basecall_2D_000/BaseCalled_template"
+		path = fastq_paths[self.version]['template'] % (self.group)
 		try:
 			node = self.hdf5file[path]
 			path = node.get('Events')
@@ -503,7 +589,7 @@ class Fast5File(object):
 		Pull out the event count for the template strand
 		"""
 		try:
-			table = self.hdf5file[fastq_paths['template']]
+			table = self.hdf5file[fastq_paths[self.version]['template'] % self.group]
 			return len(table['Events'][()])
 		except Exception, e:
 			return 0
@@ -513,13 +599,13 @@ class Fast5File(object):
 		Pull out the event count for the complementary strand
 		"""
 		try:
-			table = self.hdf5file[fastq_paths['complement']]
+			table = self.hdf5file[fastq_paths[self.version]['complement'] % self.group]
 			return len(table['Events'][()])
 		except Exception, e:
 			return 0
 
 	def is_high_quality(self):
-		if self.get_complement_events_count() > \
+		if self.get_complement_events_count() >= \
 		   self.get_template_events_count():
 			return True
 		else:
@@ -533,9 +619,9 @@ class Fast5File(object):
 		"""
 		Return the sequence in the FAST5 file in FASTQ format
 		"""
-		for id, h5path in fastq_paths.iteritems(): 
+		for id, h5path in fastq_paths[self.version].iteritems(): 
 			try:
-				table = self.hdf5file[h5path]
+				table = self.hdf5file[h5path % self.group]
 				fq = formats.Fastq(table['Fastq'][()])
 				fq.name += "_" + id + ":" + self.filename
 				self.fastqs[id] = fq
@@ -546,9 +632,9 @@ class Fast5File(object):
 		"""
 		Return the sequence in the FAST5 file in FASTA format
 		"""
-		for id, h5path in fastq_paths.iteritems(): 
+		for id, h5path in fastq_paths[self.version].iteritems(): 
 			try:
-				table = self.hdf5file[h5path]
+				table = self.hdf5file[h5path % self.group]
 				fa = formats.Fasta(table['Fastq'][()])
 				fa.name += "_" + id + " " + self.filename
 				self.fastas[id] = fa
@@ -560,7 +646,7 @@ class Fast5File(object):
 		Pull out the event information for the template strand
 		"""
 		try:
-			table = self.hdf5file[fastq_paths['template']]
+			table = self.hdf5file[fastq_paths[self.version]['template'] % self.group]
 			self.template_events = [Event(x) for x in table['Events'][()]]
 		except Exception, e:
 			self.template_events = []
@@ -570,10 +656,23 @@ class Fast5File(object):
 		Pull out the event information for the complementary strand
 		"""
 		try:
-			table = self.hdf5file[fastq_paths['complement']]
+			table = self.hdf5file[fastq_paths[self.version]['complement'] % self.group]
 			self.complement_events = [Event(x) for x in table['Events'][()]]
 		except Exception, e:
 			self.complement_events = []
+
+	def _extract_pre_basecalled_events(self):
+		"""
+		Pull out the pre-basecalled event information 
+		"""
+		# try:
+		table = self.hdf5file[fastq_paths[self.version]['pre_basecalled']]
+		events = []
+		for read in table:
+			events.extend(table[read]["Events"][()])
+		self.pre_basecalled_events = [Event(x) for x in events]
+		# except Exception, e:
+			# self.pre_basecalled_events = []			
 
 	def _get_metadata(self):
 		try:

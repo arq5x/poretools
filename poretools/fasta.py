@@ -3,7 +3,7 @@ import sys
 
 def run(parser, args):
 
-	for fast5 in Fast5File.Fast5FileSet(args.files):
+	for fast5 in Fast5File.Fast5FileSet(args.files, args.group):
 
 		if args.start_time or args.end_time:
 			read_start_time = fast5.get_start_time()

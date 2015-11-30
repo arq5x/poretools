@@ -22,6 +22,8 @@ def run_subtool(parser, args):
         import fastq as submodule
     elif args.command == 'hist':
         import hist as submodule
+    elif args.command == 'metadata':
+        import metadata as submodule
     elif args.command == 'nucdist':
         import nucdist as submodule
     elif args.command == 'occupancy':
@@ -116,7 +118,12 @@ def main():
                               dest='high_quality',
                               default=False,
                               action='store_true',
-                              help=('Only report reads with more complement events than template.'))
+                              help=('Only report reads with more complement events than template.'))   
+    parser_fastq.add_argument('--group',
+                              dest='group',
+                              default=0,
+                              type=int,
+                              help=('Base calling group serial number to extract, default 000'))
     parser_fastq.set_defaults(func=run_subtool)
 
 
@@ -158,6 +165,11 @@ def main():
                               default=False,
                               action='store_true',
                               help=('Only report reads with fewer complement events than template.'))
+    parser_fasta.add_argument('--group',
+                              dest='group',
+                              default=0,
+                              type=int,
+                              help=('Base calling group serial number to extract, default 000'))
     parser_fasta.set_defaults(func=run_subtool)
 
 
@@ -214,7 +226,11 @@ def main():
                              default=False,
                              action='store_true',
                              help="Use the ggplot2 black and white theme.")
-
+    parser_hist.add_argument('--watch',
+                             dest='watch',
+                             default=False,
+                             action='store_true',
+                             help="Monitor a directory.")
     parser_hist.set_defaults(func=run_subtool)
 
 
@@ -225,6 +241,11 @@ def main():
                                         help='Extract each nanopore event for each read.')
     parser_events.add_argument('files', metavar='FILES', nargs='+',
                              help='The input FAST5 files.')
+    parser_events.add_argument('--pre-basecalled',
+                              dest='pre_basecalled',
+                              default=False,
+                              action='store_true',
+                              help=('Report pre-basecalled events'))     
     parser_events.set_defaults(func=run_subtool)
 
     
@@ -253,7 +274,6 @@ def main():
                               help='Which type of FASTA entries should be reported? Def.=all')
     parser_tabular.set_defaults(func=run_subtool)
 
-    
     #########
     # nucdist
     #########
@@ -262,6 +282,15 @@ def main():
     parser_nucdist.add_argument('files', metavar='FILES', nargs='+',
                              help='The input FAST5 files.')
     parser_nucdist.set_defaults(func=run_subtool)
+
+    #########
+    # nucdist
+    #########
+    parser_metadata = subparsers.add_parser('metadata',
+                                        help='Return run metadata such as ASIC ID and temperature from a set of FAST5 files')
+    parser_metadata.add_argument('files', metavar='FILES', nargs='+',
+                             help='The input FAST5 files.')
+    parser_metadata.set_defaults(func=run_subtool)
 
     
     ##########
