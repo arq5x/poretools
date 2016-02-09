@@ -1,3 +1,5 @@
+This is a fork of the poretools package for development work at Royal Botanic Gardens, Kew by Joe Parker:
+
 ### poretools: a toolkit for working with nanopore sequencing data from Oxford Nanopore.
 
 *Nick Loman and Aaron Quinlan*
