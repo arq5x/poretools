@@ -1,5 +1,19 @@
 import Fast5File
 
+############
+#
+#	index
+#
+#   A tool to extract
+#	all info needed to 
+#	identify a pile of 
+#	unsorted reads from 
+#	multiple MinION
+#	sequencing 
+#	experiments.
+#
+############
+
 def run(parser, args):
 
 	print "asic_id\tasic_temp\theatsink_temp"
