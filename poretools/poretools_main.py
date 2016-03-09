@@ -30,6 +30,8 @@ def run_subtool(parser, args):
         import occupancy as submodule
     elif args.command == 'qualdist':
         import qualdist as submodule
+    elif args.command == 'qualpos':
+        import qual_v_pos as submodule
     elif args.command == 'readstats':
         import readstats as submodule
     elif args.command == 'stats':
@@ -333,6 +335,61 @@ def main():
     parser_qualdist.add_argument('files', metavar='FILES', nargs='+',
                              help='The input FAST5 files.')
     parser_qualdist.set_defaults(func=run_subtool)
+
+
+
+    ##########
+    # qual vs. position
+    ##########
+    parser_qualpos = subparsers.add_parser('qualpos',
+                                        help='Get the qual score distribution over positions in reads')
+    parser_qualpos.add_argument('files', metavar='FILES', nargs='+',
+                             help='The input FAST5 files.')
+    parser_qualpos.set_defaults(func=run_subtool)
+    parser_qualpos.add_argument('--min-length',
+                              dest='min_length',
+                              default=0,
+                              type=int,
+                              help=('Minimum read length to be included in analysis.'))
+    parser_qualpos.add_argument('--max-length',
+                              dest='max_length',
+                              default=1000000000,
+                              type=int,
+                              help=('Maximum read length to be included in analysis.'))
+    parser_qualpos.add_argument('--bin-width',
+                              dest='bin_width',
+                              default=1000,
+                              type=int,
+                              help=('The width of bins (default: 1000 bp).'))
+    parser_qualpos.add_argument('--type',
+                              dest='type',
+                              metavar='STRING',
+                              choices=['all', 'fwd', 'rev', '2D', 'fwd,rev'],
+                              default='all',
+                              help='Which type of reads should be analyzed? Def.=all, choices=[all, fwd, rev, 2D, fwd,rev]')
+    parser_qualpos.add_argument('--start',
+                              dest='start_time',
+                              default=None,
+                              type=int,
+                              help='Only analyze reads from after start timestamp')
+    parser_qualpos.add_argument('--end',
+                              dest='end_time',
+                              default=None,
+                              type=int,
+                              help='Only analyze reads from before end timestamp')
+    parser_qualpos.add_argument('--high-quality',
+                              dest='high_quality',
+                              default=False,
+                              action='store_true',
+                              help='Only analyze reads with more complement events than template.')
+
+    parser_qualpos.add_argument('--saveas',
+                             dest='saveas',
+                             metavar='STRING',
+                             help='''Save the plot to a file named filename.extension (e.g. pdf, jpg)''',
+                             default=None)
+
+
 
 
     ##########
