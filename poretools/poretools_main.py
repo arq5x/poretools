@@ -100,7 +100,7 @@ def main():
                               metavar='STRING',
                               choices=['all', 'fwd', 'rev', '2D', 'fwd,rev'],
                               default='all',
-                              help='Which type of FASTA entries should be reported? Def.=all')
+                              help='Which type of FASTQ entries should be reported? Def.=all')
     parser_fastq.add_argument('--start',
                               dest='start_time',
                               default=None,
@@ -115,7 +115,12 @@ def main():
                               dest='min_length',
                               default=0,
                               type=int,
-                              help=('Minimum read length for FASTA entry to be reported.'))
+                              help=('Minimum read length for FASTQ entry to be reported.'))
+    parser_fastq.add_argument('--max-length',
+                              dest='max_length',
+                              default=-1,
+                              type=int,
+                              help=('Maximum read length for FASTQ entry to be reported.'))                          
     parser_fastq.add_argument('--high-quality',
                               dest='high_quality',
                               default=False,
@@ -162,6 +167,11 @@ def main():
                               default=0,
                               type=int,
                               help=('Minimum read length for FASTA entry to be reported.'))
+    parser_fasta.add_argument('--max-length',
+                              dest='max_length',
+                              default=-1,
+                              type=int,
+                              help=('Maximum read length for FASTA entry to be reported.'))                          
     parser_fasta.add_argument('--high-quality',
                               dest='high_quality',
                               default=False,
