@@ -4,7 +4,6 @@ import glob
 import tarfile
 import shutil
 import h5py
-from watchdog.events import RegexMatchingEventHandler
 
 #logging
 import logging

@@ -4,8 +4,6 @@ import Fast5File
 import rpy2.robjects as robjects
 import rpy2.robjects.lib.ggplot2 as ggplot2
 from rpy2.robjects.packages import importr
-from watchdog.observers import Observer
-from collections import Counter
 
 #logging
 import logging
@@ -65,38 +63,13 @@ def run(parser, args):
     sizes = []
     files_processed = 0
 
-    if args.watch is False:
-        for fast5 in Fast5File.Fast5FileSet(args.files):
-            fq = fast5.get_fastq()
-            if fq is not None:
-                sizes.append(len(fq.seq))
-            files_processed += 1
-            if files_processed % 100 == 0:
-                logger.info("%d files processed." % files_processed)
-            fast5.close()
-        plot_hist(sizes, args)
-    else:
-        directory = args.files[0]
-        observer = Observer()
-        handler = Fast5File.Fast5DirHandler(directory)
-        observer.schedule(handler, path=directory)
-        observer.start()
+    for fast5 in Fast5File.Fast5FileSet(args.files):
+        fq = fast5.get_fastq()
+        if fq is not None:
+            sizes.append(len(fq.seq))
+        files_processed += 1
+        if files_processed % 100 == 0:
+            logger.info("%d files processed." % files_processed)
+        fast5.close()
+    plot_hist(sizes, args)
 
-        try:
-            while True:
-                time.sleep(5)
-                for f in handler:
-                    fast5 = Fast5File.Fast5File(f)
-                    fq = fast5.get_fastq()
-                    if fq is not None:
-                        sizes.append(len(fq.seq))
-                    files_processed += 1
-                    if files_processed % 100 == 0:
-                        logger.info("%d files processed." % files_processed)
-                # TO DO
-                # MAKE THIS CREATE AN UPDATED HISTOGRAM
-                print Counter(sizes)
-        except KeyboardInterrupt:
-            observer.stop()
-
-        observer.join()
