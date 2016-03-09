@@ -676,14 +676,27 @@ class Fast5File(object):
 		"""
 		Pull out the pre-basecalled event information 
 		"""
-		# try:
-		table = self.hdf5file[fastq_paths[self.version]['pre_basecalled']]
-		events = []
-		for read in table:
-			events.extend(table[read]["Events"][()])
-		self.pre_basecalled_events = [Event(x) for x in events]
-		# except Exception, e:
-			# self.pre_basecalled_events = []			
+		try:
+			table = self.hdf5file[fastq_paths['pre_basecalled']]
+			events = []
+			for read in table:
+				events.extend(table[read]["Events"][()])
+			self.pre_basecalled_events = [Event(x) for x in events]
+		except Exception, e:
+			self.pre_basecalled_events = []	
+
+	@property 
+	def read_metadata(self):
+		try:
+			table = self.hdf5file[fastq_paths['pre_basecalled']]
+			metadata_list = []
+			for read in table:
+				md = Fast5ReadMetaData(table[read])
+				metadata_list.append(md)
+		except Exception, e:
+			metadata = []	
+		return [md.metadata_dict for md in metadata_list]
+
 
 	def _get_metadata(self):
 		try:
@@ -694,3 +707,20 @@ class Fast5File(object):
 			except Exception, e:
 				self.keyinfo = None
 				logger.warning("Cannot find keyinfo. Exiting.\n")
+
+
+
+class Fast5ReadMetaData(object):
+
+	def __init__(self, fast5_read_object):
+		self.metadata_dict = {}
+		self.read = fast5_read_object
+		self._extract_metadata_attributes()
+
+	def _extract_metadata_attributes(self):
+		for k in self.read.attrs.keys():
+			self.metadata_dict[k] = self.read.attrs[k]
+
+
+
+
