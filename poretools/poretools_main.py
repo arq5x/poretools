@@ -244,7 +244,7 @@ def main():
                              dest='theme_bw',
                              default=False,
                              action='store_true',
-                             help="Use the ggplot2 black and white theme.")
+                             help="Use a black and white theme.")
     parser_hist.add_argument('--watch',
                              dest='watch',
                              default=False,
@@ -267,7 +267,7 @@ def main():
                               help=('Report pre-basecalled events'))     
     parser_events.set_defaults(func=run_subtool)
 
-    
+
     ###########
     # readstats
     ###########
@@ -315,7 +315,6 @@ def main():
                               action='store_true',
                               help=('Report read level metadata'))      
     parser_metadata.set_defaults(func=run_subtool)
-
     
     #########
     # index
@@ -430,7 +429,7 @@ def main():
                              dest='theme_bw',
                              default=False,
                              action='store_true',
-                             help="Use the ggplot2 black and white theme.")
+                             help="Use a black and white theme.")
 
     parser_squiggle.set_defaults(func=run_subtool)
 
@@ -465,12 +464,7 @@ def main():
                              dest='theme_bw',
                              default=False,
                              action='store_true',
-                             help="Use the ggplot2 black and white theme.")
-    parser_yield_plot.add_argument('--extrapolate',
-                             dest='extrapolate',
-                             metavar='INTEGER',
-                             default=0,
-                             help="Fit a curve and extrapolate to n hours")
+                             help="Use a black and white theme.")
     parser_yield_plot.add_argument('--skip',
                              dest='skip',
                              metavar='INTEGER',
@@ -482,7 +476,7 @@ def main():
                              metavar='STRING',
                              help='Save the data frame used to construct plot to a file.',
                              default=None)
-                             
+
     parser_yield_plot.set_defaults(func=run_subtool)
 
     ############

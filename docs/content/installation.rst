@@ -50,42 +50,9 @@ However, currently MinKNOW does not update the Windows registry to specify that 
 
 Ensure it is named 'poretools.reg' and then run it (by double-clicking). Windows will prompt you about making changes to the registry, which you should agree to.
 
-The only additional dependency that is required is rpy2 and R.
-
-Download rpy2 from the pre-built binary page at: <http://www.lfd.uci.edu/~gohlke/pythonlibs/>. You want the version for Python 2.7 on 64-bit Windows. Run the installer.
-
 Then, to install poretools, simply download and run the Windows installer:
 
         <https://github.com/arq5x/poretools/blob/master/dist/poretools-0.3.1.win-amd64.exe?raw=true>
-
-==================================
-Plotting with R on Windows
-==================================
-
-If you wish to use the R plots (experimental, on Windows) you also need to:
-
-Download R for Windows from: <http://cran.r-project.org/bin/windows/base/>
-
-Run the installer, then start up R and install ggplot2:
-
-.. code-block:: R
-
-	install.packages("ggplot2")
-
-You need to set two environment variables to run poretools currently:
-
-.. code-block:: bash
-
-	set R_HOME=c:\Program Files\R\R-3.1.1
-	set R_USER=c:\Users\MY USER\Documents
-
-You may also need to add the following directory to your PATH:
-
-.. code-block:: bash
-
-        C:\Program Files\R\R-3.1.1\bin\x64
-
-Instructions for updating your PATH on Windows can be found here: http://geekswithblogs.net/renso/archive/2009/10/21/how-to-set-the-windows-path-in-windows-7.aspx
 
 =================================
 Installing on OS X
@@ -162,28 +129,6 @@ Or, for Ubuntu 14.04:
 .. code-block:: bash
 
 	deb http://www.stats.bris.ac.uk/R/bin/linux/ubuntu trusty/
-
-Then, run the following commands to install R 3.0:
-
-.. code-block:: bash
-
-	sudo apt-get update
-	sudo apt-get install r-base python-rpy2
-
-Start R
-
-.. code-block:: bash
-
-	R
-
-Then run the following commands within the R programme, and follow any prompts:
-
-.. code-block:: R
-
-	options("repos" = c(CRAN = "http://cran.rstudio.com/"))
-	install.packages("codetools")
-	install.packages("MASS")
-	install.packages("ggplot2")
 
 Then install poretools, finally:
 
