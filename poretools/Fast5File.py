@@ -211,7 +211,7 @@ class Fast5File(object):
 			self.hdf5file = h5py.File(self.filename, 'r')
 			return True
 		except Exception, e:
-			logger.warning("Cannot open file: %s. Perhaps it is corrupt? Moving on.\n" % self.filename)
+			logger.warning("Exception:Cannot open file: %s. Perhaps it is corrupt? Moving on.\n" % self.filename)
 			return False
 
 	def guess_version(self):
@@ -222,12 +222,20 @@ class Fast5File(object):
 			self.hdf5file["/Analyses/Basecall_2D_%03d/BaseCalled_template" % (self.group)]
 			return 'classic'
 		except KeyError:
+			logger.warning("KeyError:Cannot open file: %s. Perhaps it is corrupt? Moving on.\n" % self.filename)
+			pass
+		except AttributeError:
+			logger.warning("AttributeError:Cannot open file: %s. Perhaps it is corrupt? Moving on.\n" % self.filename)
 			pass
 
 		try:
 			self.hdf5file["/Analyses/Basecall_1D_%03d/BaseCalled_template" % (self.group)]
 			return 'metrichor1.16'
 		except KeyError:
+			logger.warning("KeyError:Cannot open file: %s. Perhaps it is corrupt? Moving on.\n" % self.filename)
+			pass
+		except AttributeError:
+			logger.warning("AttributeError:Cannot open file: %s. Perhaps it is corrupt? Moving on.\n" % self.filename)
 			pass
 
 		return 'prebasecalled'

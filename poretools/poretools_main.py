@@ -44,6 +44,8 @@ def run_subtool(parser, args):
         import winner as submodule
     elif args.command == 'yield_plot':
         import yield_plot as submodule
+    elif args.command == 'index':
+        import index as submodule
 
     # run the chosen submodule.
     submodule.run(parser, args)
@@ -289,13 +291,23 @@ def main():
     parser_nucdist.set_defaults(func=run_subtool)
 
     #########
-    # nucdist
+    # metadata
     #########
     parser_metadata = subparsers.add_parser('metadata',
                                         help='Return run metadata such as ASIC ID and temperature from a set of FAST5 files')
     parser_metadata.add_argument('files', metavar='FILES', nargs='+',
                              help='The input FAST5 files.')
     parser_metadata.set_defaults(func=run_subtool)
+
+    
+    #########
+    # index
+    #########
+    parser_index = subparsers.add_parser('index',
+                                        help='Tabulate all file location info and metadata such as ASIC ID and temperature from a set of FAST5 files')
+    parser_index.add_argument('files', metavar='FILES', nargs='+',
+                             help='The input FAST5 files.')
+    parser_index.set_defaults(func=run_subtool)
 
     
     ##########
