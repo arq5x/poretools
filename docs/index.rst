@@ -54,7 +54,6 @@ Requirements
   - matplotlib
   - seaborn
   - pandas
-  - watchdog>=0.8.3
 
 .. note::
     Please note that Anaconda and Python(x,y) already have all these dependencies installed:

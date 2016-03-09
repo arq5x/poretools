@@ -38,6 +38,7 @@ Install as a plain old who lacks ``sudo`` priveleges:
         # or, better yet add it to your .bashrc file.
         # at this point you should be able to run the poretools executable from anywhere on your system.
         poretools --help
+
 =================================
 Installing on Windows with MinKNOW installed
 =================================

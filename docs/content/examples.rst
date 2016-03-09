@@ -2,6 +2,12 @@
 Usage examples
 ###############
 
+.. note::
+
+   In the following examples, ``test_data`` can be replaced with the directory containing the FAST5 files
+   from your own runs. If you are new to ONT sequencing, the ``test_data`` directory is shipped with ``poretools``
+   for experimentation.
+
 ===================
 poretools ``fastq``
 ===================
@@ -9,27 +15,28 @@ Extract sequences in FASTQ format from a set of FAST5 files.
 
 .. code-block:: bash
 
-    poretools fastq fast5/*.fast5
+    poretools fastq test_data/*.fast5
 
 Or, if there are too many files for your OS to do the wildcard expansion, just provide a directory.
 ``poreutils`` will automatically find all of the FAST5 files in the directory.
 
 .. code-block:: bash
 
-    poretools fastq fast5/
+    poretools fastq test_data/
 
 
 Extract sequences in FASTQ format from a set of FAST5 files.
     
 .. code-block:: bash
 
-    poretools fastq fast5/
-    poretools fastq --min-length 5000 fast5/
-    poretools fastq --type all fast5/
-    poretools fastq --type fwd fast5/
-    poretools fastq --type rev fast5/
-    poretools fastq --type 2D fast5/
-    poretools fastq --type fwd,rev fast5/
+    poretools fastq test_data/
+    poretools fastq --min-length 5000 test_data/
+    poretools fastq --max-length 5000 test_data/
+    poretools fastq --type all test_data/
+    poretools fastq --type fwd test_data/
+    poretools fastq --type rev test_data/
+    poretools fastq --type 2D test_data/
+    poretools fastq --type fwd,rev test_data/
 
 
 Only extract sequence with more complement events than template. These are the so-called "high quality 2D reads" and are the most accurate sequences from a 
@@ -37,7 +44,7 @@ given run.
 
 .. code-block:: bash
 
-    poretools fastq --type 2D --high-quality fast5/
+    poretools fastq --type 2D --high-quality test_data/
 
 ===================
 poretools ``fasta``
@@ -46,13 +53,14 @@ Extract sequences in FASTA format from a set of FAST5 files.
 
 .. code-block:: bash
 
-    poretools fasta fast5/
-    poretools fasta --min-length 5000 fast5/
-    poretools fasta --type all fast5/
-    poretools fasta --type fwd fast5/
-    poretools fasta --type rev fast5/
-    poretools fasta --type 2D fast5/
-    poretools fasta --type fwd,rev fast5/
+    poretools fasta test_data/
+    poretools fasta --min-length 5000 test_data/
+    poretools fasta --max-length 5000 test_data/
+    poretools fasta --type all test_data/
+    poretools fasta --type fwd test_data/
+    poretools fasta --type rev test_data/
+    poretools fasta --type 2D test_data/
+    poretools fasta --type fwd,rev test_data/
 
 =====================
 poretools ``combine``
@@ -62,13 +70,13 @@ Create a tarball from a set of FAST5 (HDF5) files.
 .. code-block:: bash
 
     # plain tar (recommended for speed)
-    poretools combine -o foo.fast5.tar fast5/*.fast5
+    poretools combine -o foo.fast5.tar test_data/*.fast5
 
     # gzip
-    poretools combine -o foo.fast5.tar.gz fast5/*.fast5
+    poretools combine -o foo.fast5.tar.gz test_data/*.fast5
 
     # bzip2
-    poretools combine -o foo.fast5.tar.bz2 fast5/*.fast5
+    poretools combine -o foo.fast5.tar.bz2 test_data/*.fast5
 
 ========================
 poretools ``yield_plot``
@@ -77,7 +85,7 @@ Create a collector's curve reflecting the sequencing yield over time for a set o
 
 .. code-block:: bash
 
-    poretools yield_plot --plot-type reads fast5/
+    poretools yield_plot --plot-type reads test_data/
 
 The result should look something like:\
 
@@ -88,7 +96,7 @@ The second is the yield of base pairs over time:
 
 .. code-block:: bash
 
-    poretools yield_plot --plot-type basepairs fast5/
+    poretools yield_plot --plot-type basepairs test_data/
 
 The result should look something like:
     
@@ -102,18 +110,18 @@ Of course, you can save to PDF or PNG with `--saveas`:
     poretools yield_plot \
               --plot-type basepairs \
               --saveas foo.pdf\
-              fast5/
+              test_data/
 
     poretools yield_plot \
               --plot-type basepairs \
               --saveas foo.png\
-              fast5/
+              test_data/
 
 If you don't like the default aesthetics, try `--theme-bw`:
 
 .. code-block:: bash
 
-    poretools yield_plot --theme-bw fast5/
+    poretools yield_plot --theme-bw test_data/
 
 
 ======================
@@ -123,7 +131,7 @@ Make a "squiggle" plot of the signal over time for a given read or set of reads
 
 .. code-block:: bash
 
-    poretools squiggle fast5/foo.fast5
+    poretools squiggle test_data/foo.fast5
 
 
 The result should look something like:
@@ -135,7 +143,7 @@ If you don't like the default aesthetics, try `--theme-bw`:
 
 .. code-block:: bash
 
-    poretools squiggle --theme-bw fast5/
+    poretools squiggle --theme-bw test_data/
 
 
 Other options:
@@ -143,13 +151,13 @@ Other options:
 .. code-block:: bash
 
     # save as PNG
-    poretools squiggle --saveas png fast5/foo.fast5
+    poretools squiggle --saveas png test_data/foo.fast5
 
     # save as PDF
-    poretools squiggle --saveas pdf fast5/foo.fast5
+    poretools squiggle --saveas pdf test_data/foo.fast5
 
     # make a PNG for each FAST5 file in a directory
-    poretools squiggle --saveas png fast5/
+    poretools squiggle --saveas png test_data/
 
 ====================
 poretools ``winner``
@@ -158,12 +166,12 @@ Report the longest read among a set of FAST5 files.
 
 .. code-block:: bash
 
-    poretools winner fast5/
-    poretools winner --type all fast5/
-    poretools winner --type fwd fast5/
-    poretools winner --type rev fast5/
-    poretools winner --type 2D fast5/
-    poretools winner --type fwd,rev fast5/
+    poretools winner test_data/
+    poretools winner --type all test_data/
+    poretools winner --type fwd test_data/
+    poretools winner --type rev test_data/
+    poretools winner --type 2D test_data/
+    poretools winner --type fwd,rev test_data/
 
 ===================
 poretools ``stats``
@@ -172,7 +180,7 @@ Collect read size statistics from a set of FAST5 files.
 
 .. code-block:: bash
 
-    poretools stats fast5/
+    poretools stats test_data/
     total reads 2286.000000
     total base pairs    8983574.000000
     mean    3929.822397
@@ -187,16 +195,16 @@ Plot a histogram of read sizes from a set of FAST5 files.
 
 .. code-block:: bash
 
-    poretools hist fast5/
-    poretools hist --min-length 1000 --max-length 10000 fast5/
+    poretools hist test_data/
+    poretools hist --min-length 1000 --max-length 10000 test_data/
 
-    poretools hist --num-bins 20 --max-length 10000 fast5/
+    poretools hist --num-bins 20 --max-length 10000 test_data/
 
 If you don't like the default aesthetics, try `--theme-bw`:
 
 .. code-block:: bash
 
-    poretools hist --theme-bw fast5/
+    poretools hist --theme-bw test_data/
 
 The result should look something like:
 
@@ -210,7 +218,7 @@ Look at the nucleotide composition of a set of FAST5 files.
 
 .. code-block:: bash
  
-    poretools nucdist fast5/
+    poretools nucdist test_data/
     A   78287   335291  0.233489714904
     C   75270   335291  0.224491561062
     T   92575   335291  0.276103444471
@@ -224,7 +232,7 @@ Look at the quality score composition of a set of FAST5 files.
 
 .. code-block:: bash
 
-    poretools qualdist fast5/
+    poretools qualdist test_data/
     !   0   83403   335291  0.248748102395
     "   1   46151   335291  0.137644613187
     #   2   47463   335291  0.141557632027
@@ -263,6 +271,20 @@ Look at the quality score composition of a set of FAST5 files.
     D   35  6   335291  1.78949032333e-05
     F   37  3   335291  8.94745161666e-06
 
+======================
+poretools ``qualpos``
+======================
+Produce a box-whisker plot of qualoty score distribution over positions in reads.
+
+.. code-block:: bash
+
+    poretools qualpos test_data/
+
+The result should look something like:
+
+.. image:: _images/qualpos.png
+    :width: 400pt 
+
 =====================
 poretools ``tabular``
 =====================
@@ -281,18 +303,18 @@ Extract the raw nanopore events from each FAST5 file.
 
 .. code-block:: bash
 
-    poretools events burn-in-run-2 | head -5
+    poretools events test_data/ | head -5
     file    strand  mean    start   stdv    length  model_state model_level move    p_model_state   mp_model_state  p_mp_model_state    p_A p_C p_G p_T raw_index
-    burn-in-run-2/ch100_file15_strand.fast5  template    56.4648513559   6595.744    1.62598948551   0.026   TGCAT   56.064011186    0   0.076552246287  TGCAT   0.076552246287  0.0980897489641 0.46074353628   0.320651683129  1.90528272165e-05   0
-    burn-in-run-2/ch100_file15_strand.fast5  template    53.2614042745   6595.77 1.12361695715   0.0262  GCATA   54.0674114279   1   0.162623875514  GCGAC   0.183337198021  0.437486003645  0.214306730736  0.335497877123  0.0103035924549 1
-    burn-in-run-2/ch100_file15_strand.fast5  template    51.0001271042   6595.7962   1.07380437991   0.1422  CATAG   52.1964606541   1   0.186606921109  CATAG   0.186606921109  0.424764995152  0.205766683286  0.0905615869544 0.277004168889  2
-    burn-in-run-2/ch100_file15_strand.fast5  template    49.6976788934   6595.9384   1.03634357984   0.0364  ATAGC   51.1117557194   1   0.181952967376  ATAGC   0.181952967376  0.296106771209  0.408638426765  0.0754069980523 0.217721405945  3
-    burn-in-run-2/ch100_file15_strand.fast5  template    51.7633085659   6595.9748   1.04743182078   0.0456  TAGCA   52.6955397413   1   0.192582310652  TAGCA   0.192582310652  0.250481934498  0.311756355221  0.311208716953  0.12343821687   4
+    test_data/2016_3_4_3507_1_ch120_read240_strand.fast5    template    58.3245290305   1559.89409031   1.34165996292   0.0146082337317 CGACTT  58.1304809188   0   0.0226559   CATCTT  0.0229866   0.284469    0.130683    0.137386    0.447461
+    test_data/2016_3_4_3507_1_ch120_read240_strand.fast5    template    50.1420877511   1559.90869854   0.921372775302  0.0348605577689 GACTTT  49.3934875964   1   0.0849836   GACTTT  0.0849836   0.257314    0.350541    0.101351    0.290794
+    test_data/2016_3_4_3507_1_ch120_read240_strand.fast5    template    47.5841029424   1559.9435591    0.771398562801  0.00763612217795    ACTTTG  48.2080162623   1   0.108899    TCTTTG  0.13079 0.000477931 0.00853333  0.306356    0.684632
+    test_data/2016_3_4_3507_1_ch120_read240_strand.fast5    template    51.5879264562   1559.95119522   0.684238307171  0.0112881806109 CTTTGA  52.7784154546   1   0.110625    CTTTGG  0.121103    4.69995e-06 0.00382846  0.0169048   0.979262
 
-Extract the pre basecalled events from each FAST5 file. 
+Extract the pre-basecalled events from each FAST5 file. 
 
 .. code-block:: bash
-    poretools events --pre-basecalled burn-in-run-2 | head -5
+
+    poretools events --pre-basecalled test_data/ | head -5
     file    strand  mean    start   stdv    length  model_state     model_level     move    p_model_state   mp_model_state  p_mp_model_state        p_A     p_C     p_G     p_T     raw_index
     burn-in-run-2/ch100_file15_strand.fast5     pre_basecalled  51.4652695313   5352344 0.655003995591      35
     burn-in-run-2/ch100_file15_strand.fast5     pre_basecalled  60.1776123047   5352379 1.05143911309       18
@@ -302,7 +324,15 @@ Extract the pre basecalled events from each FAST5 file.
 ===================
 poretools ``times``
 ===================
-Extract the start time of each detected molecule into tabular format.
+
+.. code-block:: bash
+
+    poretools times test_data/ | head -5
+    channel filename    read_length exp_starttime   unix_timestamp  duration    unix_timestamp_end  iso_timestamp   day hour    minute
+    120 test_data/2016_3_4_3507_1_ch120_read240_strand.fast5    5826    1457127309  1457128868  47  1457128915  2016-03-04T15:01:08-0700    04  15  01
+    120 test_data/2016_3_4_3507_1_ch120_read353_strand.fast5    3399    1457127309  1457129863  28  1457129891  2016-03-04T15:17:43-0700    04  15  17
+    120 test_data/2016_3_4_3507_1_ch120_read415_strand.fast5    2640    1457127309  1457130808  24  1457130832  2016-03-04T15:33:28-0700    04  15  33
+    120 test_data/2016_3_4_3507_1_ch120_read418_strand.fast5    3487    1457127309  1457130851  31  1457130882  2016-03-04T15:34:11-0700    04  15  34
 
 =======================
 poretools ``occupancy``
@@ -311,7 +341,7 @@ Plot the throughput performance of each pore on the flowcell during a given sequ
 
 .. code-block:: bash
 
-    poretools occupancy fast5/
+    poretools occupancy test_data/
 
 The result should look something like:
 
@@ -320,8 +350,23 @@ The result should look something like:
 
 
 ===================
-poretools ``metadata``
+poretools ``index``
 ===================
+Tabulate all file location info and metadata such as ASIC ID and temperature from a set of FAST5 files
+
+.. code-block:: bash
+
+    poretools index test_data | head -5 | column -t
+    source_filename                                       template_fwd_length  complement_rev_length  2d_length  asic_id     asic_temp  heatsink_temp  channel  exp_start_time  exp_start_time_string_date  exp_start_time_string_time  start_time  start_time_string_date  start_time_string_time  duration  fast5_version
+    test_data/2016_3_4_3507_1_ch120_read240_strand.fast5  5826                 5011                   5079       3571011476  30.37      36.99          120      1457127309      2016-Mar-04                 (Fri)                       14:35:09    1457128868              2016-Mar-04             (Fri)     15:01:08       47  metrichor1.16
+    test_data/2016_3_4_3507_1_ch120_read353_strand.fast5  3399                 2962                   2940       3571011476  30.37      36.99          120      1457127309      2016-Mar-04                 (Fri)                       14:35:09    1457129863              2016-Mar-04             (Fri)     15:17:43       28  metrichor1.16
+    test_data/2016_3_4_3507_1_ch120_read415_strand.fast5  2640                 2244                   2428       3571011476  30.37      36.99          120      1457127309      2016-Mar-04                 (Fri)                       14:35:09    1457130808              2016-Mar-04             (Fri)     15:33:28       24  metrichor1.16
+    test_data/2016_3_4_3507_1_ch120_read418_strand.fast5  3487                 2950                   3384       3571011476  30.37      36.99          120      1457127309      2016-Mar-04                 (Fri)                       14:35:09    1457130851              2016-Mar-04             (Fri)     15:34:11       31  metrichor1.16
+
+
+======================
+poretools ``metadata``
+=======================
 Extract the metadata from the fast5 file
 
 .. code-block:: bash

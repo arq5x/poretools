@@ -36,7 +36,7 @@ FAST5SET_TARBALL = 3
 PORETOOLS_TMPDIR = '.poretools_tmp'
 
 
-class Fast5DirHandler(RegexMatchingEventHandler):
+class Fast5DirHandler(object):
 
     patterns = ["*.fast5"]
 
@@ -211,7 +211,7 @@ class Fast5File(object):
 			self.hdf5file = h5py.File(self.filename, 'r')
 			return True
 		except Exception, e:
-			logger.warning("Exception:Cannot open file: %s. Perhaps it is corrupt? Moving on.\n" % self.filename)
+			logger.warning("Cannot open file: %s. Perhaps it is corrupt? Moving on.\n" % self.filename)
 			return False
 
 	def guess_version(self):
@@ -222,20 +222,12 @@ class Fast5File(object):
 			self.hdf5file["/Analyses/Basecall_2D_%03d/BaseCalled_template" % (self.group)]
 			return 'classic'
 		except KeyError:
-			logger.warning("KeyError:Cannot open file: %s. Perhaps it is corrupt? Moving on.\n" % self.filename)
-			pass
-		except AttributeError:
-			logger.warning("AttributeError:Cannot open file: %s. Perhaps it is corrupt? Moving on.\n" % self.filename)
 			pass
 
 		try:
 			self.hdf5file["/Analyses/Basecall_1D_%03d/BaseCalled_template" % (self.group)]
 			return 'metrichor1.16'
 		except KeyError:
-			logger.warning("KeyError:Cannot open file: %s. Perhaps it is corrupt? Moving on.\n" % self.filename)
-			pass
-		except AttributeError:
-			logger.warning("AttributeError:Cannot open file: %s. Perhaps it is corrupt? Moving on.\n" % self.filename)
 			pass
 
 		return 'prebasecalled'
@@ -676,27 +668,14 @@ class Fast5File(object):
 		"""
 		Pull out the pre-basecalled event information 
 		"""
-		try:
-			table = self.hdf5file[fastq_paths['pre_basecalled']]
-			events = []
-			for read in table:
-				events.extend(table[read]["Events"][()])
-			self.pre_basecalled_events = [Event(x) for x in events]
-		except Exception, e:
-			self.pre_basecalled_events = []	
-
-	@property 
-	def read_metadata(self):
-		try:
-			table = self.hdf5file[fastq_paths['pre_basecalled']]
-			metadata_list = []
-			for read in table:
-				md = Fast5ReadMetaData(table[read])
-				metadata_list.append(md)
-		except Exception, e:
-			metadata = []	
-		return [md.metadata_dict for md in metadata_list]
-
+		# try:
+		table = self.hdf5file[fastq_paths[self.version]['pre_basecalled']]
+		events = []
+		for read in table:
+			events.extend(table[read]["Events"][()])
+		self.pre_basecalled_events = [Event(x) for x in events]
+		# except Exception, e:
+			# self.pre_basecalled_events = []			
 
 	def _get_metadata(self):
 		try:
@@ -707,20 +686,3 @@ class Fast5File(object):
 			except Exception, e:
 				self.keyinfo = None
 				logger.warning("Cannot find keyinfo. Exiting.\n")
-
-
-
-class Fast5ReadMetaData(object):
-
-	def __init__(self, fast5_read_object):
-		self.metadata_dict = {}
-		self.read = fast5_read_object
-		self._extract_metadata_attributes()
-
-	def _extract_metadata_attributes(self):
-		for k in self.read.attrs.keys():
-			self.metadata_dict[k] = self.read.attrs[k]
-
-
-
-
