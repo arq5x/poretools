@@ -63,6 +63,7 @@ Then, to install poretools, simply download and run the Windows installer:
 
         <https://github.com/arq5x/poretools/blob/master/dist/poretools-0.5.1.win-amd64.exe?raw=true>
 
+
 =================================
 Installing on OS X
 =================================
@@ -161,6 +162,7 @@ Via docker
 Build the docker container yourself (preferred):
 
 .. code-block:: bash
+
 	git clone https://github.com/arq5x/poretools
 	cd poretools
 	docker build -t poretools .
