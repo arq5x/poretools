@@ -23,7 +23,7 @@ Install as a plain old user who has root access:
 
 	sudo python setup.py install
 
-Install as a plain old who lacks ``sudo`` priveleges:
+Install as a plain old who lacks ``sudo`` privileges:
 
 .. code-block:: bash
 
@@ -43,13 +43,21 @@ Install as a plain old who lacks ``sudo`` priveleges:
 Installing on Windows with MinKNOW installed
 =================================
 
-MinKNOW installs the Anaconda distribution of Python, which means that h5py is already installed.
+MinKNOW installs the Anaconda distribution of Python, which means that h5py, matplotlib, and pandas are already installed.
 
 However, currently MinKNOW does not update the Windows registry to specify that Anaconda is the default version of Python, which makes installing packages tricky. To address this, some changes need to be made to the registry. This can be fixed by downloading the following file:
 
 	<https://raw.githubusercontent.com/arq5x/poretools/master/dist/poretools.reg>
 
 Ensure it is named 'poretools.reg' and then run it (by double-clicking). Windows will prompt you about making changes to the registry, which you should agree to.
+
+Now, you need to install seaborn, which is the plotting package that ``poretools`` uses as a replacement for R and rpy2 as of version ``0.5.1``.
+
+    conda install seaborn
+
+If conda cannot install seaborn, you could consider installing ``pip`` and running:
+
+    pip install seaborn
 
 Then, to install poretools, simply download and run the Windows installer:
 
