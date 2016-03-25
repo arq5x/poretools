@@ -1,9 +1,9 @@
 import Fast5File
 from collections import Counter
-import rpy2.robjects.lib.ggplot2 as gg
-import rpy2.robjects as robjects
-from rpy2.robjects.packages import importr
 import sys
+import pandas as pd
+import seaborn as sns
+from matplotlib import pyplot as plt
 
 import logging
 logger = logging.getLogger('poretools')
@@ -21,114 +21,34 @@ def minion_flowcell_layout():
                     flowcell_layout.append(s + 128*block + row)
     return flowcell_layout
 
-def plot_read_count(parser, args, tot_reads_per_pore):
+def plot_performance(parser, args, pore_measure):
     """
-    Plot the pore performance
+    Plot the pore performance in terms of reads per pore
     """
-    r = robjects.r
-    r.library("ggplot2")
-    grdevices = importr('grDevices')
-
     flowcell_layout = minion_flowcell_layout()
 
     pore_values = []
     for pore in flowcell_layout:
-        if pore in tot_reads_per_pore:
-            pore_values.append(tot_reads_per_pore[pore])
+        if pore in pore_measure:
+            pore_values.append(pore_measure[pore])
         else:
             pore_values.append(0)
 
     # make a data frame of the lists
-    d = {'rownum': robjects.IntVector(range(1,17)*32),
-         'colnum': robjects.IntVector(sorted(range(1,33)*16)),
-         'tot_reads': robjects.IntVector(pore_values),
-         'labels': robjects.IntVector(flowcell_layout)
-         }
+    d = {'rownum': range(1,17)*32,
+        'colnum': sorted(range(1,33)*16),
+        'tot_reads': pore_values,
+        'labels': flowcell_layout}
+    df = pd.DataFrame(d)
 
-    df = robjects.DataFrame(d)
-    gp = gg.ggplot(df)
-    pp = gp + gg.aes_string(y = 'factor(rownum, rev(rownum))', \
-                     x = 'factor(colnum)') \
-        + gg.geom_point(gg.aes_string(color='tot_reads'), size = 7) \
-        + gg.geom_text(gg.aes_string(label ='labels'), colour="white", size = 2) \
-        + gg.scale_colour_gradient2(low = "black", mid= "black", high="red") \
-        + gg.coord_fixed(ratio=1.4) \
-        + gg.labs(x=gg.NULL, y=gg.NULL)
+    d = df.pivot("rownum", "colnum", "tot_reads")
+    sns.heatmap(d, annot=True, fmt="d", linewidths=.5)
 
     if args.saveas is not None:
         plot_file = args.saveas
-        if plot_file.endswith(".pdf"):
-            grdevices.pdf(plot_file, width = 11, height = 8.5)
-        elif plot_file.endswith(".png"):
-            grdevices.png(plot_file, width = 11, height = 8.5,
-                units = "in", res = 300)
-        else:
-            logger.error("Unrecognized extension for %s!" % (plot_file))
-            sys.exit()
-
-        pp.plot()
-        grdevices.dev_off()
+        plt.savefig(plot_file, figsize=(8.5, 8.5))
     else:
-        pp.plot()
-        # keep the plot open until user hits enter
-        print('Type enter to exit.')
-        raw_input()
-
-
-def plot_total_bp(parser, args, tot_bp_per_pore):
-    """
-    Plot the pore performance
-    """
-    import math
-    r = robjects.r
-    r.library("ggplot2")
-    grdevices = importr('grDevices')
-
-    flowcell_layout = minion_flowcell_layout()
-
-    pore_values = []
-    for pore in flowcell_layout:
-        if pore in tot_bp_per_pore:
-            pore_values.append(math.log10(tot_bp_per_pore[pore]))
-        else:
-            pore_values.append(0)
-
-    # make a data frame of the lists
-    d = {'rownum': robjects.IntVector(range(1,17)*32),
-         'colnum': robjects.IntVector(sorted(range(1,33)*16)),
-         'log10_tot_bp': robjects.IntVector(pore_values),
-         'labels': robjects.IntVector(flowcell_layout)
-         }
-
-    df = robjects.DataFrame(d)
-    gp = gg.ggplot(df)
-    pp = gp + gg.aes_string(y = 'factor(rownum, rev(rownum))', \
-                     x = 'factor(colnum)') \
-        + gg.geom_point(gg.aes_string(color='log10_tot_bp'), size = 7) \
-        + gg.geom_text(gg.aes_string(label ='labels'), colour="white", size = 2) \
-        + gg.scale_colour_gradient2(low = "black", mid= "black", high="red") \
-        + gg.coord_fixed(ratio=1.4) \
-        + gg.labs(x=gg.NULL, y=gg.NULL)
-
-    if args.saveas is not None:
-        plot_file = args.saveas
-        if plot_file.endswith(".pdf"):
-            grdevices.pdf(plot_file, width = 11, height = 8.5)
-        elif plot_file.endswith(".png"):
-            grdevices.png(plot_file, width = 11, height = 8.5,
-                units = "in", res = 300)
-        else:
-            logger.error("Unrecognized extension for %s!" % (plot_file))
-            sys.exit()
-
-        pp.plot()
-        grdevices.dev_off()
-    else:
-        pp.plot()
-        # keep the plot open until user hits enter
-        print('Type enter to exit.')
-        raw_input()
-
+        plt.show()
 
 def run(parser, args):
 
@@ -157,8 +77,8 @@ def run(parser, args):
             fast5.close()
 
     if args.plot_type == 'read_count':
-        plot_read_count(parser, args, tot_reads_per_pore)
+        plot_performance(parser, args, tot_reads_per_pore)
     elif args.plot_type == 'total_bp':
-        plot_total_bp(parser, args, tot_bp_per_pore)
+        plot_performance(parser, args, tot_bp_per_pore)
 
 
