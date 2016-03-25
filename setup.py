@@ -7,7 +7,9 @@ long_description = """
 ``poretools`` is a toolset for working with nanopore sequencing data'
 """
 
-with open("requirements.txt", "r") as f:
+HERE = os.path.dirname(__file__)
+
+with open(os.path.join(HERE, "requirements.txt"), "r") as f:
     install_requires = [x.strip() for x in f.readlines()]
 
 setup(

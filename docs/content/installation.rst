@@ -61,7 +61,7 @@ If conda cannot install seaborn, you could consider installing ``pip`` and runni
 
 Then, to install poretools, simply download and run the Windows installer:
 
-        <https://github.com/arq5x/poretools/blob/master/dist/poretools-0.3.1.win-amd64.exe?raw=true>
+        <https://github.com/arq5x/poretools/blob/master/dist/poretools-0.5.1.win-amd64.exe?raw=true>
 
 =================================
 Installing on OS X
