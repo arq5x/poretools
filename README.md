@@ -10,10 +10,9 @@ Requirements
 ===================
 - HDF5 >= 1.8.7 (http://www.hdfgroup.org/HDF5/)
 - Python >= 2.7
-- h5py >= 2.0
+- h5py >= 2.2
 - matplotlib
 - seaborn
-- watchdog>=0.8.3
 - pandas
 
 
