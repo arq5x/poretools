@@ -23,7 +23,7 @@ Install as a plain old user who has root access:
 
 	sudo python setup.py install
 
-Install as a plain old who lacks ``sudo`` priveleges:
+Install as a plain old who lacks ``sudo`` privileges:
 
 .. code-block:: bash
 
@@ -38,11 +38,12 @@ Install as a plain old who lacks ``sudo`` priveleges:
         # or, better yet add it to your .bashrc file.
         # at this point you should be able to run the poretools executable from anywhere on your system.
         poretools --help
+
 =================================
 Installing on Windows with MinKNOW installed
 =================================
 
-MinKNOW installs the Anaconda distribution of Python, which means that h5py is already installed.
+MinKNOW installs the Anaconda distribution of Python, which means that h5py, matplotlib, and pandas are already installed.
 
 However, currently MinKNOW does not update the Windows registry to specify that Anaconda is the default version of Python, which makes installing packages tricky. To address this, some changes need to be made to the registry. This can be fixed by downloading the following file:
 
@@ -50,42 +51,18 @@ However, currently MinKNOW does not update the Windows registry to specify that 
 
 Ensure it is named 'poretools.reg' and then run it (by double-clicking). Windows will prompt you about making changes to the registry, which you should agree to.
 
-The only additional dependency that is required is rpy2 and R.
+Now, you need to install seaborn, which is the plotting package that ``poretools`` uses as a replacement for R and rpy2 as of version ``0.5.1``.
 
-Download rpy2 from the pre-built binary page at: <http://www.lfd.uci.edu/~gohlke/pythonlibs/>. You want the version for Python 2.7 on 64-bit Windows. Run the installer.
+    conda install seaborn
+
+If conda cannot install seaborn, you could consider installing ``pip`` and running:
+
+    pip install seaborn
 
 Then, to install poretools, simply download and run the Windows installer:
 
-        <https://github.com/arq5x/poretools/blob/master/dist/poretools-0.3.1.win-amd64.exe?raw=true>
+        <https://github.com/arq5x/poretools/blob/master/dist/poretools-0.5.1.win-amd64.exe?raw=true>
 
-==================================
-Plotting with R on Windows
-==================================
-
-If you wish to use the R plots (experimental, on Windows) you also need to:
-
-Download R for Windows from: <http://cran.r-project.org/bin/windows/base/>
-
-Run the installer, then start up R and install ggplot2:
-
-.. code-block:: R
-
-	install.packages("ggplot2")
-
-You need to set two environment variables to run poretools currently:
-
-.. code-block:: bash
-
-	set R_HOME=c:\Program Files\R\R-3.1.1
-	set R_USER=c:\Users\MY USER\Documents
-
-You may also need to add the following directory to your PATH:
-
-.. code-block:: bash
-
-        C:\Program Files\R\R-3.1.1\bin\x64
-
-Instructions for updating your PATH on Windows can be found here: http://geekswithblogs.net/renso/archive/2009/10/21/how-to-set-the-windows-path-in-windows-7.aspx
 
 =================================
 Installing on OS X
@@ -163,28 +140,6 @@ Or, for Ubuntu 14.04:
 
 	deb http://www.stats.bris.ac.uk/R/bin/linux/ubuntu trusty/
 
-Then, run the following commands to install R 3.0:
-
-.. code-block:: bash
-
-	sudo apt-get update
-	sudo apt-get install r-base python-rpy2
-
-Start R
-
-.. code-block:: bash
-
-	R
-
-Then run the following commands within the R programme, and follow any prompts:
-
-.. code-block:: R
-
-	options("repos" = c(CRAN = "http://cran.rstudio.com/"))
-	install.packages("codetools")
-	install.packages("MASS")
-	install.packages("ggplot2")
-
 Then install poretools, finally:
 
 .. code-block:: bash
@@ -207,6 +162,7 @@ Via docker
 Build the docker container yourself (preferred):
 
 .. code-block:: bash
+
 	git clone https://github.com/arq5x/poretools
 	cd poretools
 	docker build -t poretools .

@@ -4,7 +4,6 @@ import glob
 import tarfile
 import shutil
 import h5py
-from watchdog.events import RegexMatchingEventHandler
 
 #logging
 import logging
@@ -16,6 +15,8 @@ import formats
 from Event import Event
 
 fastq_paths = {
+  'closed' : {},
+  'r9rnn' :         { 'template' : '/Analyses/Basecall_RNN_1D_%03d/BaseCalled_template'},
   'metrichor1.16' : { 'template' : '/Analyses/Basecall_1D_%03d/BaseCalled_template',
                       'complement' : '/Analyses/Basecall_1D_%03d/BaseCalled_complement',
                       'twodirections' : '/Analyses/Basecall_2D_%03d/BaseCalled_2D',
@@ -36,7 +37,7 @@ FAST5SET_TARBALL = 3
 PORETOOLS_TMPDIR = '.poretools_tmp'
 
 
-class Fast5DirHandler(RegexMatchingEventHandler):
+class Fast5DirHandler(object):
 
     patterns = ["*.fast5"]
 
@@ -176,7 +177,10 @@ class Fast5File(object):
 		self.filename = filename
 		self.group = group
 		self.is_open = self.open()
-		self.version = self.guess_version()
+		if self.is_open:
+			self.version = self.guess_version()
+		else:
+			self.version = 'closed'
 
 		self.fastas = {}
 		self.fastqs = {}
@@ -215,6 +219,12 @@ class Fast5File(object):
 		"""
 		Try and guess the location of template/complement blocks
 		"""
+		try:
+			self.hdf5file["/Analyses/Basecall_RNN_1D_%03d/BaseCalled_template" % (self.group)]
+			return 'r9rnn'
+		except KeyError:
+			pass
+
 		try:
 			self.hdf5file["/Analyses/Basecall_2D_%03d/BaseCalled_template" % (self.group)]
 			return 'classic'
@@ -623,7 +633,7 @@ class Fast5File(object):
 			try:
 				table = self.hdf5file[h5path % self.group]
 				fq = formats.Fastq(table['Fastq'][()])
-				fq.name += "_" + id + ":" + self.filename
+				fq.name += " " + self.filename
 				self.fastqs[id] = fq
 			except Exception, e:
 				pass
@@ -636,7 +646,7 @@ class Fast5File(object):
 			try:
 				table = self.hdf5file[h5path % self.group]
 				fa = formats.Fasta(table['Fastq'][()])
-				fa.name += "_" + id + " " + self.filename
+				fa.name += " " + self.filename
 				self.fastas[id] = fa
 			except Exception, e:
 				pass

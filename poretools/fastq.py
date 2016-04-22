@@ -16,15 +16,30 @@ def run(parser, args):
 				continue
 
 		fas = fast5.get_fastqs(args.type)
+
+		# high quality 2D: means there are more nanopore events on the 
+		# complement strand than on the template strand. We also
+		# require there to be a 2D base-called sequence from Metrichor.
 		if args.high_quality:
-			if fast5.get_complement_events_count() <= \
-			   fast5.get_template_events_count():
+			if (fast5.get_complement_events_count() <= \
+			   fast5.get_template_events_count()) or not fast5.has_2D():
+				fast5.close()
+				continue
+
+		# norem quality 2D : means there are less (or equal) nanopore 
+		# events on the complement strand than on the template strand. 
+		# We also require there to be a 2D base-called sequence from Metrichor.
+		if args.normal_quality:
+			if (fast5.get_complement_events_count() > \
+			   fast5.get_template_events_count()) or not fast5.has_2D():
 				fast5.close()
 				continue
 
 		for fa in fas:
 			if fa is None or \
-			len(fa.seq) < args.min_length:			
+			len(fa.seq) < args.min_length or \
+			(len(fa.seq) > args.max_length and \
+			args.max_length > 0):			
 				continue
 
 			print fa

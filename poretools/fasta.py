@@ -37,8 +37,10 @@ def run(parser, args):
 
 		for fa in fas:
 			if fa is None or \
-			len(fa.seq) < args.min_length:			
-				continue
+			len(fa.seq) < args.min_length or \
+			(len(fa.seq) > args.max_length and \
+			args.max_length > 0):			
+				continue			
 
 			print fa
 
