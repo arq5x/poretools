@@ -16,6 +16,7 @@ from Event import Event
 
 fastq_paths = {
   'closed' : {},
+  'r9rnn' :         { 'template' : '/Analyses/Basecall_RNN_1D_%03d/BaseCalled_template'},
   'metrichor1.16' : { 'template' : '/Analyses/Basecall_1D_%03d/BaseCalled_template',
                       'complement' : '/Analyses/Basecall_1D_%03d/BaseCalled_complement',
                       'twodirections' : '/Analyses/Basecall_2D_%03d/BaseCalled_2D',
@@ -218,6 +219,12 @@ class Fast5File(object):
 		"""
 		Try and guess the location of template/complement blocks
 		"""
+		try:
+			self.hdf5file["/Analyses/Basecall_RNN_1D_%03d/BaseCalled_template" % (self.group)]
+			return 'r9rnn'
+		except KeyError:
+			pass
+
 		try:
 			self.hdf5file["/Analyses/Basecall_2D_%03d/BaseCalled_template" % (self.group)]
 			return 'classic'
