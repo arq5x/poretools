@@ -433,8 +433,8 @@ class Fast5File(object):
 		return node
 
 	def find_event_timing_block(self):
-		path = fastq_paths[self.version]['template'] % (self.group)
 		try:
+			path = fastq_paths[self.version]['template'] % (self.group)
 			node = self.hdf5file[path]
 			path = node.get('Events')
 #, getlink=True)
