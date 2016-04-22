@@ -13,3 +13,8 @@ Requirements
 - seaborn
 - pandas
 
+Contributors
+============
+@arq5x
+@nickloman
+@brentp
