@@ -2,8 +2,6 @@
 
 *Nick Loman and Aaron Quinlan*
 
-**Note:** this software is in an alpha state; the code is changing rapidly and the API and CLI may change at any time.
-
 Complete installation instructions and usage examples can be found on the [poretools documentation site](http://poretools.readthedocs.org).
 
 Requirements
@@ -15,10 +13,8 @@ Requirements
 - seaborn
 - pandas
 
-
-
-
-
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/arq5x/poretools/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-
+Contributors
+============
+@arq5x
+@nickloman
+@brentp
