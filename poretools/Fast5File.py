@@ -403,7 +403,7 @@ class Fast5File(object):
 			self.have_metadata = True
 
 		try:
-			return self.keyinfo['tracking_id'].attrs['exp_start_time']
+			return int(self.keyinfo['tracking_id'].attrs['exp_start_time'])
 		except:
 			return None
 
@@ -583,6 +583,23 @@ class Fast5File(object):
 		if self.have_metadata is False:
 			self._get_metadata()
 			self.have_metadata = True
+
+        def get_host_name(self):
+                """
+                Return the MinKNOW host computer name.
+                """
+                if self.have_metadata is False:
+                        self._get_metadata()
+                        self.have_metadata = True
+
+                try:
+                        return self.keyinfo['tracking_id'].attrs['hostname']
+                except:
+                        return None
+
+                if self.have_metadata is False:
+                        self._get_metadata()
+                        self.have_metadata = True
 
 	def get_device_id(self):
 		"""
