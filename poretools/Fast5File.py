@@ -610,6 +610,15 @@ class Fast5File(object):
 		except:
 			return None
 
+	def get_sample_name(self):
+		"""
+		Return the user supplied sample name
+		"""
+		try:
+			return self.keyinfo['context_tags'].attrs['user_filename_input']
+		except:
+			return None
+
 
 	def get_template_events_count(self):
 		"""

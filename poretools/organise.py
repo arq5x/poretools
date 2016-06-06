@@ -17,13 +17,16 @@ def run(parser, args):
 
 	for fast5 in Fast5File.Fast5FileSet(args.files):
 
-		offset = fast5.get_start_time() - fast5.get_exp_start_time()
+		#offset = fast5.get_start_time() - fast5.get_exp_start_time()
 
-		path = "%s/%s/%s/%s/%s" % (args.dest,
+		specific_id = fast5.get_sample_name()
+		if not specific_id:
+			specific_id = fast5.get_asic_id()
+
+		path = "%s/%s/%s/%s" % (args.dest,
                                              fast5.get_host_name(),
-                                             fast5.get_asic_id(),
-                                             fast5.get_run_id(),
-			        	     offset / 60 / 60)
+                                             specific_id,
+                                             fast5.get_run_id())
 
 		if not os.path.isdir(path):
 			makedirs(path)
