@@ -21,6 +21,8 @@ RUN apt-get update
 # Install dependencies
 RUN apt-get -y install git python-tables python-setuptools python-pip python-dev cython libhdf5-serial-dev r-base python-rpy2 libfreetype6-dev pkg-config
 
+# Upgrade numpy
+RUN easy_install --upgrade numpy
 # Upgrade numexpr
 RUN pip install numexpr --upgrade
 
