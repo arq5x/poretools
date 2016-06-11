@@ -29,7 +29,9 @@ RUN Rscript -e 'options("repos" = c(CRAN = "http://cran.rstudio.com/")); install
 
 # Install poretools
 RUN git clone https://github.com/arq5x/poretools /tmp/poretools
-RUN cd /tmp/poretools && python setup.py install
+WORKDIR /tmp/poretools
+RUN pip install -r requirements.txt
+RUN python setup.py install
 
 ############## INSTALLATION END ##############
 
