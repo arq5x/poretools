@@ -19,7 +19,7 @@ RUN echo 'deb http://cran.rstudio.com/bin/linux/ubuntu trusty/' >> /etc/apt/sour
 RUN apt-get update
 
 # Install dependencies
-RUN apt-get -y install git python-tables python-setuptools python-pip python-dev cython libhdf5-serial-dev r-base python-rpy2
+RUN apt-get -y install git python-tables python-setuptools python-pip python-dev cython libhdf5-serial-dev r-base python-rpy2 libfreetype6-dev pkg-config
 
 # Upgrade numexpr
 RUN pip install numexpr --upgrade
