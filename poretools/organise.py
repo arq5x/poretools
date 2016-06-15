@@ -23,11 +23,7 @@ def run(parser, args):
 		if not specific_id:
 			specific_id = fast5.get_asic_id()
 
-		path = "%s/%s/%s/%s" % (args.dest,
-                                             fast5.get_host_name(),
-                                             specific_id,
-                                             fast5.get_run_id())
-
+		path = "%s/%s" % (args.dest, specific_id)
 		if not os.path.isdir(path):
 			makedirs(path)
 

@@ -498,7 +498,7 @@ class Fast5File(object):
 			self.have_metadata = True
 
 		try:
-			return self.keyinfo['tracking_id'].attrs['version_name']
+			return self.keyinfo['context_tags'].attrs['version_name']
 		except:
 			return None
 
@@ -605,6 +605,11 @@ class Fast5File(object):
 		"""
 		Return the flowcell's device id.
 		"""
+
+                if self.have_metadata is False:
+                        self._get_metadata()
+                        self.have_metadata = True
+
 		try:
 			return self.keyinfo['tracking_id'].attrs['device_id']
 		except:
@@ -614,9 +619,14 @@ class Fast5File(object):
 		"""
 		Return the user supplied sample name
 		"""
+
+                if self.have_metadata is False:
+                        self._get_metadata()
+                        self.have_metadata = True
+
 		try:
 			return self.keyinfo['context_tags'].attrs['user_filename_input']
-		except:
+		except Exception, e:
 			return None
 
 
