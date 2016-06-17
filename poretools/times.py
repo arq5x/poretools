@@ -32,7 +32,7 @@ def run(parser, args):
 			print "\t".join([fast5.get_channel_number(),
 				fast5.filename, 
 				str(read_length),
-				fast5.get_exp_start_time(),
+				str(fast5.get_exp_start_time()),
 				str(start_time), \
 				str(fast5.get_duration()),
 				str(fast5.get_end_time()),
