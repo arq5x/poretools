@@ -39,6 +39,13 @@ Extract sequences in FASTQ format from a set of FAST5 files.
     poretools fastq --type fwd,rev test_data/
 
 
+A type of "best" will extract the 2D read, if it exists. If not, it will extract either the template or complement read, whichever is available and has a better average Phred score.
+
+.. code-block:: bash
+
+    poretools fastq --type best test_data/
+
+
 Only extract sequence with more complement events than template. These are the so-called "high quality 2D reads" and are the most accurate sequences from a 
 given run.
 
@@ -61,6 +68,7 @@ Extract sequences in FASTA format from a set of FAST5 files.
     poretools fasta --type rev test_data/
     poretools fasta --type 2D test_data/
     poretools fasta --type fwd,rev test_data/
+    poretools fasta --type best test_data/
 
 =====================
 poretools ``combine``
@@ -172,6 +180,7 @@ Report the longest read among a set of FAST5 files.
     poretools winner --type rev test_data/
     poretools winner --type 2D test_data/
     poretools winner --type fwd,rev test_data/
+    poretools winner --type best test_data/
 
 ===================
 poretools ``stats``
