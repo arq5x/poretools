@@ -269,7 +269,6 @@ class Fast5File(object):
 			self._extract_fastqs_from_fast5()
 			self.have_fastqs = True
 
-		# TODO "best". What is "best"?
 		fqs = []
 		if choice == "all":
 			for fastq in self.fastqs:
@@ -283,6 +282,8 @@ class Fast5File(object):
 		elif choice == "fwd,rev":
 				fqs.append(self.fastqs.get('template'))
 				fqs.append(self.fastqs.get('complement'))
+		elif choice == "best":
+				fqs.append(self.fastqs.get(self.get_best_type()))
 
 		return fqs
 
@@ -296,7 +297,6 @@ class Fast5File(object):
 			self._extract_fastas_from_fast5()
 			self.have_fastas = True
 
-		# TODO "best". What is "best"?
 		fas = []
 		if choice == "all":
 			for fasta in self.fastas:
@@ -310,6 +310,11 @@ class Fast5File(object):
 		elif choice == "fwd,rev":
 				fas.append(self.fastas.get('template'))
 				fas.append(self.fastas.get('complement'))
+		elif choice == "best":
+				if self.have_fastqs is False:
+					self._extract_fastqs_from_fast5()
+					self.have_fastqs = True
+				fas.append(self.fastas.get(self.get_best_type()))
 
 		return fas
 
@@ -656,6 +661,30 @@ class Fast5File(object):
 			return True
 		else:
 			return False
+
+	def get_best_type(self):
+		"""
+		Returns the type with the anticipated highest quality:
+		'twodirections', 'template', 'complement' or None.
+		"""
+		try:
+			if 'twodirections' in self.fastqs:
+				return 'twodirections'
+			fwd = 'template' in self.fastqs
+			rev = 'complement' in self.fastqs
+			if fwd and not rev:
+				return 'template'
+			elif rev and not fwd:
+				return 'complement'
+			else:
+				fwd_err_rate = self.fastqs['template'].est_error_rate()
+				rev_err_rate = self.fastqs['complement'].est_error_rate()
+				if fwd_err_rate <= rev_err_rate:
+					return 'template'
+				else:
+					return 'complement'
+		except Exception, e:
+			return None
 
 	####################################################################
 	# Private API methods
