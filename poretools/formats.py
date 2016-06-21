@@ -13,11 +13,15 @@ class Fastq(object):
 		"""
 		Returns an error rate estimate using the Phred quality scores.
 		"""
-		error_count = 0.0
-		for score in self.qual:
-			phred = ord(score) - 33
-			error_count += 10.0 ** (-phred / 10.0)
-		return error_count / len(self.qual)
+		try:
+			error_count = 0.0
+			for score in self.qual:
+				phred = ord(score) - 33
+				error_count += 10.0 ** (-phred / 10.0)
+			return error_count / len(self.qual)
+		except Exception, e:
+			return 0.0
+
 
 
 class Fasta(object):
