@@ -46,6 +46,8 @@ given run.
 
     poretools fastq --type 2D --high-quality test_data/
 
+The data in fastq format are returned in standard output.
+
 ===================
 poretools ``fasta``
 ===================
@@ -61,6 +63,8 @@ Extract sequences in FASTA format from a set of FAST5 files.
     poretools fasta --type rev test_data/
     poretools fasta --type 2D test_data/
     poretools fasta --type fwd,rev test_data/
+
+The data in fasta format are returned in standard output.
 
 =====================
 poretools ``combine``
