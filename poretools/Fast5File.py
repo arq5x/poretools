@@ -403,7 +403,7 @@ class Fast5File(object):
 			self.have_metadata = True
 
 		try:
-			return self.keyinfo['tracking_id'].attrs['exp_start_time']
+			return int(self.keyinfo['tracking_id'].attrs['exp_start_time'])
 		except:
 			return None
 
@@ -498,7 +498,7 @@ class Fast5File(object):
 			self.have_metadata = True
 
 		try:
-			return self.keyinfo['tracking_id'].attrs['version_name']
+			return self.keyinfo['context_tags'].attrs['version_name']
 		except:
 			return None
 
@@ -584,13 +584,49 @@ class Fast5File(object):
 			self._get_metadata()
 			self.have_metadata = True
 
+        def get_host_name(self):
+                """
+                Return the MinKNOW host computer name.
+                """
+                if self.have_metadata is False:
+                        self._get_metadata()
+                        self.have_metadata = True
+
+                try:
+                        return self.keyinfo['tracking_id'].attrs['hostname']
+                except:
+                        return None
+
+                if self.have_metadata is False:
+                        self._get_metadata()
+                        self.have_metadata = True
+
 	def get_device_id(self):
 		"""
 		Return the flowcell's device id.
 		"""
+
+                if self.have_metadata is False:
+                        self._get_metadata()
+                        self.have_metadata = True
+
 		try:
 			return self.keyinfo['tracking_id'].attrs['device_id']
 		except:
+			return None
+
+	def get_sample_name(self):
+		"""
+		Return the user supplied sample name
+		"""
+
+                if self.have_metadata is False:
+                        self._get_metadata()
+                        self.have_metadata = True
+
+		try:
+			return self.keyinfo['context_tags'].attrs['user_filename_input']
+		except Exception, e:
 			return None
 
 

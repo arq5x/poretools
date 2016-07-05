@@ -48,6 +48,8 @@ def run_subtool(parser, args):
         import yield_plot as submodule
     elif args.command == 'index':
         import index as submodule
+    elif args.command == 'organise':
+        import organise as submodule
 
     # run the chosen submodule.
     submodule.run(parser, args)
@@ -498,8 +500,24 @@ def main():
                              help='The type of plot to generate',
                              default='read_count')
 
+    ##########
+    # organise
+    ##########
 
-    parser_occupancy.set_defaults(func=run_subtool)
+    parser_organise = subparsers.add_parser('organise',
+                               help='Move FAST5 files into a useful folder hierarchy')
+    parser_organise.add_argument('files', metavar='FILES', nargs='+',
+                               help='The input FAST5 files.')
+    parser_organise.add_argument('dest',
+                               metavar='STRING',
+                               help='The destination directory.')
+    parser_organise.add_argument('--copy',
+                               default=False,
+                               action='store_true',
+                               dest='copy', 
+                               help='Make a copy of files instead of moving')
+
+    parser_organise.set_defaults(func=run_subtool)
 
     #######################################################
     # parse the args and call the selected function
