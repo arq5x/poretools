@@ -9,59 +9,59 @@ class Event(object):
 		self.row = row
 		try:
 			self.mean = row['mean']
-		except IndexError:
+		except Exception:
 			self.mean = ""
 		try:
 			self.start = row['start']
-		except IndexError:
+		except Exception:
 			self.start = ""
 		try:
 			self.stdv = row['stdv']
-		except IndexError:
+		except Exception:
 			self.stdv = ""
 		try:
 			self.length = row['length']
-		except IndexError:
+		except Exception:
 			self.length = ""
 		try:
 			self.model_state = row['model_state']
-		except IndexError:
+		except Exception:
 			self.model_state = ""
 		try:
 			self.model_level = row['model_level']
-		except IndexError:
+		except Exception:
 			self.model_level = ""
 		try:
 			self.move = row['move']
-		except IndexError:
+		except Exception:
 			self.move = ""
 		try:
 			self.p_model_state = row['p_model_state']
-		except IndexError:
+		except Exception:
 			self.p_model_state = ""
 		try:
 			self.mp_state = row['mp_state']
-		except IndexError:
+		except Exception:
 			self.mp_state = ""
 		try:
 			self.p_mp_state = row['p_mp_state']
-		except IndexError:
+		except Exception:
 			self.p_mp_state = ""
 		try:
 			self.p_A = row['p_A']
-		except IndexError:
+		except Exception:
 			self.p_A = ""
 		try:
 			self.p_C = row['p_C']
-		except IndexError:
+		except Exception:
 			self.p_C = ""
 		try:
 			self.p_G = row['p_G']
-		except IndexError:
+		except Exception:
 			self.p_G = ""
 		try:
 			self.p_T = row['p_T']
-		except IndexError:
+		except Exception:
 			self.p_T = ""
 
 	def __repr__(self):
