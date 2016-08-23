@@ -467,6 +467,10 @@ class Fast5File(object):
 	def get_duration(self):
 		node = self.find_event_timing_block()
 		if node:
+			#NOTE: 'duration' in the HDF is a float-point number,
+			#      and can be less than one - which will return 0.
+			#TODO: consider supporing floating-point, or at least
+			#      rounding values instead of truncating to int.
 			return int(node.attrs['duration'])
 		return None
 
@@ -484,7 +488,10 @@ class Fast5File(object):
 		start_time = self.get_start_time()
 		duration = self.get_duration()
 
-		if start_time and duration:
+		# 'duration' can be zero and still valid
+		# (if the duration of the template was less than 1 second).
+		# Check for None instead of False.
+		if start_time and (duration is not None):
 			return start_time + duration
 		else:
 			return None
