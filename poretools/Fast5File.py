@@ -426,7 +426,14 @@ class Fast5File(object):
 		except:
 			return None
 
-	def find_read_number_block(self):
+	def find_read_number_block_link(self):
+		"""
+		Old-style FAST5/HDF5 structure:
+		Inside /Analyses/Basecall_XXXX there is an 'InputEvents'
+		link that points to the location of the Read in the HDF5 file.
+
+		Return the Read's node if found, or None if not found.
+		"""
 		if self.version == 'classic':
 			path = "/Analyses/Basecall_2D_000"
 		else:
@@ -434,6 +441,8 @@ class Fast5File(object):
 
 		basecall = self.hdf5file[path]
 		path = basecall.get('InputEvents', getlink=True)
+		if path is None:
+			return None
 
 		# the soft link target seems broken?
 		newpath = "/" + "/".join(path.path.split("/")[:-1])
@@ -441,6 +450,53 @@ class Fast5File(object):
 		node = self.hdf5file[newpath]
 
 		return node
+
+	def hdf_internal_error(self,reason):
+		"""Report an error and exit in case of an invalid
+(or unknown) HDF5 structure. Hurrah for ONT!"""
+		msg = """poretools internal error in file '%s':
+%s
+Please report this error (with the offending file) to:
+    https://github.com/arq5x/poretools/issues""" % (self.filename, reason)
+		sys.exit(msg)
+
+        def find_read_number_block_fixed_raw(self):
+		"""
+		New-style FAST5/HDF5 structure:
+		There is a fixed 'Raw/Reads' node with only one 'read_NNN' item
+		inside it (no more 'InputEvents' link).
+
+		Return the Read's node if found, or None if not found.
+		"""
+		raw_reads = self.hdf5file.get('Raw/Reads')
+		if raw_reads is None:
+			return None
+
+		reads = raw_reads.keys()
+		if len(reads)==0:
+			self.hdf_internal_error("Raw/Reads group does not contain any items")
+		if len(reads)>1:
+			# This should not happen, based on information from ONT developers.
+			self.hdf_internal_error("Raw/Reads group contains more than one item")
+		path = 'Raw/Reads/%s' % ( reads[0] )
+		node = self.hdf5file.get(path)
+		if node is None:
+			self.hdf_internal_error("Failed to get HDF5 item '%s'"% (path))
+		return node
+
+        def find_read_number_block(self):
+		"""Returns the node of the 'Read_NNN' information, or None if not
+		found"""
+		node = self.find_read_number_block_link()
+		if node is not None:
+			return node
+
+		node = self.find_read_number_block_fixed_raw()
+		if node is not None:
+			return node
+
+		# Couldn't find the node, bail out.
+		self.hdf_internal_error("unknown HDF5 structure: can't find read block item")
 
 	def find_event_timing_block(self):
 		path = fastq_paths[self.version]['template'] % (self.group)
@@ -467,6 +523,10 @@ class Fast5File(object):
 	def get_duration(self):
 		node = self.find_event_timing_block()
 		if node:
+			#NOTE: 'duration' in the HDF is a float-point number,
+			#      and can be less than one - which will return 0.
+			#TODO: consider supporing floating-point, or at least
+			#      rounding values instead of truncating to int.
 			return int(node.attrs['duration'])
 		return None
 
@@ -484,7 +544,10 @@ class Fast5File(object):
 		start_time = self.get_start_time()
 		duration = self.get_duration()
 
-		if start_time and duration:
+		# 'duration' can be zero and still valid
+		# (if the duration of the template was less than 1 second).
+		# Check for None instead of False.
+		if start_time and (duration is not None):
 			return start_time + duration
 		else:
 			return None
