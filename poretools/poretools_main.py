@@ -102,7 +102,7 @@ def main():
     parser_fastq.add_argument('--type',
                               dest='type',
                               metavar='STRING',
-                              choices=['all', 'fwd', 'rev', '2D', 'fwd,rev'],
+                              choices=['all', 'fwd', 'rev', '2D', 'fwd,rev', 'best'],
                               default='all',
                               help='Which type of FASTQ entries should be reported? Def.=all')
     parser_fastq.add_argument('--start',
@@ -153,7 +153,7 @@ def main():
     parser_fasta.add_argument('--type',
                               dest='type',
                               metavar='STRING',
-                              choices=['all', 'fwd', 'rev', '2D', 'fwd,rev'],
+                              choices=['all', 'fwd', 'rev', '2D', 'fwd,rev', 'best'],
                               default='all',
                               help='Which type of FASTQ entries should be reported? Def.=all')
     parser_fasta.add_argument('--start',
@@ -204,7 +204,7 @@ def main():
     parser_stats.add_argument('--type',
                               dest='type',
                               metavar='STRING',
-                              choices=['all', 'fwd', 'rev', '2D', 'fwd,rev'],
+                              choices=['all', 'fwd', 'rev', '2D', 'fwd,rev', 'best'],
                               default='all',
                               help='Which type of FASTQ entries should be reported? Def.=all')
     parser_stats.add_argument('--full-tsv',
@@ -290,7 +290,7 @@ def main():
     parser_tabular.add_argument('--type',
                               dest='type',
                               metavar='STRING',
-                              choices=['all', 'fwd', 'rev', '2D', 'fwd,rev'],
+                              choices=['all', 'fwd', 'rev', '2D', 'fwd,rev', 'best'],
                               default='all',
                               help='Which type of FASTA entries should be reported? Def.=all')
     parser_tabular.set_defaults(func=run_subtool)
@@ -365,9 +365,9 @@ def main():
     parser_qualpos.add_argument('--type',
                               dest='type',
                               metavar='STRING',
-                              choices=['all', 'fwd', 'rev', '2D', 'fwd,rev'],
+                              choices=['all', 'fwd', 'rev', '2D', 'fwd,rev', 'best'],
                               default='all',
-                              help='Which type of reads should be analyzed? Def.=all, choices=[all, fwd, rev, 2D, fwd,rev]')
+                              help='Which type of reads should be analyzed? Def.=all, choices=[all, fwd, rev, 2D, fwd,rev, best]')
     parser_qualpos.add_argument('--start',
                               dest='start_time',
                               default=None,
@@ -403,7 +403,7 @@ def main():
     parser_winner.add_argument('--type',
                               dest='type',
                               metavar='STRING',
-                              choices=['all', 'fwd', 'rev', '2D', 'fwd,rev'],
+                              choices=['all', 'fwd', 'rev', '2D', 'fwd,rev', 'best'],
                               default='all',
                               help='Which type of FASTA entries should be reported? Def.=all')
     parser_winner.set_defaults(func=run_subtool)
