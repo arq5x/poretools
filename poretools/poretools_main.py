@@ -500,6 +500,8 @@ def main():
                              help='The type of plot to generate',
                              default='read_count')
 
+    parser_occupancy.set_defaults(func=run_subtool)
+    
     ##########
     # organise
     ##########

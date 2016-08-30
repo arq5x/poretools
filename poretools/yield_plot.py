@@ -1,6 +1,6 @@
 import Fast5File
 import matplotlib
-matplotlib.use('Agg') # Must be called before any other matplotlib calls
+#matplotlib.use('Agg') # Must be called before any other matplotlib calls
 from matplotlib import pyplot as plt
 
 import numpy as np
