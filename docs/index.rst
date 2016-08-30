@@ -44,6 +44,7 @@ Table of contents
    content/help
    content/notebook
    content/examples
+   content/history
 
 =================
 Requirements
