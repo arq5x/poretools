@@ -269,7 +269,6 @@ class Fast5File(object):
 			self._extract_fastqs_from_fast5()
 			self.have_fastqs = True
 
-		# TODO "best". What is "best"?
 		fqs = []
 		if choice == "all":
 			for fastq in self.fastqs:
@@ -283,6 +282,8 @@ class Fast5File(object):
 		elif choice == "fwd,rev":
 				fqs.append(self.fastqs.get('template'))
 				fqs.append(self.fastqs.get('complement'))
+		elif choice == "best":
+				fqs.append(self.fastqs.get(self.get_best_type()))
 
 		return fqs
 
@@ -296,7 +297,6 @@ class Fast5File(object):
 			self._extract_fastas_from_fast5()
 			self.have_fastas = True
 
-		# TODO "best". What is "best"?
 		fas = []
 		if choice == "all":
 			for fasta in self.fastas:
@@ -310,6 +310,11 @@ class Fast5File(object):
 		elif choice == "fwd,rev":
 				fas.append(self.fastas.get('template'))
 				fas.append(self.fastas.get('complement'))
+		elif choice == "best":
+				if self.have_fastqs is False:
+					self._extract_fastqs_from_fast5()
+					self.have_fastqs = True
+				fas.append(self.fastas.get(self.get_best_type()))
 
 		return fas
 
@@ -426,7 +431,14 @@ class Fast5File(object):
 		except:
 			return None
 
-	def find_read_number_block(self):
+	def find_read_number_block_link(self):
+		"""
+		Old-style FAST5/HDF5 structure:
+		Inside /Analyses/Basecall_XXXX there is an 'InputEvents'
+		link that points to the location of the Read in the HDF5 file.
+
+		Return the Read's node if found, or None if not found.
+		"""
 		if self.version == 'classic':
 			path = "/Analyses/Basecall_2D_000"
 		else:
@@ -434,6 +446,8 @@ class Fast5File(object):
 
 		basecall = self.hdf5file[path]
 		path = basecall.get('InputEvents', getlink=True)
+		if path is None:
+			return None
 
 		# the soft link target seems broken?
 		newpath = "/" + "/".join(path.path.split("/")[:-1])
@@ -441,6 +455,53 @@ class Fast5File(object):
 		node = self.hdf5file[newpath]
 
 		return node
+
+	def hdf_internal_error(self,reason):
+		"""Report an error and exit in case of an invalid
+(or unknown) HDF5 structure. Hurrah for ONT!"""
+		msg = """poretools internal error in file '%s':
+%s
+Please report this error (with the offending file) to:
+    https://github.com/arq5x/poretools/issues""" % (self.filename, reason)
+		sys.exit(msg)
+
+        def find_read_number_block_fixed_raw(self):
+		"""
+		New-style FAST5/HDF5 structure:
+		There is a fixed 'Raw/Reads' node with only one 'read_NNN' item
+		inside it (no more 'InputEvents' link).
+
+		Return the Read's node if found, or None if not found.
+		"""
+		raw_reads = self.hdf5file.get('Raw/Reads')
+		if raw_reads is None:
+			return None
+
+		reads = raw_reads.keys()
+		if len(reads)==0:
+			self.hdf_internal_error("Raw/Reads group does not contain any items")
+		if len(reads)>1:
+			# This should not happen, based on information from ONT developers.
+			self.hdf_internal_error("Raw/Reads group contains more than one item")
+		path = 'Raw/Reads/%s' % ( reads[0] )
+		node = self.hdf5file.get(path)
+		if node is None:
+			self.hdf_internal_error("Failed to get HDF5 item '%s'"% (path))
+		return node
+
+        def find_read_number_block(self):
+		"""Returns the node of the 'Read_NNN' information, or None if not
+		found"""
+		node = self.find_read_number_block_link()
+		if node is not None:
+			return node
+
+		node = self.find_read_number_block_fixed_raw()
+		if node is not None:
+			return node
+
+		# Couldn't find the node, bail out.
+		self.hdf_internal_error("unknown HDF5 structure: can't find read block item")
 
 	def find_event_timing_block(self):
 		try:
@@ -467,6 +528,10 @@ class Fast5File(object):
 	def get_duration(self):
 		node = self.find_event_timing_block()
 		if node:
+			#NOTE: 'duration' in the HDF is a float-point number,
+			#      and can be less than one - which will return 0.
+			#TODO: consider supporing floating-point, or at least
+			#      rounding values instead of truncating to int.
 			return int(node.attrs['duration'])
 		return None
 
@@ -484,7 +549,10 @@ class Fast5File(object):
 		start_time = self.get_start_time()
 		duration = self.get_duration()
 
-		if start_time and duration:
+		# 'duration' can be zero and still valid
+		# (if the duration of the template was less than 1 second).
+		# Check for None instead of False.
+		if start_time and (duration is not None):
 			return start_time + duration
 		else:
 			return None
@@ -656,6 +724,30 @@ class Fast5File(object):
 			return True
 		else:
 			return False
+
+	def get_best_type(self):
+		"""
+		Returns the type with the anticipated highest quality:
+		'twodirections', 'template', 'complement' or None.
+		"""
+		try:
+			if 'twodirections' in self.fastqs:
+				return 'twodirections'
+			fwd = 'template' in self.fastqs
+			rev = 'complement' in self.fastqs
+			if fwd and not rev:
+				return 'template'
+			elif rev and not fwd:
+				return 'complement'
+			else:
+				fwd_err_rate = self.fastqs['template'].est_error_rate()
+				rev_err_rate = self.fastqs['complement'].est_error_rate()
+				if fwd_err_rate <= rev_err_rate:
+					return 'template'
+				else:
+					return 'complement'
+		except Exception, e:
+			return None
 
 	####################################################################
 	# Private API methods
