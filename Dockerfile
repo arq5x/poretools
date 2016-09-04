@@ -14,7 +14,7 @@ ENV DEBIAN_FRONTEND noninteractive
 ############# BEGIN INSTALLATION ##############
 
 # Prepare to install R
-RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E084DAB9
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
 RUN echo 'deb http://cran.rstudio.com/bin/linux/ubuntu trusty/' >> /etc/apt/sources.list
 RUN apt-get update
 
