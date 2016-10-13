@@ -1,4 +1,4 @@
-import Fast5File
+from . import Fast5File
 import matplotlib
 #matplotlib.use('Agg') # Must be called before any other matplotlib calls
 from matplotlib import pyplot as plt
@@ -25,16 +25,16 @@ def plot_collectors_curve(args, start_times, read_lengths):
         # compute the cumulative based on reads or total base pairs
         if args.plot_type == 'reads':
                 y_label = "Total reads"
-                cumulative = np.cumsum(range(len(start_times)))
+                cumulative = np.cumsum(list(range(len(start_times))))
         elif args.plot_type == 'basepairs':
                 y_label = "Total base pairs"
                 cumulative = np.cumsum(read_lengths)
 
         step = args.skip
         # make a data frame of the lists
-        d = {'start': [start_times[n] for n in xrange(0, len(start_times), step)],
-             'lengths': [read_lengths[n] for n in xrange(0, len(read_lengths), step)],
-             'cumul': [cumulative[n] for n in xrange(0, len(cumulative), step)]}
+        d = {'start': [start_times[n] for n in range(0, len(start_times), step)],
+             'lengths': [read_lengths[n] for n in range(0, len(read_lengths), step)],
+             'cumul': [cumulative[n] for n in range(0, len(cumulative), step)]}
         df = pd.DataFrame(d)
 
         if args.savedf:
