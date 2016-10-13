@@ -1,4 +1,4 @@
-import Fast5File
+from . import Fast5File
 from collections import defaultdict
 import pandas
 import matplotlib.pyplot as plt
@@ -32,7 +32,7 @@ def run(parser, args):
                         continue
 
         for fq in fqs:
-                if fq is None or len(fq.seq) < args.min_length or len(fq.seq) > args.max_length:			
+                if fq is None or len(fq.seq) < args.min_length or len(fq.seq) > args.max_length:                        
                         continue
 
                 ctr = 0
