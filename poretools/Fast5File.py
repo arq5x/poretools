@@ -2,6 +2,7 @@ import sys
 import os
 import glob
 import tarfile
+import zipfile
 import shutil
 import h5py
 
@@ -34,6 +35,7 @@ FAST5SET_FILELIST = 0
 FAST5SET_DIRECTORY = 1
 FAST5SET_SINGLEFILE = 2
 FAST5SET_TARBALL = 3
+FAST5SET_ZIP = 4
 PORETOOLS_TMPDIR = '.poretools_tmp'
 
 
@@ -73,6 +75,7 @@ class Fast5DirHandler(object):
 class Fast5FileSet(object):
 
 	def __init__(self, fileset, group=0):
+		self.set_type = None
 		if isinstance(fileset, list):
 			self.fileset = fileset
 		elif isinstance(fileset, str):
@@ -98,9 +101,18 @@ class Fast5FileSet(object):
 			return Fast5File(self.files.next(), self.group)
 		except Exception as e:
 			# cleanup our mess
-			if self.set_type == FAST5SET_TARBALL:
+			if self.set_type == FAST5SET_TARBALL or self.set_type == FAST5SET_ZIP:
 				shutil.rmtree(PORETOOLS_TMPDIR)
 			raise StopIteration
+
+	def _prep_tmpdir(self, path):
+		if path is None:
+			path = PORETOOLS_TMPDIR
+		else:
+			PORETOOLS_TMPDIR = path
+		if os.path.isdir(PORETOOLS_TMPDIR):
+			shutil.rmtree(PORETOOLS_TMPDIR)
+		os.mkdir(PORETOOLS_TMPDIR)
 
 	def _extract_fast5_files(self):
 
@@ -124,14 +136,20 @@ class Fast5FileSet(object):
 
 			# is it a tarball?
 			elif tarfile.is_tarfile(f):
-				if os.path.isdir(PORETOOLS_TMPDIR):
-					shutil.rmtree(PORETOOLS_TMPDIR)
-				os.mkdir(PORETOOLS_TMPDIR)
-
+				self._prep_tmpdir(PORETOOLS_TMPDIR)
 				self.files = TarballFileIterator(f)
 				# set to None to delay initialisation
 				self.num_files_in_set = None
 				self.set_type = FAST5SET_TARBALL
+
+			# is it a zipfile?
+			elif zipfile.is_zipfile(f):
+				self._prep_tmpdir(PORETOOLS_TMPDIR)
+				zipfile = zipfile.ZipFile(f, 'r', zipfile.ZIP_STORED, True)
+				self.files = ZipFileIterator( zipfile )
+				# set to None to delay initialisation
+				self.num_files_in_set = None
+				self.set_type( FAST5SET_ZIP )
 
 			# just a single FAST5 file.
 			else:
@@ -170,6 +188,36 @@ class TarballFileIterator:
 		with tarfile.open(self._tarball) as tar:
 			return len(tar.getnames())
 
+class ZipFileIterator:
+	def _fast5_filename_filter(self, filename):
+		return os.path.basename(filename).endswith('.fast5') and not os.path.basename(filename).startswith('.')
+
+	def __init__(self, zipfile):
+		self._zipfile = zipfile
+		self._infolist = zipfile.infolist().reverse()
+
+	def __del__(self):
+		self._zipfile.close()
+
+	def __iter__(self):
+		return self
+
+	def next(self):
+		zipinfo = None
+		while True:
+			if len(self._infolist) == 0:
+				break
+			zipinfo = self._infolist.pop() # returns last entry, hence the reverse at init
+			if zipinfo and self._fast5_filename_filter( zipinfo.filename ):
+				break
+		if zipinfo:
+			self._zipfile.extract(zipinfo, PORETOOLS_TMPDIR)
+			return os.path.join(PORETOOLS_TMPDIR, zipinfo.filename )
+		else:
+			raise StopIteration
+
+	def __len__(self):
+		return len(self._infolist)
 
 class Fast5File(object):
 
