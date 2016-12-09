@@ -538,7 +538,7 @@ Please report this error (with the offending file) to:
 			try:
 				return int(node.attrs['duration']) / self.get_sample_frequency()
 			except Exception, e:
-				print e
+				logger.error(str(e))
 				pass
 
 		node = self.find_event_timing_block()
@@ -562,7 +562,7 @@ Please report this error (with the offending file) to:
 				frequency = int(self.get_sample_frequency())
 				return int(exp_start_time) + int(node.attrs['start_time'] / frequency)
 			except Exception, e:
-				print e
+				logger.error(str(e))
 				pass
  		
 		node = self.find_event_timing_block()
