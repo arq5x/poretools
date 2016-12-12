@@ -552,8 +552,8 @@ Please report this error (with the offending file) to:
 		self.hdf_internal_error("unknown HDF5 structure: can't find read block item")
 
 	def find_event_timing_block(self):
-		path = fastq_paths[self.version]['template'] % (self.group)
 		try:
+			path = fastq_paths[self.version]['template'] % (self.group)
 			node = self.hdf5file[path]
 			path = node.get('Events')
 #, getlink=True)
