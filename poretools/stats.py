@@ -43,7 +43,7 @@ def run(parser, args):
 				logger.warning("No valid sequences observed.\n")
 	else:
 		sizes = []
-		for fast5 in Fast5File.Fast5FileSet(args.files):
+		for fast5 in Fast5File.Fast5FileSet(args.files, group=args.group):
 			fas = fast5.get_fastas(args.type)
 			sizes.extend([len(fa.seq) for fa in fas if fa is not None])
 			fast5.close()
