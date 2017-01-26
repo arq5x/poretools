@@ -212,6 +212,11 @@ def main():
                               default=False,
                               action='store_true',
                               help=('Verbose output in tab-separated format.'))
+    parser_stats.add_argument('--group',
+                              dest='group',
+                              default=0,
+                              type=int,
+                              help=('Base calling group serial number to extract, default 000'))
     parser_stats.set_defaults(func=run_subtool)
 
 
