@@ -118,8 +118,10 @@ class Fast5FileSet(object):
 			f = self.fileset[0]
 			# is it a directory?
 			if os.path.isdir(f):
-				pattern = f + '/' + '*.fast5'
-				files = glob.glob(pattern)
+				files = []
+				for (dirpath, dirnames, names) in os.walk(f):
+					files += [os.path.join(dirpath, n) for n in names if self._fast5_filename_filter(n)]
+
 				self.files = iter(files)
 				self.num_files_in_set = len(files)
 				self.set_type = FAST5SET_DIRECTORY
@@ -127,12 +129,12 @@ class Fast5FileSet(object):
 					logger.warning("Directory is empty!")
 
 			# is it a tarball?
-			elif tarfile.is_tarfile(f):
+			elif os.path.isfile(f) and tarfile.is_tarfile(f):
 				if os.path.isdir(PORETOOLS_TMPDIR):
 					shutil.rmtree(PORETOOLS_TMPDIR)
 				os.mkdir(PORETOOLS_TMPDIR)
 
-				self.files = TarballFileIterator(f)
+				self.files = TarballFileIterator(f, self._fast5_filename_filter)
 				# set to None to delay initialisation
 				self.num_files_in_set = None
 				self.set_type = FAST5SET_TARBALL
@@ -146,13 +148,14 @@ class Fast5FileSet(object):
 			logger.error("Directory %s could not be opened. Exiting.\n" % dir)
 			sys.exit()
 
-class TarballFileIterator:
 	def _fast5_filename_filter(self, filename):
 		return os.path.basename(filename).endswith('.fast5') and not os.path.basename(filename).startswith('.')
 
-	def __init__(self, tarball):
+class TarballFileIterator:
+	def __init__(self, tarball, filename_filter = None):
 		self._tarball = tarball
 		self._tarfile = tarfile.open(tarball)
+		self._filename_filter = filename_filter
 
 	def __del__(self):
 		self._tarfile.close()
@@ -165,7 +168,7 @@ class TarballFileIterator:
 			tarinfo = self._tarfile.next()
 			if tarinfo is None:
 				raise StopIteration
-			elif self._fast5_filename_filter(tarinfo.name):
+			elif self._filename_filter is None or self._filename_filter(tarinfo.name):
 				break
 		self._tarfile.extract(tarinfo, path=PORETOOLS_TMPDIR)
 		return os.path.join(PORETOOLS_TMPDIR, tarinfo.name)
