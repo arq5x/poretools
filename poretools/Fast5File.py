@@ -1,11 +1,9 @@
 import sys
 import os
 import glob
-import fnmatch
 import tarfile
 import shutil
 import h5py
-import glob2
 
 #logging
 import logging
