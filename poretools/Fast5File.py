@@ -50,8 +50,9 @@ class Fast5DirHandler(object):
         self.files = []
         super(Fast5DirHandler, self).__init__()
 
+        
         if os.path.isdir(self.dir):
-            pattern = self.dir + '/' + '*.fast5'
+            pattern = self.dir + os.path.sep + '*.fast5'
             files = glob.glob(pattern)
             self.files = files
 
@@ -118,8 +119,13 @@ class Fast5FileSet(object):
 			f = self.fileset[0]
 			# is it a directory?
 			if os.path.isdir(f):
-				pattern = f + '/' + '*.fast5'
-				files = glob.glob(pattern)
+				# Update (2/3/17) to account for new sub-directory
+				# output from MinKNOW v1.4 release.
+				files = [os.path.join(dirpath + os.path.sep + fast5file) \
+								for dirpath, dirname, files in os.walk(f) \
+									for fast5file in files]
+				#pattern = f + '/' + '*.fast5'
+				#files = glob.glob(pattern)
 				self.files = iter(files)
 				self.num_files_in_set = len(files)
 				self.set_type = FAST5SET_DIRECTORY
