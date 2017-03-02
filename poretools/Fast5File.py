@@ -5,6 +5,7 @@ import tarfile
 import zipfile
 import shutil
 import h5py
+import tempfile
 
 #logging
 import logging
@@ -294,6 +295,23 @@ class Fast5File(object):
 		if self.is_open:
 			self.hdf5file.close()
 			self.is_open = False
+
+	def repack(self, newfile):
+		"""
+		Copy the contents into a new Fast5 file more optimally
+		"""
+		if self.is_open:
+			try:
+				fcopy = h5py.File(newfile, 'w')
+				for x in self.hdf5file.items():
+					self.hdf5file.copy(x[0], fcopy)
+				fcopy.close()
+			except Exception, e:
+				logger.warning("Can not open a new file %s for writing!\n" % (newfile))
+				return False
+			return True
+		else:
+			return False
 
 	def has_2D(self):
 		"""
@@ -869,3 +887,45 @@ Please report this error (with the offending file) to:
 			except Exception, e:
 				self.keyinfo = None
 				logger.warning("Cannot find keyinfo. Exiting.\n")
+
+class Fast5ZipArchive(object):
+	"""
+	Creates or appends a .zip file with a directory or list of fast5 files
+	"""
+
+	def __init__(self, filename):
+		"""Opens a new or appends an old zip file"""
+		self.filename = args[0]
+		self.zipfile = zipfile.ZipFile(self.filename, 'a', zipfile.ZIP_DEFLATED, True)
+		self.tmp = tempdir.mkdtemp(prefix=prefix)
+
+	def __del__(self):
+		self.zipfile.close()
+		os.rmdir(self.tmp)
+
+	def append_dir(self, path):
+		for file in os.listdir(path):
+			fpath = '%s/%s' % (path,file)
+			if os.path.isdir(fpath):
+				self.append_dir(fpath)
+			elif file.endswith('.fast5'):
+				files.append_file(fpath)
+
+	def append_file(self, filepath):
+		fast5 = Fast5File(file)
+		tmppath = "%s/%s" % (self.tmp, filepath)
+		try:
+			self.mkdirs(os.path.dirname(tmppath))
+		except OSError:
+			# okay
+		fast5.repack(tmppath)
+		self.zipfile.write(tmppath, filepath)
+		os.unlink(tmppath)
+		
+	def append(self, *args):	
+		for input in args:
+			if os.path.isdir(input):
+				self.append_dir(input)
+			elif input.endswith('.fast5):
+				self.append_file(input)
+
