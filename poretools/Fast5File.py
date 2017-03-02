@@ -11,6 +11,10 @@ import tempfile
 import logging
 logger = logging.getLogger('poretools')
 
+### Some notes on nanopore FAST5 file format:
+### start_time used to be represented in seconds, when stored in the /Analyses subdirectories.
+### more recently with MinKNOW updates start_time is stored as number of samples under /Reads/Raw
+### and must be converted to seconds by dividing by sample frequency.
 
 # poretools imports
 import formats
@@ -49,8 +53,9 @@ class Fast5DirHandler(object):
         self.files = []
         super(Fast5DirHandler, self).__init__()
 
+        
         if os.path.isdir(self.dir):
-            pattern = self.dir + '/' + '*.fast5'
+            pattern = self.dir + os.path.sep + '*.fast5'
             files = glob.glob(pattern)
             self.files = files
 
@@ -127,8 +132,13 @@ class Fast5FileSet(object):
 			f = self.fileset[0]
 			# is it a directory?
 			if os.path.isdir(f):
-				pattern = f + '/' + '*.fast5'
-				files = glob.glob(pattern)
+				# Update (2/3/17) to account for new sub-directory
+				# output from MinKNOW v1.4 release.
+				files = [os.path.join(dirpath + os.path.sep + fast5file) \
+								for dirpath, dirname, files in os.walk(f) \
+									for fast5file in files]
+				#pattern = f + '/' + '*.fast5'
+				#files = glob.glob(pattern)
 				self.files = iter(files)
 				self.num_files_in_set = len(files)
 				self.set_type = FAST5SET_DIRECTORY
@@ -269,12 +279,6 @@ class Fast5File(object):
 		Try and guess the location of template/complement blocks
 		"""
 		try:
-			self.hdf5file["/Analyses/Basecall_RNN_1D_%03d/BaseCalled_template" % (self.group)]
-			return 'r9rnn'
-		except KeyError:
-			pass
-
-		try:
 			self.hdf5file["/Analyses/Basecall_2D_%03d/BaseCalled_template" % (self.group)]
 			return 'classic'
 		except KeyError:
@@ -285,6 +289,13 @@ class Fast5File(object):
 			return 'metrichor1.16'
 		except KeyError:
 			pass
+
+		# less likely
+                try:
+                        self.hdf5file["/Analyses/Basecall_RNN_1D_%03d/BaseCalled_template" % (self.group)]
+                        return 'r9rnn'
+                except KeyError:
+                        pass
 
 		return 'prebasecalled'
 			
@@ -592,6 +603,16 @@ Please report this error (with the offending file) to:
 		return None
 
 	def get_duration(self):
+		# poretools returns in seconds not samples
+
+		node = self.find_read_number_block_fixed_raw()
+		if node:
+			try:
+				return int(node.attrs['duration']) / self.get_sample_frequency()
+			except Exception, e:
+				logger.error(str(e))
+				pass
+
 		node = self.find_event_timing_block()
 		if node:
 			#NOTE: 'duration' in the HDF is a float-point number,
@@ -602,8 +623,20 @@ Please report this error (with the offending file) to:
 		return None
 
 	def get_start_time(self):
+		# poretools returns a unix timestamp not samples
+
 		exp_start_time	= self.get_exp_start_time()
-	
+
+		# new raw files
+		node = self.find_read_number_block_fixed_raw()
+		if node:
+			try:
+				frequency = int(self.get_sample_frequency())
+				return int(exp_start_time) + int(node.attrs['start_time'] / frequency)
+			except Exception, e:
+				logger.error(str(e))
+				pass
+ 		
 		node = self.find_event_timing_block()
 		if node:
 			return int(exp_start_time) + int(node.attrs['start_time'])
@@ -633,6 +666,19 @@ Please report this error (with the offending file) to:
 
 		try:
 			return self.keyinfo['context_tags'].attrs['version_name']
+		except:
+			return None
+
+	def get_minknow_version(self):
+		"""
+		Return the flow cell version name.
+		"""
+		if self.have_metadata is False:
+			self._get_metadata()
+			self.have_metadata = True
+
+		try:
+			return self.keyinfo['context_tags'].attrs['verssion']
 		except:
 			return None
 
@@ -685,6 +731,21 @@ Please report this error (with the offending file) to:
 
 		try:
 			return self.keyinfo['tracking_id'].attrs['flowcell_id']
+		except:
+			pass
+
+		try:
+			return self.keyinfo['tracking_id'].attrs['flow_cell_id']
+		except:
+			return None
+
+	def get_host_name(self):
+		if self.have_metadata is False:
+			self._get_metadata()
+			self.have_metadata = True
+
+		try:
+			return self.keyinfo['tracking_id'].attrs['hostname']
 		except:
 			return None
 
@@ -763,6 +824,28 @@ Please report this error (with the offending file) to:
 		except Exception, e:
 			return None
 
+	def get_sample_frequency(self):
+		"""
+		Return the user supplied sample name
+		"""
+
+                if self.have_metadata is False:
+                        self._get_metadata()
+                        self.have_metadata = True
+
+		try:
+			return int(self.keyinfo['context_tags'].attrs['sample_frequency'])
+		except Exception, e:
+			return None
+
+	def get_script_name(self):
+		if self.have_metadata is False:
+			self._get_metadata()
+			self.have_metdata = True
+		try:
+			return self.keyinfo['tracking_id'].attrs['exp_script_name']
+		except Exception, e:
+			return None
 
 	def get_template_events_count(self):
 		"""
