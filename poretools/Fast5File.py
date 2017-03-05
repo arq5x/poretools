@@ -4,6 +4,9 @@ import glob
 import tarfile
 import shutil
 import h5py
+import dateutil.parser
+import datetime
+import time
 
 #logging
 import logging
@@ -419,8 +422,15 @@ class Fast5File(object):
 			self.have_metadata = True
 
 		try:
-			return int(self.keyinfo['tracking_id'].attrs['exp_start_time'])
-		except:
+			if self.keyinfo['tracking_id'].attrs['exp_start_time'].endswith('Z'):
+				# MinKNOW >= 1.4 ISO format and UTC time
+				dt = dateutil.parser.parse(self.keyinfo['tracking_id'].attrs['exp_start_time'])
+				timestamp = int(time.mktime(dt.timetuple()))
+			else:
+				# Unix time stamp from MinKNOW < 1.4
+				timestamp = int(self.keyinfo['tracking_id'].attrs['exp_start_time'])
+			return timestamp
+		except KeyError, e:
 			return None
 
 	def get_channel_number(self):
@@ -433,12 +443,12 @@ class Fast5File(object):
 			self.have_metadata = True
 
 		try:
-			return self.keyinfo['channel_id'].attrs['channel_number']
+			return int(self.keyinfo['channel_id'].attrs['channel_number'])
 		except:
 			pass
 
 		try:
-			return self.keyinfo['read_id'].attrs['channel_number']
+			return int(self.keyinfo['read_id'].attrs['channel_number'])
 		except:
 			return None
 
@@ -531,7 +541,19 @@ Please report this error (with the offending file) to:
 		node = self.find_read_number_block()
 		if node:
 			try:
-				return node.attrs['read_number']
+				return int(node.attrs['read_number'])
+			except:
+				return None
+		return None
+
+	def get_start_mux(self):
+		"""
+		Return the mux (multiplexer) setting for this read: identify the pore with this and get_channel_number()
+		"""
+		node = self.find_read_number_block()
+		if node:
+			try:
+				return int(node.attrs['start_mux'])
 			except:
 				return None
 		return None
