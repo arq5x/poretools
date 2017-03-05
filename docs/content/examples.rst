@@ -97,7 +97,7 @@ Create a collector's curve reflecting the sequencing yield over time for a set o
 
 .. code-block:: bash
 
-    poretools yield_plot --plot-type reads test_data/
+    poretools yield_plot --plot-type reads test_data/2016*fast5
 
 The result should look something like:\
 
@@ -108,7 +108,7 @@ The second is the yield of base pairs over time:
 
 .. code-block:: bash
 
-    poretools yield_plot --plot-type basepairs test_data/
+    poretools yield_plot --plot-type basepairs test_data/2016*fast5
 
 The result should look something like:
     
