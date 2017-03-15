@@ -2,3 +2,4 @@ h5py>=2.2.0
 matplotlib
 seaborn
 pandas
+python-dateutil
