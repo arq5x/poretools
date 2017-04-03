@@ -159,11 +159,11 @@ class Fast5FileSet(object):
 			# is it a zipfile?
 			elif zipfile.is_zipfile(f):
 				self._prep_tmpdir(PORETOOLS_TMPDIR)
-				zipfile = zipfile.ZipFile(f, 'r', zipfile.ZIP_STORED, True)
-				self.files = ZipFileIterator( zipfile )
+				zip = zipfile.ZipFile(f, 'r', zipfile.ZIP_STORED, True)
+				self.files = ZipFileIterator( zip )
 				# set to None to delay initialisation
 				self.num_files_in_set = None
-				self.set_type( FAST5SET_ZIP )
+				self.set_type = FAST5SET_ZIP
 
 			# just a single FAST5 file.
 			else:
@@ -206,12 +206,12 @@ class ZipFileIterator:
 	def _fast5_filename_filter(self, filename):
 		return os.path.basename(filename).endswith('.fast5') and not os.path.basename(filename).startswith('.')
 
-	def __init__(self, zipfile):
-		self._zipfile = zipfile
-		self._infolist = zipfile.infolist().reverse()
+	def __init__(self, zip):
+		self._zip = zip
+		self._infolist = zip.infolist().reverse()
 
 	def __del__(self):
-		self._zipfile.close()
+		self._zip.close()
 
 	def __iter__(self):
 		return self
@@ -225,7 +225,7 @@ class ZipFileIterator:
 			if zipinfo and self._fast5_filename_filter( zipinfo.filename ):
 				break
 		if zipinfo:
-			self._zipfile.extract(zipinfo, PORETOOLS_TMPDIR)
+			self._zip.extract(zipinfo, PORETOOLS_TMPDIR)
 			return os.path.join(PORETOOLS_TMPDIR, zipinfo.filename )
 		else:
 			raise StopIteration
@@ -1001,11 +1001,11 @@ class Fast5ZipArchive(object):
 	def __init__(self, filename):
 		"""Opens a new or appends an old zip file"""
 		self.filename = args[0]
-		self.zipfile = zipfile.ZipFile(self.filename, 'a', zipfile.ZIP_DEFLATED, True)
+		self.zip = zipfile.ZipFile(self.filename, 'a', zipfile.ZIP_DEFLATED, True)
 		self.tmp = tempdir.mkdtemp(prefix=prefix)
 
 	def __del__(self):
-		self.zipfile.close()
+		self.zip.close()
 		os.rmdir(self.tmp)
 
 	def append_dir(self, path):
@@ -1022,15 +1022,15 @@ class Fast5ZipArchive(object):
 		try:
 			self.mkdirs(os.path.dirname(tmppath))
 		except OSError:
-			# okay
+			pass # okay
 		fast5.repack(tmppath)
-		self.zipfile.write(tmppath, filepath)
+		self.zip.write(tmppath, filepath)
 		os.unlink(tmppath)
 		
 	def append(self, *args):	
 		for input in args:
 			if os.path.isdir(input):
 				self.append_dir(input)
-			elif input.endswith('.fast5):
+			elif input.endswith('.fast5'):
 				self.append_file(input)
 
