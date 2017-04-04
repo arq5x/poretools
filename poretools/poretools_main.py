@@ -50,6 +50,9 @@ def run_subtool(parser, args):
         import index as submodule
     elif args.command == 'organise':
         import organise as submodule
+    else:
+        parser.print_help()
+        exit()
 
     # run the chosen submodule.
     submodule.run(parser, args)
@@ -57,9 +60,10 @@ def run_subtool(parser, args):
 class ArgumentParserWithDefaults(argparse.ArgumentParser):
     def __init__(self, *args, **kwargs):
         super(ArgumentParserWithDefaults, self).__init__(*args, **kwargs)
-	self.add_argument("-q", "--quiet", help="Do not output warnings to stderr",
-                        action="store_true",
-                        dest="quiet")
+        self.add_argument("-q", "--quiet", help="Do not output warnings to stderr",
+                          action="store_true",
+                          dest="quiet")
+        self.set_defaults(func=run_subtool)
 
 def main():
     logging.basicConfig()
@@ -67,7 +71,7 @@ def main():
     #########################################
     # create the top-level parser
     #########################################
-    parser = argparse.ArgumentParser(prog='poretools', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser = ArgumentParserWithDefaults(prog='poretools', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("-v", "--version", help="Installed poretools version",
                         action="version",
                         version="%(prog)s " + str(poretools.version.__version__))
@@ -536,7 +540,7 @@ def main():
 
     try:
       args.func(parser, args)
-    except IOError, e:
+    except IOError as e:
          if e.errno != 32:  # ignore SIGPIPE
              raise
 

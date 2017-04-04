@@ -1,5 +1,5 @@
 import os
 import sys
-import scripts
-from Fast5File import *
-from version import __version__
+import poretools.scripts
+from poretools.Fast5File import *
+from poretools.version import __version__

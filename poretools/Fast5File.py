@@ -18,8 +18,8 @@ logger = logging.getLogger('poretools')
 ### and must be converted to seconds by dividing by sample frequency.
 
 # poretools imports
-import formats
-from Event import Event
+import poretools.formats
+from poretools.Event import Event
 
 fastq_paths = {
   'closed' : {},
@@ -245,11 +245,11 @@ class Fast5File(object):
 			pass
 
 		# less likely
-                try:
-                        self.hdf5file["/Analyses/Basecall_RNN_1D_%03d/BaseCalled_template" % (self.group)]
-                        return 'r9rnn'
-                except KeyError:
-                        pass
+		try:
+			self.hdf5file["/Analyses/Basecall_RNN_1D_%03d/BaseCalled_template" % (self.group)]
+			return 'r9rnn'
+		except KeyError:
+			pass
 
 		return 'prebasecalled'
 			
@@ -333,13 +333,13 @@ class Fast5File(object):
 		return fas
 
 	def get_fastas_dict(self):
+		"""
+		Return the set of base called sequences in the FAST5
+		in FASTQ format.
                 """
-                Return the set of base called sequences in the FAST5
-                in FASTQ format.
-                """
-                if self.have_fastas is False:
-                        self._extract_fastas_from_fast5()
-                        self.have_fastas = True
+		if self.have_fastas is False:
+			self._extract_fastas_from_fast5()
+			self.have_fastas = True
 
 		return self.fastas
 
@@ -430,7 +430,7 @@ class Fast5File(object):
 				# Unix time stamp from MinKNOW < 1.4
 				timestamp = int(self.keyinfo['tracking_id'].attrs['exp_start_time'])
 			return timestamp
-		except KeyError, e:
+		except KeyError as e:
 			return None
 
 	def get_channel_number(self):
@@ -486,7 +486,7 @@ Please report this error (with the offending file) to:
     https://github.com/arq5x/poretools/issues""" % (self.filename, reason)
 		sys.exit(msg)
 
-        def find_read_number_block_fixed_raw(self):
+	def find_read_number_block_fixed_raw(self):
 		"""
 		New-style FAST5/HDF5 structure:
 		There is a fixed 'Raw/Reads' node with only one 'read_NNN' item
@@ -510,7 +510,7 @@ Please report this error (with the offending file) to:
 			self.hdf_internal_error("Failed to get HDF5 item '%s'"% (path))
 		return node
 
-        def find_read_number_block(self):
+	def find_read_number_block(self):
 		"""Returns the node of the 'Read_NNN' information, or None if not
 		found"""
 		node = self.find_read_number_block_link()
@@ -735,31 +735,31 @@ Please report this error (with the offending file) to:
 			self._get_metadata()
 			self.have_metadata = True
 
-        def get_host_name(self):
-                """
-                Return the MinKNOW host computer name.
-                """
-                if self.have_metadata is False:
-                        self._get_metadata()
-                        self.have_metadata = True
+	def get_host_name(self):
+		"""
+		Return the MinKNOW host computer name.
+		"""
+		if self.have_metadata is False:
+			self._get_metadata()
+			self.have_metadata = True
 
-                try:
-                        return self.keyinfo['tracking_id'].attrs['hostname']
-                except:
-                        return None
+		try:
+			return self.keyinfo['tracking_id'].attrs['hostname']
+		except:
+			return None
 
-                if self.have_metadata is False:
-                        self._get_metadata()
-                        self.have_metadata = True
+		if self.have_metadata is False:
+			self._get_metadata()
+			self.have_metadata = True
 
 	def get_device_id(self):
 		"""
 		Return the flowcell's device id.
 		"""
 
-                if self.have_metadata is False:
-                        self._get_metadata()
-                        self.have_metadata = True
+		if self.have_metadata is False:
+			self._get_metadata()
+			self.have_metadata = True
 
 		try:
 			return self.keyinfo['tracking_id'].attrs['device_id']
@@ -771,9 +771,9 @@ Please report this error (with the offending file) to:
 		Return the user supplied sample name
 		"""
 
-                if self.have_metadata is False:
-                        self._get_metadata()
-                        self.have_metadata = True
+		if self.have_metadata is False:
+			self._get_metadata()
+			self.have_metadata = True
 
 		try:
 			return self.keyinfo['context_tags'].attrs['user_filename_input']
@@ -785,9 +785,9 @@ Please report this error (with the offending file) to:
 		Return the user supplied sample name
 		"""
 
-                if self.have_metadata is False:
-                        self._get_metadata()
-                        self.have_metadata = True
+		if self.have_metadata is False:
+			self._get_metadata()
+			self.have_metadata = True
 
 		try:
 			return int(self.keyinfo['context_tags'].attrs['sample_frequency'])
