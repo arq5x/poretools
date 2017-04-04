@@ -44,7 +44,7 @@ FAST5SET_DIRECTORY = 1
 FAST5SET_SINGLEFILE = 2
 FAST5SET_TARBALL = 3
 FAST5SET_ZIP = 4
-PORETOOLS_TMPDIR = '.poretools_tmp'
+PORETOOLS_TMPDIR = '/dev/shm/.poretools_tmp'
 
 
 class Fast5DirHandler(object):
@@ -158,6 +158,7 @@ class Fast5FileSet(object):
 
 			# is it a zipfile?
 			elif zipfile.is_zipfile(f):
+				print("Found zipfile %s" % (f))
 				self._prep_tmpdir(PORETOOLS_TMPDIR)
 				zip = zipfile.ZipFile(f, 'r', zipfile.ZIP_STORED, True)
 				self.files = ZipFileIterator( zip )
