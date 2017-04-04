@@ -42,7 +42,7 @@ def run(parser, args):
 			args.max_length > 0):			
 				continue
 
-			print fa
+			print(fa)
 
 		fast5.close()
 

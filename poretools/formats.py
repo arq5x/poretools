@@ -19,7 +19,7 @@ class Fastq(object):
 				phred = ord(score) - 33
 				error_count += 10.0 ** (-phred / 10.0)
 			return error_count / len(self.qual)
-		except Exception, e:
+		except Exception:
 			return 0.0
 
 
