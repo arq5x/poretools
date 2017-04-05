@@ -10,7 +10,7 @@ from matplotlib import pyplot as plt
 import logging
 logger = logging.getLogger('poretools')
 
-import Fast5File
+from . import Fast5File
 
 def plot_squiggle(args, filename, start_times, mean_signals):
     """

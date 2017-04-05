@@ -1,4 +1,4 @@
-import Fast5File
+from . import Fast5File
 import sys
 
 #logging

@@ -1,4 +1,4 @@
-import Fast5File
+from . import Fast5File
 from collections import Counter
 import sys
 import pandas as pd

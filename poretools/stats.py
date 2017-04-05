@@ -1,5 +1,5 @@
 import statistics as stat
-import Fast5File
+from . import Fast5File
 import logging
 from collections import defaultdict
 logger = logging.getLogger('poretools')
@@ -14,7 +14,7 @@ def run(parser, args):
 			fas = fast5.get_fastas_dict()
 			if len(fas) > 0:
 				basecalled_files += 1
-			for category, fa in fas.iteritems():
+			for (category, fa) in fas.items():
 				if fa is not None:
 					stats[category].append(len(fa.seq))
 					if category == 'twodirections':

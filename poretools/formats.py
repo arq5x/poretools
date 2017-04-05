@@ -1,6 +1,6 @@
 class Fastq(object):
 	def __init__(self, s):
-		self.s = s
+		self.s = s.decode('UTF-8')
 		self.parse()
 
 	def parse(self):
@@ -26,7 +26,7 @@ class Fastq(object):
 
 class Fasta(object):
 	def __init__(self, s):
-		self.s = s
+		self.s = s.decode('UTF-8')
 		self.parse()
 
 	def parse(self):

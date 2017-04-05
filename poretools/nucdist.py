@@ -1,4 +1,4 @@
-import Fast5File
+from . import Fast5File
 from collections import Counter
 
 def run(parser, args):
