@@ -92,6 +92,8 @@ class Fast5FileSet(object):
 			self.fileset = fileset
 		elif isinstance(fileset, str):
 			self.fileset = [fileset]
+		else:
+			raise Exception('unknown fileset - should be a string file path or list: %s'%(fileset))
 		self.set_type = None
 		self.num_files_in_set = None
 		self.group = group
@@ -100,7 +102,8 @@ class Fast5FileSet(object):
 		self._extract_fast5_files()
 
 	def __del__(self):
-		os.rmdir(self._tmp)
+		if self._tmp:
+			os.rmdir(self._tmp)
 
 	def get_num_files(self):
 		"""
@@ -122,23 +125,33 @@ class Fast5FileSet(object):
 				if self.oldfiles:
 					self.files = self.oldfiles;
 					self.oldfiles = None;
-					return self.next()
-				raise e
+					return self.next() # recurse
+				else:
+					raise e
 				
-			if tarfile.is_tarfile(nextFile):
+			nextFast5 = None
+			(f, ext) = os.path.splitext(nextFile)
+			ext = ext.lower()
+			autoremove = isinstance(self.files, ZipFileIterator) or isinstance(self.files, TarballFileIterator)
+
+			if ext == '.fast5':
+				nextFast5 = Fast5File(nextFile, self.group, autoremove)
+			elif ext == '.tar' and tarfile.is_tarfile(nextFile) and self.oldfiles is None:
 				self.set_type = FAST5SET_TARBALL
 				self.oldfiles = self.files
 				self.files = TarballFileIterator(nextFile, self._tmp)
-				return self.next()
-			elif zipfile.is_zipfile(nextFile):
+				nextFast5 = self.next()
+			elif ext == '.zip' and zipfile.is_zipfile(nextFile) and self.oldfiles is None:
 				self.set_type = FAST5SET_ZIP
 				zip = zipfile.ZipFile(nextFile, 'r', zipfile.ZIP_STORED, True)
 				self.oldfiles = self.files
 				self.files = ZipFileIterator( zip, self._tmp )
-				return self.next()
+				nextFast5 = self.next()
+			else:
+				# fallthrough - hope it is a fast5!
+				nextFast5 = Fast5File(nextFile, self.group, autoremove)
 
-			autoremove = isinstance(self.files, ZipFileIterator) or isinstance(self.files, TarballFileIterator)
-			nextFast5 = Fast5File(nextFile, self.group, autoremove)
+
 			return nextFast5
 		except Exception as e:
 			raise StopIteration
