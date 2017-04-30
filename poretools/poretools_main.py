@@ -140,6 +140,9 @@ def main():
                               default=0,
                               type=int,
                               help=('Base calling group serial number to extract, default 000'))
+    parser_fastq.add_argument('--basecaller',
+	                          dest='basecaller_name',
+							  help=('Choose reads from the named basecaller'))
     parser_fastq.set_defaults(func=run_subtool)
 
 

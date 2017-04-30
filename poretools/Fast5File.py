@@ -24,18 +24,18 @@ from Event import Event
 
 fastq_paths = {
   'closed' : {},
-  'r9rnn' :         { 'template' : '/Analyses/Basecall_RNN_1D_%03d/BaseCalled_template'},
-  'metrichor1.16' : { 'template' : '/Analyses/Basecall_1D_%03d/BaseCalled_template',
-                      'complement' : '/Analyses/Basecall_1D_%03d/BaseCalled_complement',
-                      'twodirections' : '/Analyses/Basecall_2D_%03d/BaseCalled_2D',
-                      'pre_basecalled' : '/Analyses/EventDetection_000/Reads/'
+  'r9rnn' :         { 'template' : ('/Analyses/Basecall_RNN_1D_%03d/BaseCalled_template', '1D') },
+  'metrichor1.16' : { 'template' : ('/Analyses/Basecall_1D_%03d/BaseCalled_template', '1D'),
+                      'complement' : ('/Analyses/Basecall_1D_%03d/BaseCalled_complement', '1D'),
+                      'twodirections' : ('/Analyses/Basecall_2D_%03d/BaseCalled_2D', '1D'),
+                      'pre_basecalled' : ('/Analyses/EventDetection_000/Reads/',)
                     },
-  'classic' :       { 'template' : '/Analyses/Basecall_2D_%03d/BaseCalled_template',
-                      'complement' : '/Analyses/Basecall_2D_%03d/BaseCalled_complement',
-                      'twodirections' : '/Analyses/Basecall_2D_%03d/BaseCalled_2D',
-                      'pre_basecalled' : '/Analyses/EventDetection_000/Reads/'
+  'classic' :       { 'template' : ('/Analyses/Basecall_2D_%03d/BaseCalled_template', '2D'),
+                      'complement' : ('/Analyses/Basecall_2D_%03d/BaseCalled_complement', '2D'),
+                      'twodirections' : ('/Analyses/Basecall_2D_%03d/BaseCalled_2D', '2D'),
+                      'pre_basecalled' : ('/Analyses/EventDetection_000/Reads/',)
                     },
-  'prebasecalled' : {'pre_basecalled' : '/Analyses/EventDetection_000/Reads/'}
+  'prebasecalled' : {'pre_basecalled' : ('/Analyses/EventDetection_000/Reads/',)}
 }
 
 FAST5SET_FILELIST = 0
@@ -595,7 +595,7 @@ Please report this error (with the offending file) to:
 		self.hdf_internal_error("unknown HDF5 structure: can't find read block item")
 
 	def find_event_timing_block(self):
-		path = fastq_paths[self.version]['template'] % (self.group)
+		path = fastq_paths[self.version]['template'][0] % (self.group)
 		try:
 			node = self.hdf5file[path]
 			path = node.get('Events')
@@ -878,7 +878,7 @@ Please report this error (with the offending file) to:
 		Pull out the event count for the template strand
 		"""
 		try:
-			table = self.hdf5file[fastq_paths[self.version]['template'] % self.group]
+			table = self.hdf5file[fastq_paths[self.version]['template'][0] % self.group]
 			return len(table['Events'][()])
 		except Exception, e:
 			return 0
@@ -888,7 +888,7 @@ Please report this error (with the offending file) to:
 		Pull out the event count for the complementary strand
 		"""
 		try:
-			table = self.hdf5file[fastq_paths[self.version]['complement'] % self.group]
+			table = self.hdf5file[fastq_paths[self.version]['complement'][0] % self.group]
 			return len(table['Events'][()])
 		except Exception, e:
 			return 0
@@ -934,9 +934,11 @@ Please report this error (with the offending file) to:
 		"""
 		for id, h5path in fastq_paths[self.version].iteritems(): 
 			try:
-				table = self.hdf5file[h5path % self.group]
+				table = self.hdf5file[h5path[0] % self.group]
 				fq = formats.Fastq(table['Fastq'][()])
-				fq.name += " " + self.filename
+				record_id, desc = fq.name.split(" ")
+				record_id += ":%s_%03d:%s" % (h5path[1], self.group, id)
+				fq.name = record_id + ' ' + desc + ' ' + self.filename
 				self.fastqs[id] = fq
 			except Exception, e:
 				pass
@@ -947,9 +949,11 @@ Please report this error (with the offending file) to:
 		"""
 		for id, h5path in fastq_paths[self.version].iteritems(): 
 			try:
-				table = self.hdf5file[h5path % self.group]
+				table = self.hdf5file[h5path[0] % self.group]
 				fa = formats.Fasta(table['Fastq'][()])
-				fa.name += " " + self.filename
+				record_id, desc = fa.name.split(" ")
+				record_id += ":%s_%03d:%s" % (h5path[1], self.group, id)
+				fa.name = record_id + ' ' + desc + ' ' + self.filename
 				self.fastas[id] = fa
 			except Exception, e:
 				pass
@@ -959,7 +963,7 @@ Please report this error (with the offending file) to:
 		Pull out the event information for the template strand
 		"""
 		try:
-			table = self.hdf5file[fastq_paths[self.version]['template'] % self.group]
+			table = self.hdf5file[fastq_paths[self.version]['template'][0] % self.group]
 			self.template_events = [Event(x) for x in table['Events'][()]]
 		except Exception, e:
 			self.template_events = []
@@ -969,7 +973,7 @@ Please report this error (with the offending file) to:
 		Pull out the event information for the complementary strand
 		"""
 		try:
-			table = self.hdf5file[fastq_paths[self.version]['complement'] % self.group]
+			table = self.hdf5file[fastq_paths[self.version]['complement'][0] % self.group]
 			self.complement_events = [Event(x) for x in table['Events'][()]]
 		except Exception, e:
 			self.complement_events = []
@@ -979,7 +983,7 @@ Please report this error (with the offending file) to:
 		Pull out the pre-basecalled event information 
 		"""
 		# try:
-		table = self.hdf5file[fastq_paths[self.version]['pre_basecalled']]
+		table = self.hdf5file[fastq_paths[self.version]['pre_basecalled'][0]]
 		events = []
 		for read in table:
 			events.extend(table[read]["Events"][()])
