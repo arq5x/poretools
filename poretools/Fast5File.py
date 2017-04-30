@@ -7,6 +7,7 @@ import h5py
 import dateutil.parser
 import datetime
 import time
+import re
 
 #logging
 import logging
@@ -80,7 +81,7 @@ class Fast5DirHandler(object):
 
 class Fast5FileSet(object):
 
-	def __init__(self, fileset, group=0):
+	def __init__(self, fileset, group=0, basecaller_name=None):
 		if isinstance(fileset, list):
 			self.fileset = fileset
 		elif isinstance(fileset, str):
@@ -88,6 +89,7 @@ class Fast5FileSet(object):
 		self.set_type = None
 		self.num_files_in_set = None
 		self.group = group
+		self.basecaller_name = basecaller_name
 		self._extract_fast5_files()
 
 	def get_num_files(self):
@@ -103,9 +105,11 @@ class Fast5FileSet(object):
 
 	def next(self):
 		try:
-			return Fast5File(self.files.next(), self.group)
+			return Fast5File(self.files.next(), self.group, self.basecaller_name)
 		except Exception as e:
 			# cleanup our mess
+			print >>sys.stderr, e
+
 			if self.set_type == FAST5SET_TARBALL:
 				shutil.rmtree(PORETOOLS_TMPDIR)
 			raise StopIteration
@@ -183,15 +187,35 @@ class TarballFileIterator:
 		with tarfile.open(self._tarball) as tar:
 			return len(tar.getnames())
 
+class NoSuchBasecaller(Exception):
+	pass
 
 class Fast5File(object):
-
-	def __init__(self, filename, group=0):
+	def __init__(self, filename, group=0, basecaller_name=None):
 		self.filename = filename
-		self.group = group
 		self.is_open = self.open()
+
 		if self.is_open:
+			if basecaller_name:
+				self.group = self.find_group_with_basecaller(basecaller_name)
+			else:
+				if group == -1:
+					self.group = self.find_highest_group()
+				else:
+					self.group = group
+
+
 			self.version = self.guess_version()
+
+			if basecaller_name:
+				self.group = self.find_group_with_basecaller(basecaller_name)
+				if self.group is None:
+					self.version = 'closed'
+			else:
+				if group == -1:
+					self.group = self.find_highest_group()
+				else:
+					self.group = group
 		else:
 			self.version = 'closed'
 
@@ -252,7 +276,49 @@ class Fast5File(object):
                         pass
 
 		return 'prebasecalled'
-			
+
+	def find_highest_group(self):
+		group = 0
+		while True:
+			try:
+				self.hdf5file["/Analyses/Basecall_1D_%03d" % (group)]
+				group += 1
+			except KeyError:
+				break
+		return max((0, group-1))
+
+	def get_basecaller_version(self, g):
+		try:
+			return g.attrs['chimaera version']
+		except:
+			pass
+
+		try:
+			return g.attrs['version']
+		except:
+			return None
+
+	def find_group_with_basecaller(self, basecaller):
+		if '=' in basecaller:
+			name, version = basecaller.split('=')
+		else:
+			name = basecaller
+			version = None
+
+		analyses = self.hdf5file.get('Analyses')
+		if analyses:
+			for k, g in analyses.iteritems():
+				m = re.match('Basecall_1D_(\d+)', k)
+				if m:
+					if g.attrs['name'] == name:
+						if version:
+							if version == self.get_basecaller_version(g):
+								return int(m.group(1))
+						else:
+							return int(m.group(1))
+		raise None
+		#NoSuchBasecaller()
+
 	def close(self):
 		"""
 		Close an open an ONT Fast5 file, assuming HDF5 format
@@ -465,7 +531,11 @@ class Fast5File(object):
 		else:
 			path = "/Analyses/Basecall_1D_000"
 
-		basecall = self.hdf5file[path]
+		try:
+			basecall = self.hdf5file[path]
+		except:
+			return None
+
 		path = basecall.get('InputEvents', getlink=True)
 		if path is None:
 			return None

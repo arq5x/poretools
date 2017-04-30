@@ -190,7 +190,11 @@ def main():
                               dest='group',
                               default=0,
                               type=int,
-                              help=('Base calling group serial number to extract, default 000'))
+                              help=('Base calling group serial number to extract, default 0, use -1 for highest group'))
+    parser_fasta.add_argument('--basecaller',
+	                          dest='basecaller_name',
+							  help=('Choose reads from the named basecaller'))
+
     parser_fasta.set_defaults(func=run_subtool)
 
 
