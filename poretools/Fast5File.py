@@ -616,6 +616,18 @@ Please report this error (with the offending file) to:
 				return None
 		return None
 
+	def get_read_id(self):
+		"""
+		Return the read number for the pore representing the given read.
+		"""
+		node = self.find_read_number_block()
+		if node:
+			try:
+				return int(node.attrs['read_id'])
+			except:
+				return None
+		return None
+
 	def get_start_mux(self):
 		"""
 		Return the mux (multiplexer) setting for this read: identify the pore with this and get_channel_number()
