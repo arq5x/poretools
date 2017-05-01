@@ -648,6 +648,10 @@ Please report this error (with the offending file) to:
 			return int(node.attrs['duration'])
 		return None
 
+	def get_read_id(self):
+		node = self.find_read_number_block_fixed_raw()
+		return node.attrs['read_id']
+
 	def get_start_time(self):
 		# poretools returns a unix timestamp not samples
 
@@ -718,19 +722,6 @@ Please report this error (with the offending file) to:
 
 		try:
 			return self.keyinfo['tracking_id'].attrs['run_id']
-		except:
-			return None
-
-	def get_read_id(self):
-		"""
-		Return the read id.
-		"""
-		if self.have_metadata is False:
-			self._get_metadata()
-			self.have_metadata = True
-
-		try:
-			return self.keyinfo['tracking_id'].attrs['read_id']
 		except:
 			return None
 
