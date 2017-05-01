@@ -616,18 +616,6 @@ Please report this error (with the offending file) to:
 				return None
 		return None
 
-	def get_read_id(self):
-		"""
-		Return the read number for the pore representing the given read.
-		"""
-		node = self.find_read_number_block()
-		if node:
-			try:
-				return int(node.attrs['read_id'])
-			except:
-				return None
-		return None
-
 	def get_start_mux(self):
 		"""
 		Return the mux (multiplexer) setting for this read: identify the pore with this and get_channel_number()
@@ -730,6 +718,19 @@ Please report this error (with the offending file) to:
 
 		try:
 			return self.keyinfo['tracking_id'].attrs['run_id']
+		except:
+			return None
+
+	def get_read_id(self):
+		"""
+		Return the read id.
+		"""
+		if self.have_metadata is False:
+			self._get_metadata()
+			self.have_metadata = True
+
+		try:
+			return self.keyinfo['tracking_id'].attrs['read_id']
 		except:
 			return None
 
