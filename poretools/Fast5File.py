@@ -198,6 +198,9 @@ class Fast5File(object):
 		if self.is_open:
 			if basecaller_name:
 				self.group = self.find_group_with_basecaller(basecaller_name)
+				if self.group is None:
+					self.close()
+					return
 			else:
 				if group == -1:
 					self.group = self.find_highest_group()
@@ -210,7 +213,8 @@ class Fast5File(object):
 			if basecaller_name:
 				self.group = self.find_group_with_basecaller(basecaller_name)
 				if self.group is None:
-					self.version = 'closed'
+					self.close()
+					return
 			else:
 				if group == -1:
 					self.group = self.find_highest_group()
@@ -316,8 +320,7 @@ class Fast5File(object):
 								return int(m.group(1))
 						else:
 							return int(m.group(1))
-		raise None
-		#NoSuchBasecaller()
+		return None
 
 	def close(self):
 		"""
