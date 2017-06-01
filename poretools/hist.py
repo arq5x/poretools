@@ -6,7 +6,7 @@ import matplotlib
 from matplotlib import pyplot as plt
 
 import seaborn as sns
-import Fast5File
+from . import Fast5File
 
 import logging
 logger = logging.getLogger('poretools')

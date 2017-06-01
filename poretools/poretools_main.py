@@ -9,47 +9,50 @@ import logging
 logger = logging.getLogger('poretools')
 
 # poretools imports
-import poretools.version
+from . import version
 
 def run_subtool(parser, args):
     if args.command == 'combine':
-        import combine as submodule
+        from . import combine as submodule
     elif args.command == 'events':
-        import events as submodule
+        from . import events as submodule
     elif args.command == 'fasta':
-        import fasta as submodule
+        from . import fasta as submodule
     elif args.command == 'fastq':
-        import fastq as submodule
+        from . import fastq as submodule
     elif args.command == 'hist':
-        import hist as submodule
+        from . import hist as submodule
     elif args.command == 'metadata':
-        import metadata as submodule
+        from . import metadata as submodule
     elif args.command == 'nucdist':
-        import nucdist as submodule
+        from . import nucdist as submodule
     elif args.command == 'occupancy':
-        import occupancy as submodule
+        from . import occupancy as submodule
     elif args.command == 'qualdist':
-        import qualdist as submodule
+        from . import qualdist as submodule
     elif args.command == 'qualpos':
-        import qual_v_pos as submodule
+        from . import qual_v_pos as submodule
     elif args.command == 'readstats':
-        import readstats as submodule
+        from . import readstats as submodule
     elif args.command == 'stats':
-        import stats as submodule
+        from . import stats as submodule
     elif args.command == 'tabular':
-        import tabular as submodule
+        from . import tabular as submodule
     elif args.command == 'times':
-        import times as submodule
+        from . import times as submodule
     elif args.command == 'squiggle':
-        import squiggle as submodule
+        from . import squiggle as submodule
     elif args.command == 'winner':
-        import winner as submodule
+        from . import winner as submodule
     elif args.command == 'yield_plot':
-        import yield_plot as submodule
+        from . import yield_plot as submodule
     elif args.command == 'index':
-        import index as submodule
+        from . import index as submodule
     elif args.command == 'organise':
-        import organise as submodule
+        from . import organise as submodule
+    else:
+        parser.print_help()
+        exit()
 
     # run the chosen submodule.
     submodule.run(parser, args)
@@ -57,9 +60,10 @@ def run_subtool(parser, args):
 class ArgumentParserWithDefaults(argparse.ArgumentParser):
     def __init__(self, *args, **kwargs):
         super(ArgumentParserWithDefaults, self).__init__(*args, **kwargs)
-	self.add_argument("-q", "--quiet", help="Do not output warnings to stderr",
-                        action="store_true",
-                        dest="quiet")
+        self.add_argument("-q", "--quiet", help="Do not output warnings to stderr",
+                          action="store_true",
+                          dest="quiet")
+        self.set_defaults(func=run_subtool)
 
 def main():
     logging.basicConfig()
@@ -67,10 +71,10 @@ def main():
     #########################################
     # create the top-level parser
     #########################################
-    parser = argparse.ArgumentParser(prog='poretools', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser = ArgumentParserWithDefaults(prog='poretools', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("-v", "--version", help="Installed poretools version",
                         action="version",
-                        version="%(prog)s " + str(poretools.version.__version__))
+                        version="%(prog)s " + str(version.__version__))
     subparsers = parser.add_subparsers(title='[sub-commands]', dest='command', parser_class=ArgumentParserWithDefaults)
 
     #########################################
@@ -536,7 +540,7 @@ def main():
 
     try:
       args.func(parser, args)
-    except IOError, e:
+    except IOError as e:
          if e.errno != 32:  # ignore SIGPIPE
              raise
 

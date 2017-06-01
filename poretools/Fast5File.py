@@ -18,8 +18,8 @@ logger = logging.getLogger('poretools')
 ### and must be converted to seconds by dividing by sample frequency.
 
 # poretools imports
-import formats
-from Event import Event
+from . import formats
+from . import Event
 
 fastq_paths = {
   'closed' : {},
@@ -77,6 +77,8 @@ class Fast5DirHandler(object):
         else:
             raise StopIteration()
 
+    __next__ = next
+
 
 class Fast5FileSet(object):
 
@@ -103,12 +105,15 @@ class Fast5FileSet(object):
 
 	def next(self):
 		try:
-			return Fast5File(self.files.next(), self.group)
+			nextFile = next(self.files)
+			return Fast5File(nextFile, self.group)
 		except Exception as e:
 			# cleanup our mess
 			if self.set_type == FAST5SET_TARBALL:
 				shutil.rmtree(PORETOOLS_TMPDIR)
 			raise StopIteration
+
+	__next__ = next
 
 	def _extract_fast5_files(self):
 
@@ -171,13 +176,15 @@ class TarballFileIterator:
 
 	def next(self):
 		while True:
-			tarinfo = self._tarfile.next()
+			tarinfo = next(self._tarfile)
 			if tarinfo is None:
 				raise StopIteration
 			elif self._fast5_filename_filter(tarinfo.name):
 				break
 		self._tarfile.extract(tarinfo, path=PORETOOLS_TMPDIR)
 		return os.path.join(PORETOOLS_TMPDIR, tarinfo.name)
+
+	__next__ = next
 
 	def __len__(self):
 		with tarfile.open(self._tarball) as tar:
@@ -224,7 +231,7 @@ class Fast5File(object):
 		try:
 			self.hdf5file = h5py.File(self.filename, 'r')
 			return True
-		except Exception, e:
+		except Exception as e:
 			logger.warning("Cannot open file: %s. Perhaps it is corrupt? Moving on.\n" % self.filename)
 			return False
 
@@ -245,11 +252,11 @@ class Fast5File(object):
 			pass
 
 		# less likely
-                try:
-                        self.hdf5file["/Analyses/Basecall_RNN_1D_%03d/BaseCalled_template" % (self.group)]
-                        return 'r9rnn'
-                except KeyError:
-                        pass
+		try:
+			self.hdf5file["/Analyses/Basecall_RNN_1D_%03d/BaseCalled_template" % (self.group)]
+			return 'r9rnn'
+		except KeyError:
+			pass
 
 		return 'prebasecalled'
 			
@@ -333,13 +340,13 @@ class Fast5File(object):
 		return fas
 
 	def get_fastas_dict(self):
+		"""
+		Return the set of base called sequences in the FAST5
+		in FASTQ format.
                 """
-                Return the set of base called sequences in the FAST5
-                in FASTQ format.
-                """
-                if self.have_fastas is False:
-                        self._extract_fastas_from_fast5()
-                        self.have_fastas = True
+		if self.have_fastas is False:
+			self._extract_fastas_from_fast5()
+			self.have_fastas = True
 
 		return self.fastas
 
@@ -430,7 +437,7 @@ class Fast5File(object):
 				# Unix time stamp from MinKNOW < 1.4
 				timestamp = int(self.keyinfo['tracking_id'].attrs['exp_start_time'])
 			return timestamp
-		except KeyError, e:
+		except KeyError as e:
 			return None
 
 	def get_channel_number(self):
@@ -486,7 +493,7 @@ Please report this error (with the offending file) to:
     https://github.com/arq5x/poretools/issues""" % (self.filename, reason)
 		sys.exit(msg)
 
-        def find_read_number_block_fixed_raw(self):
+	def find_read_number_block_fixed_raw(self):
 		"""
 		New-style FAST5/HDF5 structure:
 		There is a fixed 'Raw/Reads' node with only one 'read_NNN' item
@@ -510,7 +517,7 @@ Please report this error (with the offending file) to:
 			self.hdf_internal_error("Failed to get HDF5 item '%s'"% (path))
 		return node
 
-        def find_read_number_block(self):
+	def find_read_number_block(self):
 		"""Returns the node of the 'Read_NNN' information, or None if not
 		found"""
 		node = self.find_read_number_block_link()
@@ -565,7 +572,7 @@ Please report this error (with the offending file) to:
 		if node:
 			try:
 				return int(node.attrs['duration']) / self.get_sample_frequency()
-			except Exception, e:
+			except Exception as e:
 				logger.error(str(e))
 				pass
 
@@ -589,7 +596,7 @@ Please report this error (with the offending file) to:
 			try:
 				frequency = int(self.get_sample_frequency())
 				return int(exp_start_time) + int(node.attrs['start_time'] / frequency)
-			except Exception, e:
+			except Exception as e:
 				logger.error(str(e))
 				pass
  		
@@ -735,31 +742,31 @@ Please report this error (with the offending file) to:
 			self._get_metadata()
 			self.have_metadata = True
 
-        def get_host_name(self):
-                """
-                Return the MinKNOW host computer name.
-                """
-                if self.have_metadata is False:
-                        self._get_metadata()
-                        self.have_metadata = True
+	def get_host_name(self):
+		"""
+		Return the MinKNOW host computer name.
+		"""
+		if self.have_metadata is False:
+			self._get_metadata()
+			self.have_metadata = True
 
-                try:
-                        return self.keyinfo['tracking_id'].attrs['hostname']
-                except:
-                        return None
+		try:
+			return self.keyinfo['tracking_id'].attrs['hostname']
+		except:
+			return None
 
-                if self.have_metadata is False:
-                        self._get_metadata()
-                        self.have_metadata = True
+		if self.have_metadata is False:
+			self._get_metadata()
+			self.have_metadata = True
 
 	def get_device_id(self):
 		"""
 		Return the flowcell's device id.
 		"""
 
-                if self.have_metadata is False:
-                        self._get_metadata()
-                        self.have_metadata = True
+		if self.have_metadata is False:
+			self._get_metadata()
+			self.have_metadata = True
 
 		try:
 			return self.keyinfo['tracking_id'].attrs['device_id']
@@ -771,13 +778,13 @@ Please report this error (with the offending file) to:
 		Return the user supplied sample name
 		"""
 
-                if self.have_metadata is False:
-                        self._get_metadata()
-                        self.have_metadata = True
+		if self.have_metadata is False:
+			self._get_metadata()
+			self.have_metadata = True
 
 		try:
 			return self.keyinfo['context_tags'].attrs['user_filename_input']
-		except Exception, e:
+		except Exception as e:
 			return None
 
 	def get_sample_frequency(self):
@@ -785,13 +792,13 @@ Please report this error (with the offending file) to:
 		Return the user supplied sample name
 		"""
 
-                if self.have_metadata is False:
-                        self._get_metadata()
-                        self.have_metadata = True
+		if self.have_metadata is False:
+			self._get_metadata()
+			self.have_metadata = True
 
 		try:
 			return int(self.keyinfo['context_tags'].attrs['sample_frequency'])
-		except Exception, e:
+		except Exception as e:
 			return None
 
 	def get_script_name(self):
@@ -800,7 +807,7 @@ Please report this error (with the offending file) to:
 			self.have_metdata = True
 		try:
 			return self.keyinfo['tracking_id'].attrs['exp_script_name']
-		except Exception, e:
+		except Exception as e:
 			return None
 
 	def get_template_events_count(self):
@@ -810,7 +817,7 @@ Please report this error (with the offending file) to:
 		try:
 			table = self.hdf5file[fastq_paths[self.version]['template'] % self.group]
 			return len(table['Events'][()])
-		except Exception, e:
+		except Exception as e:
 			return 0
 
 	def get_complement_events_count(self):
@@ -820,7 +827,7 @@ Please report this error (with the offending file) to:
 		try:
 			table = self.hdf5file[fastq_paths[self.version]['complement'] % self.group]
 			return len(table['Events'][()])
-		except Exception, e:
+		except Exception as e:
 			return 0
 
 	def is_high_quality(self):
@@ -851,7 +858,7 @@ Please report this error (with the offending file) to:
 					return 'template'
 				else:
 					return 'complement'
-		except Exception, e:
+		except Exception as e:
 			return None
 
 	####################################################################
@@ -862,26 +869,26 @@ Please report this error (with the offending file) to:
 		"""
 		Return the sequence in the FAST5 file in FASTQ format
 		"""
-		for id, h5path in fastq_paths[self.version].iteritems(): 
+		for (id, h5path) in fastq_paths[self.version].items(): 
 			try:
 				table = self.hdf5file[h5path % self.group]
 				fq = formats.Fastq(table['Fastq'][()])
 				fq.name += " " + self.filename
 				self.fastqs[id] = fq
-			except Exception, e:
+			except Exception as e:
 				pass
 
 	def _extract_fastas_from_fast5(self):
 		"""
 		Return the sequence in the FAST5 file in FASTA format
 		"""
-		for id, h5path in fastq_paths[self.version].iteritems(): 
+		for (id, h5path) in fastq_paths[self.version].items(): 
 			try:
 				table = self.hdf5file[h5path % self.group]
 				fa = formats.Fasta(table['Fastq'][()])
 				fa.name += " " + self.filename
 				self.fastas[id] = fa
-			except Exception, e:
+			except Exception as e:
 				pass
 
 	def _extract_template_events(self):
@@ -891,7 +898,7 @@ Please report this error (with the offending file) to:
 		try:
 			table = self.hdf5file[fastq_paths[self.version]['template'] % self.group]
 			self.template_events = [Event(x) for x in table['Events'][()]]
-		except Exception, e:
+		except Exception as e:
 			self.template_events = []
 
 	def _extract_complement_events(self):
@@ -901,7 +908,7 @@ Please report this error (with the offending file) to:
 		try:
 			table = self.hdf5file[fastq_paths[self.version]['complement'] % self.group]
 			self.complement_events = [Event(x) for x in table['Events'][()]]
-		except Exception, e:
+		except Exception as e:
 			self.complement_events = []
 
 	def _extract_pre_basecalled_events(self):
@@ -914,15 +921,15 @@ Please report this error (with the offending file) to:
 		for read in table:
 			events.extend(table[read]["Events"][()])
 		self.pre_basecalled_events = [Event(x) for x in events]
-		# except Exception, e:
+		# except Exception as e:
 			# self.pre_basecalled_events = []			
 
 	def _get_metadata(self):
 		try:
 			self.keyinfo = self.hdf5file['/UniqueGlobalKey']
-		except Exception, e:
+		except Exception as e:
 			try:
 				self.keyinfo = self.hdf5file['/Key']
-			except Exception, e:
+			except Exception as e:
 				self.keyinfo = None
 				logger.warning("Cannot find keyinfo. Exiting.\n")

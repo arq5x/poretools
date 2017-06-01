@@ -1,4 +1,4 @@
-import Fast5File
+from . import Fast5File
 import datetime
 
 ############
@@ -17,7 +17,7 @@ import datetime
 
 def run(parser, args):
 
-	print "source_filename\ttemplate_fwd_length\tcomplement_rev_length\t2d_length\tasic_id\tasic_temp\theatsink_temp\tchannel\texp_start_time\texp_start_time_string_date\texp_start_time_string_time\tstart_time\tstart_time_string_date\tstart_time_string_time\tduration\tfast5_version"
+	print("source_filename\ttemplate_fwd_length\tcomplement_rev_length\t2d_length\tasic_id\tasic_temp\theatsink_temp\tchannel\texp_start_time\texp_start_time_string_date\texp_start_time_string_time\tstart_time\tstart_time_string_date\tstart_time_string_time\tduration\tfast5_version")
 
 	for fast5 in Fast5File.Fast5FileSet(args.files):
 		
@@ -56,11 +56,11 @@ def run(parser, args):
 			length_complement = len(fastq_reads[1].seq)
 			length_2d = len(fastq_reads[2].seq)
 
-		print "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s" % (
+		print("s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s" % (
 			fast5.filename,
 			length_template,
 			length_complement,
 			length_2d,		
-			asic_id, asic_temp, heatsink_temp,channel_number,exp_start_time,exp_start_time_string,start_time,start_time_string,duration,fast5_version)
+			asic_id, asic_temp, heatsink_temp,channel_number,exp_start_time,exp_start_time_string,start_time,start_time_string,duration,fast5_version))
 
 		fast5.close()

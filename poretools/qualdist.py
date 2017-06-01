@@ -1,4 +1,4 @@
-import Fast5File
+from . import Fast5File
 from collections import Counter
 
 def run(parser, args):
@@ -15,5 +15,5 @@ def run(parser, args):
 		fast5.close()
 
 	for q in qual_count:
-		print '\t'.join(str(s) for s in [chr(q+33), q, qual_count[q], 
-			total_nucs, float(qual_count[q]) / float(total_nucs)])
+		print('\t'.join(str(s) for s in [chr(q+33), q, qual_count[q], 
+			total_nucs, float(qual_count[q]) / float(total_nucs)]))

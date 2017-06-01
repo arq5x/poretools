@@ -1,4 +1,4 @@
-import Fast5File
+from . import Fast5File
 import sys
 
 #logging
@@ -21,5 +21,5 @@ def run(parser, args):
 		fast5.close()
 
 	logger.info("Wow, it's a whopper: your longest read is %d bases." % (longest_size,))
-	print longest_read
+	print(longest_read)
 
