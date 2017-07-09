@@ -2,6 +2,7 @@ import Fast5File
 from collections import defaultdict
 import pandas
 import matplotlib.pyplot as plt
+import sys
 
 #logging
 import logging
@@ -12,7 +13,7 @@ def run(parser, args):
     """ returns boxplot with qual scores for each bin/position"""
     qualpos = defaultdict(list)
     bin_width = args.bin_width
-    
+
     for fast5 in Fast5File.Fast5FileSet(args.files):
         if args.start_time or args.end_time:
                 read_start_time = fast5.get_start_time()
@@ -32,7 +33,7 @@ def run(parser, args):
                         continue
 
         for fq in fqs:
-                if fq is None or len(fq.seq) < args.min_length or len(fq.seq) > args.max_length:			
+                if fq is None or len(fq.seq) < args.min_length or len(fq.seq) > args.max_length:
                         continue
 
                 ctr = 0
@@ -62,5 +63,3 @@ def run(parser, args):
     else:
             logger.info("Showing plot...")
             plt.show()
-
-
