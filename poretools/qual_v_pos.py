@@ -54,10 +54,10 @@ def run(parser, args):
     if args.saveas is not None:
             logger.info("Writing plot to file...")
             plot_file = args.saveas
-            if plot_file.endswith(".pdf") or plot_file.endswith(".jpg"):
+            if plot_file.endswith(".pdf") or plot_file.endswith(".png"):
                     plt.savefig(plot_file)
             else:
-                    logger.error("Unrecognized extension for %s! Try .pdf or .jpg" % (plot_file))
+                    logger.error("Unrecognized extension for %s! Try .pdf or .png" % (plot_file))
                     sys.exit()
 
     else:
