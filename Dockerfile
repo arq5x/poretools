@@ -19,8 +19,10 @@ RUN echo 'deb http://cran.rstudio.com/bin/linux/ubuntu trusty/' >> /etc/apt/sour
 RUN apt-get update
 
 # Install dependencies
-RUN apt-get -y install git python-tables python-setuptools python-pip python-dev cython libhdf5-serial-dev r-base python-rpy2
+RUN apt-get -y install git python-tables python-setuptools python-pip python-dev cython libhdf5-serial-dev r-base python-rpy2 libfreetype6-dev pkg-config
 
+# Upgrade numpy
+RUN easy_install --upgrade numpy
 # Upgrade numexpr
 RUN pip install numexpr --upgrade
 
@@ -29,7 +31,9 @@ RUN Rscript -e 'options("repos" = c(CRAN = "http://cran.rstudio.com/")); install
 
 # Install poretools
 RUN git clone https://github.com/arq5x/poretools /tmp/poretools
-RUN cd /tmp/poretools && python setup.py install
+WORKDIR /tmp/poretools
+RUN pip install -r requirements.txt
+RUN python setup.py install
 
 ############## INSTALLATION END ##############
 
