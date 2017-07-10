@@ -29,7 +29,7 @@ def run(parser, args):
 				read_length = 0
 
 			lt = localtime(start_time)
-			print "\t".join([fast5.get_channel_number(),
+			print "\t".join([str(fast5.get_channel_number()),
 				fast5.filename, 
 				str(read_length),
 				str(fast5.get_exp_start_time()),
