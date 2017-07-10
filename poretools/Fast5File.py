@@ -2,8 +2,10 @@ import sys
 import os
 import glob
 import tarfile
+import zipfile
 import shutil
 import h5py
+import tempfile
 import dateutil.parser
 import datetime
 import time
@@ -41,8 +43,12 @@ FAST5SET_FILELIST = 0
 FAST5SET_DIRECTORY = 1
 FAST5SET_SINGLEFILE = 2
 FAST5SET_TARBALL = 3
-PORETOOLS_TMPDIR = '.poretools_tmp'
-
+FAST5SET_ZIP = 4
+PORETOOLS_TMPDIR = None
+for testdir in ['/dev/shm/', '/tmp/', '.']:
+	if os.path.isdir(testdir):
+		PORETOOLS_TMPDIR = testdir
+		break
 
 class Fast5DirHandler(object):
 
@@ -81,14 +87,23 @@ class Fast5DirHandler(object):
 class Fast5FileSet(object):
 
 	def __init__(self, fileset, group=0):
+		self.set_type = None
 		if isinstance(fileset, list):
 			self.fileset = fileset
 		elif isinstance(fileset, str):
 			self.fileset = [fileset]
+		else:
+			raise Exception('unknown fileset - should be a string file path or list: %s'%(fileset))
 		self.set_type = None
 		self.num_files_in_set = None
 		self.group = group
+		self._tmp = tempfile.mkdtemp(prefix=PORETOOLS_TMPDIR)
+		self.oldfiles = None
 		self._extract_fast5_files()
+
+	def __del__(self):
+		if self._tmp:
+			os.rmdir(self._tmp)
 
 	def get_num_files(self):
 		"""
@@ -103,11 +118,42 @@ class Fast5FileSet(object):
 
 	def next(self):
 		try:
-			return Fast5File(self.files.next(), self.group)
+			# allow multiple tarball or zip files to expand
+			try:
+				nextFile = next(self.files)
+			except StopIteration as e:
+				if self.oldfiles:
+					self.files = self.oldfiles;
+					self.oldfiles = None;
+					return self.next() # recurse
+				else:
+					raise e
+				
+			nextFast5 = None
+			(f, ext) = os.path.splitext(nextFile)
+			ext = ext.lower()
+			autoremove = isinstance(self.files, ZipFileIterator) or isinstance(self.files, TarballFileIterator)
+
+			if ext == '.fast5':
+				nextFast5 = Fast5File(nextFile, self.group, autoremove)
+			elif ext == '.tar' and tarfile.is_tarfile(nextFile) and self.oldfiles is None:
+				self.set_type = FAST5SET_TARBALL
+				self.oldfiles = self.files
+				self.files = TarballFileIterator(nextFile, self._tmp)
+				nextFast5 = self.next()
+			elif ext == '.zip' and zipfile.is_zipfile(nextFile) and self.oldfiles is None:
+				self.set_type = FAST5SET_ZIP
+				zip = zipfile.ZipFile(nextFile, 'r', zipfile.ZIP_STORED, True)
+				self.oldfiles = self.files
+				self.files = ZipFileIterator( zip, self._tmp )
+				nextFast5 = self.next()
+			else:
+				# fallthrough - hope it is a fast5!
+				nextFast5 = Fast5File(nextFile, self.group, autoremove)
+
+
+			return nextFast5
 		except Exception as e:
-			# cleanup our mess
-			if self.set_type == FAST5SET_TARBALL:
-				shutil.rmtree(PORETOOLS_TMPDIR)
 			raise StopIteration
 
 	def _extract_fast5_files(self):
@@ -137,14 +183,18 @@ class Fast5FileSet(object):
 
 			# is it a tarball?
 			elif tarfile.is_tarfile(f):
-				if os.path.isdir(PORETOOLS_TMPDIR):
-					shutil.rmtree(PORETOOLS_TMPDIR)
-				os.mkdir(PORETOOLS_TMPDIR)
-
-				self.files = TarballFileIterator(f)
+				self.files = TarballFileIterator(f, self._tmp)
 				# set to None to delay initialisation
 				self.num_files_in_set = None
 				self.set_type = FAST5SET_TARBALL
+
+			# is it a zipfile?
+			elif zipfile.is_zipfile(f):
+				zip = zipfile.ZipFile(f, 'r', zipfile.ZIP_STORED, True)
+				self.files = ZipFileIterator( zip, self._tmp )
+				# set to None to delay initialisation
+				self.num_files_in_set = None
+				self.set_type = FAST5SET_ZIP
 
 			# just a single FAST5 file.
 			else:
@@ -159,9 +209,10 @@ class TarballFileIterator:
 	def _fast5_filename_filter(self, filename):
 		return os.path.basename(filename).endswith('.fast5') and not os.path.basename(filename).startswith('.')
 
-	def __init__(self, tarball):
+	def __init__(self, tarball, tempdir):
 		self._tarball = tarball
 		self._tarfile = tarfile.open(tarball)
+		self._tmp = tempdir
 
 	def __del__(self):
 		self._tarfile.close()
@@ -176,17 +227,46 @@ class TarballFileIterator:
 				raise StopIteration
 			elif self._fast5_filename_filter(tarinfo.name):
 				break
-		self._tarfile.extract(tarinfo, path=PORETOOLS_TMPDIR)
-		return os.path.join(PORETOOLS_TMPDIR, tarinfo.name)
+		self._tarfile.extract(tarinfo, path=self._tmp)
+		return os.path.join(self._tmp, tarinfo.name)
 
 	def __len__(self):
 		with tarfile.open(self._tarball) as tar:
 			return len(tar.getnames())
 
+class ZipFileIterator:
+	def _fast5_filename_filter(self, filename):
+		return os.path.basename(filename).endswith('.fast5') and not os.path.basename(filename).startswith('.')
+
+	def __init__(self, zip, tempdir):
+		self._zip = zip
+		self._infolist = iter(zip.infolist())
+		self._tmp = tempdir
+
+	def __del__(self):
+		self._zip.close()
+
+	def __iter__(self):
+		return self
+
+	def next(self):
+		zipinfo = None
+		while True:
+			zipinfo = next(self._infolist)
+			if zipinfo and self._fast5_filename_filter( zipinfo.filename ):
+				break
+		if zipinfo:
+			self._zip.extract(zipinfo, self._tmp)
+			return os.path.join(self._tmp, zipinfo.filename )
+		else:
+			raise StopIteration
+
+	def __len__(self):
+		return len(self._infolist)
 
 class Fast5File(object):
 
-	def __init__(self, filename, group=0):
+	def __init__(self, filename, group=0, autoremove=False):
 		self.filename = filename
 		self.group = group
 		self.is_open = self.open()
@@ -208,6 +288,8 @@ class Fast5File(object):
 		self.have_complements = False
 		self.have_pre_basecalled = False
 		self.have_metadata = False
+		if autoremove:
+			os.unlink(self.filename)
 
 
 	def __del__(self):
@@ -260,6 +342,23 @@ class Fast5File(object):
 		if self.is_open:
 			self.hdf5file.close()
 			self.is_open = False
+
+	def repack(self, newfile):
+		"""
+		Copy the contents into a new Fast5 file more optimally
+		"""
+		if self.is_open:
+			try:
+				fcopy = h5py.File(newfile, 'w')
+				for x in self.hdf5file.items():
+					self.hdf5file.copy(x[0], fcopy)
+				fcopy.close()
+			except Exception, e:
+				logger.warning("Can not open a new file %s for writing!\n" % (newfile))
+				return False
+			return True
+		else:
+			return False
 
 	def has_2D(self):
 		"""
@@ -525,8 +624,8 @@ Please report this error (with the offending file) to:
 		self.hdf_internal_error("unknown HDF5 structure: can't find read block item")
 
 	def find_event_timing_block(self):
-		path = fastq_paths[self.version]['template'] % (self.group)
 		try:
+			path = fastq_paths[self.version]['template'] % (self.group)
 			node = self.hdf5file[path]
 			path = node.get('Events')
 #, getlink=True)
@@ -926,3 +1025,45 @@ Please report this error (with the offending file) to:
 			except Exception, e:
 				self.keyinfo = None
 				logger.warning("Cannot find keyinfo. Exiting.\n")
+
+class Fast5ZipArchive(object):
+	"""
+	Creates or appends a .zip file with a directory or list of fast5 files
+	"""
+
+	def __init__(self, filename):
+		"""Opens a new or appends an old zip file"""
+		self.filename = args[0]
+		self.zip = zipfile.ZipFile(self.filename, 'a', zipfile.ZIP_DEFLATED, True)
+		self.tmp = tempfile.mkdtemp(prefix=prefix)
+
+	def __del__(self):
+		self.zip.close()
+		os.rmdir(self.tmp)
+
+	def append_dir(self, path):
+		for file in os.listdir(path):
+			fpath = '%s/%s' % (path,file)
+			if os.path.isdir(fpath):
+				self.append_dir(fpath)
+			elif file.endswith('.fast5'):
+				files.append_file(fpath)
+
+	def append_file(self, filepath):
+		fast5 = Fast5File(file)
+		tmppath = "%s/%s" % (self.tmp, filepath)
+		try:
+			self.mkdirs(os.path.dirname(tmppath))
+		except OSError:
+			pass # okay
+		fast5.repack(tmppath)
+		self.zip.write(tmppath, filepath)
+		os.unlink(tmppath)
+		
+	def append(self, *args):	
+		for input in args:
+			if os.path.isdir(input):
+				self.append_dir(input)
+			elif input.endswith('.fast5'):
+				self.append_file(input)
+
