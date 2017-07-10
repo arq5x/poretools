@@ -1,0 +1,72 @@
+_poretools()
+{
+  local cur prev opts
+  COMPREPLY=()
+  cur="${COMP_WORDS[COMP_CWORD]}"
+  prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+  opts="combine fastq fasta stats hist events readstats tabular nucdist
+        metadata qualdist winner squiggle times yield_plot occupancy
+        -h --help -v --version"
+
+  defaultOpts="-h --help -q --quiet"
+  defaultOptsType="$defaultOpts --type"
+
+  combineOpts="-o $defaultOpts"
+
+  fastqOpts="--start --end --min-length --high-quality $defaultOptsType"
+  fastaOpts="--start --end --min-length --high-quality --normal-quality $defaultOptsType"
+
+  statsOpts="--full-tsv $defaultOptsType"
+
+  histOpts="--min-length --max-length --num-bins --saveas --theme-bw --watch $defaultOpts"
+
+  eventsOpts="--pre-basecalled $defaultOpts"
+
+  occupancyOpts="--saveas --plot-type $defaultOpts"
+      yieldOpts="--saveas --plot-type  --theme-bw --extrapolate --skip --savedf $defaultOpts"
+   squiggleOpts="--saveas --num-facets --theme-bw $defaultOpts"
+
+  case $prev in
+      combine)
+          COMPREPLY=( $(compgen -W "${combineOpts}" -- "$cur") )
+          ;;
+      fasta)
+          COMPREPLY=( $(compgen -W "${fastaOpts}" -- "$cur") )
+          ;;
+      fastq)
+          COMPREPLY=( $(compgen -W "${fastqOpts}" -- "$cur") )
+          ;;
+      stats)
+          COMPREPLY=( $(compgen -W "${statsOpts}" -- "$cur") )
+          ;;
+      hist)
+          COMPREPLY=( $(compgen -W "${histOpts}" -- "$cur") )
+          ;;
+      events)
+          COMPREPLY=( $(compgen -W "${eventsOpts}" -- "$cur") )
+          ;;
+      readstats|nucdist|metadata|qualdist|times)
+          COMPREPLY=( $(compgen -W "${defaultOpts}" -- "$cur") )
+          ;;
+      tabular|winner)
+          COMPREPLY=( $(compgen -W "${defaultOptsType}" -- "$cur") )
+          ;;
+      squiggle)
+          COMPREPLY=( $(compgen -W "${squiggleOpts}" -- "$cur") )
+          ;;
+      yield_plot)
+          COMPREPLY=( $(compgen -W "${yieldOpts}" -- "$cur") )
+          ;;
+      occupancy)
+          COMPREPLY=( $(compgen -W "${occupancyOpts}" -- "$cur") )
+          ;;
+
+
+      poretools)
+          COMPREPLY=( $(compgen -W "${opts}" -- "$cur") )
+          ;;
+  esac
+  return 0
+}
+complete -F _poretools -o default poretools
