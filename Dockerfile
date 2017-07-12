@@ -19,10 +19,10 @@ RUN echo 'deb http://cran.rstudio.com/bin/linux/ubuntu trusty/' >> /etc/apt/sour
 RUN apt-get update
 
 # Install dependencies
-RUN apt-get -y install git python-tables python-setuptools python-pip python-dev cython libhdf5-serial-dev r-base python-rpy2
+RUN apt-get -y install git libfreetype6-dev python-tables python-setuptools python-pip python-dev cython libhdf5-serial-dev r-base python-rpy2
 
 # Upgrade numexpr
-RUN pip install numexpr --upgrade
+RUN pip install numexpr six --upgrade
 
 # Install R packages
 RUN Rscript -e 'options("repos" = c(CRAN = "http://cran.rstudio.com/")); install.packages("codetools"); install.packages("MASS"); install.packages("ggplot2")'
