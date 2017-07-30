@@ -3,3 +3,4 @@ matplotlib
 seaborn
 pandas
 python-dateutil
+scandir

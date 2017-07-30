@@ -8,6 +8,11 @@ import dateutil.parser
 import datetime
 import time
 import re
+from operator import itemgetter
+try:
+    from os import scandir, walk
+except ImportError:
+    from scandir import scandir, walk
 
 #logging
 import logging
@@ -44,6 +49,19 @@ FAST5SET_SINGLEFILE = 2
 FAST5SET_TARBALL = 3
 PORETOOLS_TMPDIR = '.poretools_tmp'
 
+def walker(d, results):
+    for entry in scandir(d):
+        if entry.is_dir() and entry.name != '.':
+             walker(d+'/'+entry.name, results)
+        else:
+             results.append((d, entry.name, entry.inode()))
+
+def inode_walk(d):
+    results = []
+    walker(d, results)
+    # sort by inode order
+    results.sort(key=itemgetter(2))
+    return results
 
 class Fast5DirHandler(object):
 
@@ -128,9 +146,14 @@ class Fast5FileSet(object):
 			if os.path.isdir(f):
 				# Update (2/3/17) to account for new sub-directory
 				# output from MinKNOW v1.4 release.
-				files = [os.path.join(dirpath + os.path.sep + fast5file) \
-								for dirpath, dirname, files in os.walk(f) \
-									for fast5file in files]
+
+				#files = [os.path.join(dirpath + os.path.sep + fast5file) \
+				#				for dirpath, dirname, files in os.walk(f) \
+				#					for fast5file in files if fast5file.endswith('.fast5')]
+				files = [os.path.join(dirpath + os.path.sep + filename) \
+								for dirpath, filename, inode in inode_walk(f) \
+								if filename.endswith('.fast5')]
+
 				#pattern = f + '/' + '*.fast5'
 				#files = glob.glob(pattern)
 				self.files = iter(files)
