@@ -7,6 +7,7 @@ import h5py
 import dateutil.parser
 import datetime
 import time
+from future.utils import raise_from
 
 #logging
 import logging
@@ -224,7 +225,7 @@ class Fast5File(object):
 		try:
 			self.hdf5file = h5py.File(self.filename, 'r')
 			return True
-		except Exception, e:
+		except Exception as e:
 			logger.warning("Cannot open file: %s. Perhaps it is corrupt? Moving on.\n" % self.filename)
 			return False
 
@@ -565,7 +566,7 @@ Please report this error (with the offending file) to:
 		if node:
 			try:
 				return int(node.attrs['duration']) / self.get_sample_frequency()
-			except Exception, e:
+			except Exception as e:
 				logger.error(str(e))
 				pass
 
@@ -589,7 +590,7 @@ Please report this error (with the offending file) to:
 			try:
 				frequency = int(self.get_sample_frequency())
 				return int(exp_start_time) + int(node.attrs['start_time'] / frequency)
-			except Exception, e:
+			except Exception as e:
 				logger.error(str(e))
 				pass
  		
@@ -777,7 +778,7 @@ Please report this error (with the offending file) to:
 
 		try:
 			return self.keyinfo['context_tags'].attrs['user_filename_input']
-		except Exception, e:
+		except Exception as e:
 			return None
 
 	def get_sample_frequency(self):
@@ -791,7 +792,7 @@ Please report this error (with the offending file) to:
 
 		try:
 			return int(self.keyinfo['context_tags'].attrs['sample_frequency'])
-		except Exception, e:
+		except Exception as e:
 			return None
 
 	def get_script_name(self):
@@ -800,7 +801,7 @@ Please report this error (with the offending file) to:
 			self.have_metdata = True
 		try:
 			return self.keyinfo['tracking_id'].attrs['exp_script_name']
-		except Exception, e:
+		except Exception as e:
 			return None
 
 	def get_template_events_count(self):
@@ -810,7 +811,7 @@ Please report this error (with the offending file) to:
 		try:
 			table = self.hdf5file[fastq_paths[self.version]['template'] % self.group]
 			return len(table['Events'][()])
-		except Exception, e:
+		except Exception as e:
 			return 0
 
 	def get_complement_events_count(self):
@@ -820,7 +821,7 @@ Please report this error (with the offending file) to:
 		try:
 			table = self.hdf5file[fastq_paths[self.version]['complement'] % self.group]
 			return len(table['Events'][()])
-		except Exception, e:
+		except Exception as e:
 			return 0
 
 	def is_high_quality(self):
@@ -851,7 +852,7 @@ Please report this error (with the offending file) to:
 					return 'template'
 				else:
 					return 'complement'
-		except Exception, e:
+		except Exception as e:
 			return None
 
 	####################################################################
@@ -868,7 +869,7 @@ Please report this error (with the offending file) to:
 				fq = formats.Fastq(table['Fastq'][()])
 				fq.name += " " + self.filename
 				self.fastqs[id] = fq
-			except Exception, e:
+			except Exception as e:
 				pass
 
 	def _extract_fastas_from_fast5(self):
@@ -881,7 +882,7 @@ Please report this error (with the offending file) to:
 				fa = formats.Fasta(table['Fastq'][()])
 				fa.name += " " + self.filename
 				self.fastas[id] = fa
-			except Exception, e:
+			except Exception as e:
 				pass
 
 	def _extract_template_events(self):
@@ -891,7 +892,7 @@ Please report this error (with the offending file) to:
 		try:
 			table = self.hdf5file[fastq_paths[self.version]['template'] % self.group]
 			self.template_events = [Event(x) for x in table['Events'][()]]
-		except Exception, e:
+		except Exception as e:
 			self.template_events = []
 
 	def _extract_complement_events(self):
@@ -901,7 +902,7 @@ Please report this error (with the offending file) to:
 		try:
 			table = self.hdf5file[fastq_paths[self.version]['complement'] % self.group]
 			self.complement_events = [Event(x) for x in table['Events'][()]]
-		except Exception, e:
+		except Exception as e:
 			self.complement_events = []
 
 	def _extract_pre_basecalled_events(self):
@@ -914,15 +915,15 @@ Please report this error (with the offending file) to:
 		for read in table:
 			events.extend(table[read]["Events"][()])
 		self.pre_basecalled_events = [Event(x) for x in events]
-		# except Exception, e:
+		# except Exception as e:
 			# self.pre_basecalled_events = []			
 
 	def _get_metadata(self):
 		try:
 			self.keyinfo = self.hdf5file['/UniqueGlobalKey']
-		except Exception, e:
+		except Exception as e:
 			try:
 				self.keyinfo = self.hdf5file['/Key']
-			except Exception, e:
+			except Exception as e:
 				self.keyinfo = None
 				logger.warning("Cannot find keyinfo. Exiting.\n")
