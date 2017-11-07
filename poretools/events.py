@@ -1,5 +1,5 @@
 import Fast5File
-from future.utils import print_function
+from __future__ import print_function
 
 def run(parser, args):
 
