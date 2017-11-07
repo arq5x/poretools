@@ -1,6 +1,6 @@
 import os
 from setuptools import setup
-
+from future import print_function
 
 version_py = os.path.join(os.path.dirname(__file__), 'poretools', 'version.py')
 version = open(version_py).read().strip().split('=')[-1].replace('"','').strip()
