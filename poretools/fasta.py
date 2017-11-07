@@ -1,5 +1,6 @@
 import Fast5File
 import sys
+from future import print_function
 
 def run(parser, args):
 
@@ -42,7 +43,7 @@ def run(parser, args):
 			args.max_length > 0):			
 				continue			
 
-			print fa
+			print(fa)
 
 		fast5.close()
 
