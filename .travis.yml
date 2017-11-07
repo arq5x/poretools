@@ -7,6 +7,6 @@ python:
   
 install:
   - pip install -r requirements.txt
-
+  - python setup.py install
 script:
-  python setup.py install
+  - poretools/test_data/poretools-test.sh
