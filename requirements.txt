@@ -4,4 +4,4 @@ seaborn
 pandas
 python-dateutil
 future
-six
+
