@@ -1,6 +1,7 @@
+from __future__ import print_function
 import Fast5File
 import sys
-from __future__ import print_function
+
 
 def run(parser, args):
 	

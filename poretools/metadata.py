@@ -1,5 +1,6 @@
-import Fast5File
 from __future__ import print_function
+import Fast5File
+
 
 def run(parser, args):
 

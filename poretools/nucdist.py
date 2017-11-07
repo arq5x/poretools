@@ -1,6 +1,7 @@
+from __future__ import print_function
 import Fast5File
 from collections import Counter
-from __future__ import print_function
+
 
 def run(parser, args):
 

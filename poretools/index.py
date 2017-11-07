@@ -1,6 +1,7 @@
+from __future__ import print_function
 import Fast5File
 import datetime
-from __future__ import print_function
+
 
 ############
 #
