@@ -1,5 +1,6 @@
 import Fast5File
 from collections import Counter
+from __future__ import print_function
 
 def run(parser, args):
 
@@ -15,5 +16,5 @@ def run(parser, args):
 		fast5.close()
 
 	for n in nuc_count:
-		print '\t'.join(str(s) for s in [n, nuc_count[n], 
-			total_nucs, float(nuc_count[n]) / float(total_nucs)])
+		print('\t'.join(str(s) for s in [n, nuc_count[n], 
+			total_nucs, float(nuc_count[n]) / float(total_nucs)]))
