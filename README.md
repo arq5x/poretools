@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/skbrimer/poretools.svg?branch=master)](https://travis-ci.org/skbrimer/poretools) ### python2.7
+[![Build Status](https://travis-ci.org/skbrimer/poretools.svg?branch=master)](https://travis-ci.org/skbrimer/poretools)
 
 ### poretools: a toolkit for working with nanopore sequencing data from Oxford Nanopore.
 
