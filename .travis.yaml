@@ -1,5 +1,0 @@
-# travis ymal file for python3 development
-
-langunge: python
-  - "2.7"
-  
