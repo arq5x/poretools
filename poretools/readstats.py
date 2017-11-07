@@ -1,8 +1,9 @@
+from __future__ import print_function
 import Fast5File
 
 def run(parser, args):
 
-	print "start_time\tchannel_number\tread_number\ttemplate_events\tcomplement_events"
+	print("start_time\tchannel_number\tread_number\ttemplate_events\tcomplement_events")
 
 	for fast5 in Fast5File.Fast5FileSet(args.files):
 
@@ -22,6 +23,6 @@ def run(parser, args):
 		else:
 			complement_len = 0
 
-		print "%s\t%s\t%s\t%s\t%s" % (start_time, channel_number, read_number, template_len, complement_len)
+		print("%s\t%s\t%s\t%s\t%s" % (start_time, channel_number, read_number, template_len, complement_len))
 
 		fast5.close()

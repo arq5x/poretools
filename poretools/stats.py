@@ -1,3 +1,4 @@
+from __future__ import print_function
 import statistics as stat
 import Fast5File
 import logging
@@ -23,22 +24,22 @@ def run(parser, args):
 
 			fast5.close()
 
-		print "files\ttotal reads\t%d" % (files)
-		print "files\ttotal base-called reads\t%d" % (basecalled_files)
+		print("files\ttotal reads\t%d" % (files))
+		print("files\ttotal base-called reads\t%d" % (basecalled_files))
 		for category in sorted(stats.keys()):
 			sizes = stats[category]
 
 			if len(sizes) > 0:
-				print "%s\ttotal reads\t%d" % (category, len(sizes))
-				print "%s\ttotal base pairs\t%d" % (category, sum(sizes))
-				print "%s\tmean\t%.2f" % (category, stat.mean(sizes))
-				print "%s\tmedian\t%d" % (category, stat.median(sizes))
-				print "%s\tmin\t%d" % (category, min(sizes))
-				print "%s\tmax\t%d" % (category, max(sizes))
+				print("%s\ttotal reads\t%d" % (category, len(sizes)))
+				print("%s\ttotal base pairs\t%d" % (category, sum(sizes)))
+				print("%s\tmean\t%.2f" % (category, stat.mean(sizes)))
+				print("%s\tmedian\t%d" % (category, stat.median(sizes)))
+				print("%s\tmin\t%d" % (category, min(sizes)))
+				print("%s\tmax\t%d" % (category, max(sizes)))
 				nxvalues = stat.NX(sizes, [25,50,75])
-				print "%s\tN25\t%d" % (category, nxvalues[25])
-				print "%s\tN50\t%d" % (category, nxvalues[50])
-				print "%s\tN75\t%d" % (category, nxvalues[75])
+				print("%s\tN25\t%d" % (category, nxvalues[25]))
+				print("%s\tN50\t%d" % (category, nxvalues[50]))
+				print("%s\tN75\t%d" % (category, nxvalues[75]))
 			else:
 				logger.warning("No valid sequences observed.\n")
 	else:
@@ -49,15 +50,15 @@ def run(parser, args):
 			fast5.close()
 
 		if len(sizes) > 0:
-			print "total reads\t%d" % (len(sizes))
-			print "total base pairs\t%d" % (sum(sizes))
-			print "mean\t%.2f" % (stat.mean(sizes))
-			print "median\t%d" % (stat.median(sizes))
-			print "min\t%d" % (min(sizes))
-			print "max\t%d" % (max(sizes))
+			print("total reads\t%d" % (len(sizes)))
+			print("total base pairs\t%d" % (sum(sizes)))
+			print("mean\t%.2f" % (stat.mean(sizes)))
+			print("median\t%d" % (stat.median(sizes)))
+			print("min\t%d" % (min(sizes)))
+			print("max\t%d" % (max(sizes)))
                         nxvalues = stat.NX(sizes, [25,50,75])
-                        print "N25\t%d" % (nxvalues[25])
-                        print "N50\t%d" % (nxvalues[50])
-                        print "N75\t%d" % (nxvalues[75])
+                        print("N25\t%d" % (nxvalues[25]))
+                        print("N50\t%d" % (nxvalues[50]))
+                        print("N75\t%d" % (nxvalues[75]))
 		else:
 			logger.warning("No valid sequences observed.\n")
