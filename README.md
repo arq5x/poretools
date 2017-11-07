@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/skbrimer/poretools.svg?branch=master)](https://travis-ci.org/skbrimer/poretools)
+
 ### poretools: a toolkit for working with nanopore sequencing data from Oxford Nanopore.
 
 *Nick Loman and Aaron Quinlan*
@@ -11,7 +13,7 @@ Requirements
 - h5py >= 2.2
 - matplotlib
 - seaborn
-- pandas
+- pandas[![Build Status](https://travis-ci.org/skbrimer/poretools.svg?branch=master)](https://travis-ci.org/skbrimer/poretools)
 
 Contributors
 ============
