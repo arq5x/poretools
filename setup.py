@@ -1,5 +1,6 @@
 import os
 from setuptools import setup
+from __future__ import print
 
 version_py = os.path.join(os.path.dirname(__file__), 'poretools', 'version.py')
 version = open(version_py).read().strip().split('=')[-1].replace('"','').strip()
@@ -17,7 +18,7 @@ setup(
     name="poretools",
     version=version,
     install_requires=install_requires,
-    requires=['python (>=2.7, <3.0)'],
+    requires=['python (>=2.7)'],
     packages=['poretools',
               'poretools.scripts'],
     author="Nick Loman and Aaron Quinlan",
