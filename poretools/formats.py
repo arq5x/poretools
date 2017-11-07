@@ -1,3 +1,5 @@
+from future.utils import raise_from
+
 class Fastq(object):
 	def __init__(self, s):
 		self.s = s
@@ -19,7 +21,7 @@ class Fastq(object):
 				phred = ord(score) - 33
 				error_count += 10.0 ** (-phred / 10.0)
 			return error_count / len(self.qual)
-		except Exception, e:
+		except Exception as e:
 			return 0.0
 
 
