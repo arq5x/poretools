@@ -1,6 +1,6 @@
 from __future__ import print_function
-import statistics as stat
-import Fast5File
+from . import statistics as stat
+from . import Fast5File
 import logging
 from collections import defaultdict
 logger = logging.getLogger('poretools')

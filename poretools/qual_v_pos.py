@@ -1,4 +1,4 @@
-import Fast5File
+from . import Fast5File
 from collections import defaultdict
 import pandas
 import matplotlib.pyplot as plt

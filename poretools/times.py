@@ -1,5 +1,5 @@
 from __future__ import print_function
-import Fast5File
+from . import Fast5File
 from time import strftime, localtime
 import sys
 

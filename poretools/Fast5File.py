@@ -19,8 +19,8 @@ logger = logging.getLogger('poretools')
 ### and must be converted to seconds by dividing by sample frequency.
 
 # poretools imports
-import formats
-from Event import Event
+from . import formats
+from .Event import Event 
 
 fastq_paths = {
   'closed' : {},
@@ -86,10 +86,10 @@ class Fast5FileSet(object):
             self.fileset = fileset
         elif isinstance(fileset, str):
             self.fileset = [fileset]
-        self.set_type = None
-        self.num_files_in_set = None
-        self.group = group
-        self._extract_fast5_files()
+            self.set_type = None
+            self.num_files_in_set = None
+            self.group = group
+            self._extract_fast5_files()
 
     def get_num_files(self):
         """
