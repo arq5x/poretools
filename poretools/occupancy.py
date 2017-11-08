@@ -1,3 +1,4 @@
+from __future__ import print_function
 import Fast5File
 from collections import Counter
 import sys
@@ -55,7 +56,7 @@ def run(parser, args):
     tot_reads_per_pore = Counter()
     tot_bp_per_pore = Counter()
 
-    print "\t".join(['channel_number', 'start_time', 'duration'])
+    print("\t".join(['channel_number', 'start_time', 'duration']))
     for fast5 in Fast5File.Fast5FileSet(args.files):
         if fast5.is_open:
             fq = fast5.get_fastq()
@@ -70,10 +71,10 @@ def run(parser, args):
             tot_reads_per_pore[int(pore_id)] += 1
             tot_bp_per_pore[int(pore_id)] += len(fq.seq)
 
-            print "\t".join([
+            print("\t".join([
                 str(pore_id),
                 str(start_time),
-                str(fast5.get_duration())])
+                str(fast5.get_duration())]))
             fast5.close()
 
     if args.plot_type == 'read_count':
