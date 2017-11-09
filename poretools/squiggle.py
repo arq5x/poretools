@@ -1,3 +1,6 @@
+# py2 and py3 compatiblity 
+from builtins import object 
+
 import os
 import sys
 import pandas as pd
@@ -10,7 +13,8 @@ from matplotlib import pyplot as plt
 import logging
 logger = logging.getLogger('poretools')
 
-from . import Fast5File
+# Poretools imports
+from poretools import Fast5File
 
 def plot_squiggle(args, filename, start_times, mean_signals):
     """
@@ -25,9 +29,9 @@ def plot_squiggle(args, filename, start_times, mean_signals):
 
     # infer the appropriate number of events given the number of facets
     num_events = len(mean_signals)
-    events_per_facet = (num_events / args.num_facets) + 1
+    events_per_facet = (num_events // args.num_facets) + 1
     # dummy variable to control faceting
-    facet_category = [(i / events_per_facet) + 1 for i in range(len(start_times))]
+    facet_category = [(i // events_per_facet) + 1 for i in range(len(start_times))]
 
     # make a data frame of the start times and mean signals
     d = {'start': start_times, 'mean': mean_signals, 'cat': facet_category}
@@ -70,7 +74,7 @@ def run(parser, args):
 
     fast5_set = Fast5File.Fast5FileSet(args.files)
 
-    first_fast5 = fast5_set.next()
+    first_fast5 = fast5_set.__next__()
     for fast5 in fast5_set:
         # only create a squiggle plot for multiple reads if saving to file.
         if args.saveas is None:
