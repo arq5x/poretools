@@ -428,7 +428,7 @@ class Fast5File(object):
             self.have_metadata = True
 
         try:
-            if self.keyinfo['tracking_id'].attrs['exp_start_time'].endswith('Z'):
+            if self.keyinfo['tracking_id'].attrs['exp_start_time'].endswith(b'Z'): 
                 # MinKNOW >= 1.4 ISO format and UTC time
                 dt = dateutil.parser.parse(self.keyinfo['tracking_id'].attrs['exp_start_time'])
                 timestamp = int(time.mktime(dt.timetuple()))

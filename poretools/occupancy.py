@@ -1,5 +1,7 @@
+# py2 and py3 imports
 from __future__ import print_function
-from . import Fast5File
+from future.utils import lrange
+
 from collections import Counter
 import sys
 import pandas as pd
@@ -8,6 +10,9 @@ from matplotlib import pyplot as plt
 
 import logging
 logger = logging.getLogger('poretools')
+
+#Poretools imports
+from poretools import Fast5File
 
 def minion_flowcell_layout():
     seeds = [125, 121, 117, 113, 109, 105, 101, 97,
@@ -36,8 +41,8 @@ def plot_performance(parser, args, pore_measure):
             pore_values.append(0)
 
     # make a data frame of the lists
-    d = {'rownum': range(1,17)*32,
-        'colnum': sorted(range(1,33)*16),
+    d = {'rownum': lrange(1,17)*32,
+        'colnum': sorted(lrange(1,33)*16),
         'tot_reads': pore_values,
         'labels': flowcell_layout}
     df = pd.DataFrame(d)
