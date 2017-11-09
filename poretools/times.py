@@ -1,7 +1,11 @@
+# import for py2 and py3 support
 from __future__ import print_function
-from . import Fast5File
+
 from time import strftime, localtime
 import sys
+
+#poretool imports
+from poretools import Fast5File
 
 #logging
 import logging

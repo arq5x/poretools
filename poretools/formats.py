@@ -1,8 +1,9 @@
+# py2 and py3 imports
 from future.utils import raise_from
 
 class Fastq(object):
 	def __init__(self, s):
-		self.s = s
+		self.s = s.decode('utf-8')
 		self.parse()
 
 	def parse(self):
@@ -28,7 +29,7 @@ class Fastq(object):
 
 class Fasta(object):
 	def __init__(self, s):
-		self.s = s
+		self.s = s.decode('utf-8')
 		self.parse()
 
 	def parse(self):

@@ -156,7 +156,7 @@ def main():
                               metavar='STRING',
                               choices=['all', 'fwd', 'rev', '2D', 'fwd,rev', 'best'],
                               default='all',
-                              help='Which type of FASTQ entries should be reported? Def.=all')
+                              help='Which type of FASTA entries should be reported? Def.=all')
     parser_fasta.add_argument('--start',
                               dest='start_time',
                               default=None,

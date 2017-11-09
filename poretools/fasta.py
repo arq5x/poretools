@@ -1,7 +1,10 @@
+# py2 and py3 imports
 from __future__ import print_function
-from . import Fast5File
+
 import sys
 
+# poretools imports
+from poretools import Fast5File
 
 def run(parser, args):
 

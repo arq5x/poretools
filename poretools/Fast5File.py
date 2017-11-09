@@ -1,3 +1,8 @@
+# imports for py2 and py3 functionality
+from future.utils import raise_from
+from future.utils import iteritems
+from builtins import object
+
 import sys
 import os
 import glob
@@ -7,7 +12,6 @@ import h5py
 import dateutil.parser
 import datetime
 import time
-from future.utils import raise_from
 
 #logging
 import logging
@@ -19,8 +23,8 @@ logger = logging.getLogger('poretools')
 ### and must be converted to seconds by dividing by sample frequency.
 
 # poretools imports
-from . import formats
-from .Event import Event 
+from poretools import formats
+from poretools import Event
 
 fastq_paths = {
   'closed' : {},
@@ -72,12 +76,12 @@ class Fast5DirHandler(object):
     def __iter__(self):
         return self
 
-    def next(self):
+    def __next__(self):
         if len(self.files) > 0:
             return self.files.pop(0)
         else:
             raise StopIteration()
-
+    #__next__ = next
 
 class Fast5FileSet(object):
 
@@ -86,10 +90,10 @@ class Fast5FileSet(object):
             self.fileset = fileset
         elif isinstance(fileset, str):
             self.fileset = [fileset]
-            self.set_type = None
-            self.num_files_in_set = None
-            self.group = group
-            self._extract_fast5_files()
+        self.set_type = None
+        self.num_files_in_set = None
+        self.group = group
+        self._extract_fast5_files()
 
     def get_num_files(self):
         """
@@ -102,9 +106,9 @@ class Fast5FileSet(object):
     def __iter__(self):
         return self
 
-    def next(self):
+    def __next__(self):
         try:
-            return Fast5File(self.files.next(), self.group)
+            return Fast5File(next(self.files), self.group)
         except Exception as e:
             # cleanup our mess
             if self.set_type == FAST5SET_TARBALL:
@@ -155,6 +159,7 @@ class Fast5FileSet(object):
         else:
             logger.error("Directory %s could not be opened. Exiting.\n" % dir)
             sys.exit()
+    #__next__ = next 
 
 class TarballFileIterator:
     def _fast5_filename_filter(self, filename):
@@ -170,9 +175,9 @@ class TarballFileIterator:
     def __iter__(self):
         return self
 
-    def next(self):
+    def __next__(self):
         while True:
-            tarinfo = self._tarfile.next()
+            tarinfo = next(self._tarfile)
             if tarinfo is None:
                 raise StopIteration
             elif self._fast5_filename_filter(tarinfo.name):
@@ -183,7 +188,7 @@ class TarballFileIterator:
     def __len__(self):
         with tarfile.open(self._tarball) as tar:
             return len(tar.getnames())
-
+    #__next__= next
 
 class Fast5File(object):
 
@@ -306,7 +311,7 @@ class Fast5File(object):
     def get_fastas(self, choice):
         """
         Return the set of base called sequences in the FAST5
-        in FASTQ format.
+        in FASTA format.
         """
         if self.have_fastas is False:
             self._extract_fastas_from_fast5()
@@ -458,7 +463,6 @@ class Fast5File(object):
         Old-style FAST5/HDF5 structure:
         Inside /Analyses/Basecall_XXXX there is an 'InputEvents'
         link that points to the location of the Read in the HDF5 file.
-
         Return the Read's node if found, or None if not found.
         """
         if self.version == 'classic':
@@ -480,10 +484,10 @@ class Fast5File(object):
 
     def hdf_internal_error(self,reason):
         """Report an error and exit in case of an invalid
-                (or unknown) HDF5 structure. Hurrah for ONT!"""
+            (or unknown) HDF5 structure. Hurrah for ONT!"""
         msg = """poretools internal error in file '%s': %s
-             Please report this error (with the offending file) to:
-             https://github.com/arq5x/poretools/issues""" % (self.filename, reason)
+                 Please report this error (with the offending file) to:
+                 https://github.com/arq5x/poretools/issues""" % (self.filename, reason)
         sys.exit(msg)
 
     def find_read_number_block_fixed_raw(self):
@@ -491,7 +495,6 @@ class Fast5File(object):
         New-style FAST5/HDF5 structure:
         There is a fixed 'Raw/Reads' node with only one 'read_NNN' item
         inside it (no more 'InputEvents' link).
-
         Return the Read's node if found, or None if not found.
         """
         raw_reads = self.hdf5file.get('Raw/Reads')
@@ -529,7 +532,7 @@ class Fast5File(object):
         try:
             node = self.hdf5file[path]
             path = node.get('Events')
-            #, getlink=True)
+#, getlink=True)
             return path
         except Exception:
             return None
@@ -770,6 +773,7 @@ class Fast5File(object):
         """
         Return the user supplied sample name
         """
+
         if self.have_metadata is False:
             self._get_metadata()
             self.have_metadata = True
@@ -783,6 +787,7 @@ class Fast5File(object):
         """
         Return the user supplied sample name
         """
+
         if self.have_metadata is False:
             self._get_metadata()
             self.have_metadata = True
@@ -860,7 +865,7 @@ class Fast5File(object):
         """
         Return the sequence in the FAST5 file in FASTQ format
         """
-        for id, h5path in fastq_paths[self.version].iteritems(): 
+        for (id, h5path) in iteritems(fastq_paths[self.version]): 
             try:
                 table = self.hdf5file[h5path % self.group]
                 fq = formats.Fastq(table['Fastq'][()])
@@ -873,7 +878,7 @@ class Fast5File(object):
         """
         Return the sequence in the FAST5 file in FASTA format
         """
-        for id, h5path in fastq_paths[self.version].iteritems(): 
+        for (id, h5path) in iteritems(fastq_paths[self.version]): 
             try:
                 table = self.hdf5file[h5path % self.group]
                 fa = formats.Fasta(table['Fastq'][()])

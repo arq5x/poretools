@@ -1,9 +1,14 @@
+# py2 and py3 imports
 from __future__ import print_function
-from . import statistics as stat
-from . import Fast5File
+from future.utils import iteritems
+
 import logging
 from collections import defaultdict
 logger = logging.getLogger('poretools')
+
+# poretool imports
+from poretools import statistics as stat
+from poretools import Fast5File
 
 def run(parser, args):
     if args.full_tsv:
@@ -15,7 +20,7 @@ def run(parser, args):
             fas = fast5.get_fastas_dict()
             if len(fas) > 0:
                 basecalled_files += 1
-            for category, fa in fas.iteritems():
+            for (category, fa) in iteritems(fas):
                 if fa is not None:
                     stats[category].append(len(fa.seq))
                     if category == 'twodirections':
