@@ -10,7 +10,7 @@
 3. **nucdist** - seems to be working, but has too many decimals and fails test. 
 
 4. **yield_plot** 
-	```Traceback (most recent call last):
+```Traceback (most recent call last):
   File "/home/sbrimer/Documents/poretools/ENV/bin/poretools", line 11, in <module>
     load_entry_point('poretools==0.6.0', 'console_scripts', 'poretools')()
   File "/home/sbrimer/Documents/poretools/ENV/lib/python3.5/site-packages/poretools-0.6.0-py3.5.egg/poretools/poretools_main.py", line 539, in main
@@ -38,7 +38,7 @@ TypeError: endswith first arg must be bytes or a tuple of bytes, not str
 AttributeError: 'Fast5FileSet' object has no attribute 'next'```
 
 6. **time**
-	```Traceback (most recent call last):
+```Traceback (most recent call last):
   File "/home/sbrimer/Documents/poretools/ENV/bin/poretools", line 11, in <module>
     load_entry_point('poretools==0.6.0', 'console_scripts', 'poretools')()
   File "/home/sbrimer/Documents/poretools/ENV/lib/python3.5/site-packages/poretools-0.6.0-py3.5.egg/poretools/poretools_main.py", line 539, in main
@@ -51,10 +51,10 @@ AttributeError: 'Fast5FileSet' object has no attribute 'next'```
     exp_start_time  = self.get_exp_start_time()
   File "/home/sbrimer/Documents/poretools/ENV/lib/python3.5/site-packages/poretools-0.6.0-py3.5.egg/poretools/Fast5File.py", line 431, in get_exp_start_time
     if self.keyinfo['tracking_id'].attrs['exp_start_time'].endswith('Z'):
-TypeError: endswith first arg must be bytes or a tuple of bytes, not str
-```
+TypeError: endswith first arg must be bytes or a tuple of bytes, not str```
+
 7. **occupancy**
-	```Traceback (most recent call last):
+```Traceback (most recent call last):
   File "/home/sbrimer/Documents/poretools/ENV/bin/poretools", line 11, in <module>
     load_entry_point('poretools==0.6.0', 'console_scripts', 'poretools')()
   File "/home/sbrimer/Documents/poretools/ENV/lib/python3.5/site-packages/poretools-0.6.0-py3.5.egg/poretools/poretools_main.py", line 539, in main
@@ -67,8 +67,8 @@ TypeError: endswith first arg must be bytes or a tuple of bytes, not str
     exp_start_time  = self.get_exp_start_time()
   File "/home/sbrimer/Documents/poretools/ENV/lib/python3.5/site-packages/poretools-0.6.0-py3.5.egg/poretools/Fast5File.py", line 431, in get_exp_start_time
     if self.keyinfo['tracking_id'].attrs['exp_start_time'].endswith('Z'):
-TypeError: endswith first arg must be bytes or a tuple of bytes, not str
-```
+TypeError: endswith first arg must be bytes or a tuple of bytes, not str```
+
 8. **combine** - not sure about this one, may need work or better understanding of how to use it. 
 
 9. **index**
