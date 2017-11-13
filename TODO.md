@@ -43,8 +43,7 @@ Traceback (most recent call last):
     if self.keyinfo['tracking_id'].attrs['exp_start_time'].endswith('Z'):
 TypeError: endswith first arg must be bytes or a tuple of bytes, not str~~
 
-7. ~~**occupancy**
-Traceback (most recent call last):
+7. ~~**occupancy** Traceback (most recent call last):
   File "/home/sbrimer/Documents/poretools/ENV/bin/poretools", line 11, in <module>
     load_entry_point('poretools==0.6.0', 'console_scripts', 'poretools')()
   File "/home/sbrimer/Documents/poretools/ENV/lib/python3.5/site-packages/poretools-0.6.0-py3.5.egg/poretools/poretools_main.py", line 539, in main
@@ -54,11 +53,10 @@ Traceback (most recent call last):
   File "/home/sbrimer/Documents/poretools/ENV/lib/python3.5/site-packages/poretools-0.6.0-py3.5.egg/poretools/occupancy.py", line 81, in run
     plot_performance(parser, args, tot_reads_per_pore)
   File "/home/sbrimer/Documents/poretools/ENV/lib/python3.5/site-packages/poretools-0.6.0-py3.5.egg/poretools/occupancy.py", line 39, in plot_performance
-    d = {'rownum': range(1,17)*32,
-TypeError: unsupported operand type(s) for *: 'range' and 'int'~~
+    d = {'rownum': range(1,17)*32, TypeError: unsupported operand type(s) for *: 'range' and 'int ~~
 
 
-8. ~~**combine** - not sure about this one, may need work or better understanding of how to use it.~~ 
+8. ~~**combine** - not sure about this one, may need work or better understanding of how to use it.~~ User error :/
 
 9. ~~**index**
 Traceback (most recent call last):
@@ -77,12 +75,12 @@ Traceback (most recent call last):
 TypeError: endswith first arg must be bytes or a tuple of bytes, not str~~
 
 10. **readstats**
-`start_time channel_number  read_number template_events complement_events
+~~start_time channel_number  read_number template_events complement_events
 poretools internal error in file 'test_data/YYYYMMDD_HHMM_SampleID/Fail/1/2016_3_4_3507_1_ch120_read443_strand.fast5': unknown HDF5 structure: can't find read block item
                  Please report this error (with the offending file) to:
-                 https://github.com/arq5x/poretools/issues
-`
+                 https://github.com/arq5x/poretools/issues~~  ** Not and error, test data has older file structure **
 
+11. **logger** - doesn't log currently? 
 
 
 ## Working Modules - for py3
@@ -98,3 +96,4 @@ poretools internal error in file 'test_data/YYYYMMDD_HHMM_SampleID/Fail/1/2016_3
 10. **times**
 11. **occupancy**
 12. **yield_plot**
+13. **readstats**

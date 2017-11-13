@@ -501,13 +501,14 @@ class Fast5File(object):
         if raw_reads is None:
             return None
 
-        reads = raw_reads.keys()
+        reads = list(raw_reads.keys())
+        
         if len(reads)==0:
             self.hdf_internal_error("Raw/Reads group does not contain any items")
         if len(reads)>1:
             # This should not happen, based on information from ONT developers.
             self.hdf_internal_error("Raw/Reads group contains more than one item")
-        path = 'Raw/Reads/%s' % ( reads[0] )
+        path = 'Raw/Reads/%s' % ( reads[0] ) #this will only work if Oxford never adds another file to this location
         node = self.hdf5file.get(path)
         if node is None:
             self.hdf_internal_error("Failed to get HDF5 item '%s'"% (path))
@@ -893,7 +894,7 @@ class Fast5File(object):
         """
         try:
             table = self.hdf5file[fastq_paths[self.version]['template'] % self.group]
-            self.template_events = [Event(x) for x in table['Events'][()]]
+            self.template_events = [Event(x) for x in table['Events'][()]] ## can't extract data, py3 makes a view
         except Exception as e:
             self.template_events = []
 

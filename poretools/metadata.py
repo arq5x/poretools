@@ -1,5 +1,5 @@
 from __future__ import print_function
-from . import Fast5File
+from poretools import Fast5File
 
 
 def run(parser, args):
@@ -19,6 +19,6 @@ def run(parser, args):
 			asic_id = fast5.get_asic_id()
 			heatsink_temp = fast5.get_heatsink_temp()
 
-			print("%s\t%s\t%s" % (asic_id, asic_temp, heatsink_temp))
+			print("%s\t%s\t%s" % (asic_id.decode(), asic_temp.decode(), heatsink_temp.decode()))
 
 			fast5.close()

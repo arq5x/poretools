@@ -1,5 +1,8 @@
+#import for py2 and py3 compatiblity
 from __future__ import print_function
-from . import Fast5File
+
+#Poretools import
+from poretools import Fast5File
 
 def run(parser, args):
 
@@ -7,9 +10,9 @@ def run(parser, args):
 
 	for fast5 in Fast5File.Fast5FileSet(args.files):
 
-		start_time = fast5.get_start_time()
+		start_time = fast5.get_start_time()           
 		channel_number = fast5.get_channel_number()
-		read_number = fast5.get_read_number()
+		read_number = fast5.get_read_number()         
 
 		template_events = fast5.get_template_events()
 		if template_events is not None:
