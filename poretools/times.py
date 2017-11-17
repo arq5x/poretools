@@ -28,9 +28,12 @@ def run(parser, args):
 			else:
 				read_length = 0
 
-			lt = localtime(start_time)
+			if args.utc:
+				lt = gmtime(start_time)
+			else:
+				lt = localtime(start_time)
 			print "\t".join([str(fast5.get_channel_number()),
-				fast5.filename, 
+				fast5.filename,
 				str(read_length),
 				str(fast5.get_exp_start_time()),
 				str(start_time), \

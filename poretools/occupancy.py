@@ -45,6 +45,8 @@ def plot_performance(parser, args, pore_measure):
     sns.heatmap(d, annot=True, fmt="d", linewidths=.5)
 
     if args.saveas is not None:
+        plt.switch_backend('Agg') # Use non-interactive backend in case this is
+                                  # running on a headless system.
         plot_file = args.saveas
         plt.savefig(plot_file, figsize=(8.5, 8.5))
     else:

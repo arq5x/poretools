@@ -42,6 +42,10 @@ def run(parser, args):
 
         fast5.close()
 
+    if args.saveas is not None:
+        plt.switch_backend('Agg') # Use non-interactive backend in case this is
+                                  # running on a headless system.
+
     logger.info("Processing data...")
     data = [qualpos[e] for e in sorted(qualpos.keys())]
     logger.info("Constructing box plot...")

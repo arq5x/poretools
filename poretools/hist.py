@@ -18,6 +18,10 @@ def plot_hist(sizes, args):
     """
     sizes = [s for s in sizes if args.min_length < s < args.max_length]
 
+    if args.saveas is not None:
+        plt.switch_backend('Agg') # Use non-interactive backend in case this is
+                                  # running on a headless system.
+
     if args.theme_bw:
         sns.set_style("whitegrid")
     plt.hist(sizes, args.num_bins)

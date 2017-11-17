@@ -445,6 +445,11 @@ def main():
     ##########
     parser_times = subparsers.add_parser('times',
                                         help='Return the start times from a set of FAST5 files in tabular format')
+    parser_times.add_argument('--utc',
+                               dest='utc',
+                               default=False,
+                               action='store_true',
+                               help="Show timestamps in UTC.")
     parser_times.add_argument('files', metavar='FILES', nargs='+',
                                help='The input FAST5 files.')
     parser_times.set_defaults(func=run_subtool)
