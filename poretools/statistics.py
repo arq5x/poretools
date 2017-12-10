@@ -7,7 +7,7 @@ def mean(l):
     """
     if isinstance(l, list):
         if len(l):
-            return float(sum(l)) / float(len(l))
+            return float(sum(l)) // float(len(l))
         else:
             return None
     else:
@@ -29,12 +29,13 @@ def median(l):
     else:
         return None
 
-def NX(l, x=[25,50,75]):
+def NX(l, x=[25, 50, 75]):
     """
     Returns NX for all x for a list of numbers l.
     Default: N25, N50, N75
     Assumes all values in list x are between 0 and 100.
-    Interpretation: When NX = NX_value, X% of data (in bp) is contained in reads at least NX_value bp long.
+    Interpretation: When NX = NX_value, X% of data (in bp)
+    is contained in reads at least NX_value bp long.
     """
     if isinstance(l, list) and isinstance(x, list):
         l = sorted(l)
@@ -43,12 +44,12 @@ def NX(l, x=[25,50,75]):
         nxsum = 0
         nxvalues = {e:0 for e in x}
         for e in x:
-            xpct = total*e/100.0
+            xpct = total*e//100.0
             while nxsum < xpct and l:
-                    nxsum += l[-1]
-                    lastsize = l.pop()
-                    nxvalues[e] = lastsize
-            return nxvalues
+                nxsum += l[-1]
+                lastsize = l.pop()
+            nxvalues[e] = lastsize
+        return nxvalues
 
     else:
         return None
