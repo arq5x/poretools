@@ -12,4 +12,3 @@ install:
 
 script:
   - python setup.py install
-  - python poretools squiggle test_data/2016_3_4_3507_1_ch13_read1474_strand.fast5
