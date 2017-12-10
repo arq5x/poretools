@@ -894,7 +894,7 @@ class Fast5File(object):
         """
         try:
             table = self.hdf5file[fastq_paths[self.version]['template'] % self.group]
-            self.template_events = [Event(x) for x in table['Events'][()]] ## can't extract data, py3 makes a view
+            self.template_events = table['Events'][()]
         except Exception as e:
             self.template_events = []
 

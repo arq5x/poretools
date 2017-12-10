@@ -80,7 +80,7 @@ poretools internal error in file 'test_data/YYYYMMDD_HHMM_SampleID/Fail/1/2016_3
                  Please report this error (with the offending file) to:
                  https://github.com/arq5x/poretools/issues~~  ** Not and error, test data has older file structure **
 
-11. **logger** - doesn't log currently? 
+11. ~~ **logger** - doesn't log currently?~~ prints to standard out
 
 
 ## Working Modules - for py3

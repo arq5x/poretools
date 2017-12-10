@@ -1,5 +1,5 @@
-# py2 and py3 compatiblity 
-from builtins import object 
+# py2 and py3 compatiblity
+from builtins import object
 
 import os
 import sys
@@ -17,6 +17,7 @@ logger = logging.getLogger('poretools')
 from poretools import Fast5File
 
 def plot_squiggle(args, filename, start_times, mean_signals):
+
     """
     create a squiggle plot of the read
     """
@@ -58,8 +59,8 @@ def do_plot_squiggle(args, fast5):
     mean_signals = []
 
     for event in fast5.get_template_events():
-        start_times.append(event.start)
-        mean_signals.append(event.mean)
+        start_times.append(event["start"])
+        mean_signals.append(event["mean"])
 
     if start_times:
         plot_squiggle(args, fast5.filename, start_times, mean_signals)

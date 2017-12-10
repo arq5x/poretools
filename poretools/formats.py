@@ -1,5 +1,4 @@
 # py2 and py3 imports
-from future.utils import raise_from
 
 class Fastq(object):
 	def __init__(self, s):
