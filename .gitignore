@@ -2,5 +2,6 @@
 build/
 dist/
 *.egg-info
-ENV/
+ENV*
 .coverage
+.gitignore
