@@ -53,9 +53,7 @@ TypeError: endswith first arg must be bytes or a tuple of bytes, not str~~
   File "/home/sbrimer/Documents/poretools/ENV/lib/python3.5/site-packages/poretools-0.6.0-py3.5.egg/poretools/occupancy.py", line 81, in run
     plot_performance(parser, args, tot_reads_per_pore)
   File "/home/sbrimer/Documents/poretools/ENV/lib/python3.5/site-packages/poretools-0.6.0-py3.5.egg/poretools/occupancy.py", line 39, in plot_performance
-    d = {'rownum': range(1,17)*32, TypeError: unsupported operand type(s) for *: 'range' and 'int ~~
-
-
+    d = {'rownum': range(1,17)*32, TypeError: unsupported operand type(s) for *: 'range' and 'int~~
 8. ~~**combine** - not sure about this one, may need work or better understanding of how to use it.~~ User error :/
 
 9. ~~**index**

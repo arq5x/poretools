@@ -23,3 +23,4 @@ def run(parser, args):
 	for n in nuc_count:
 		print('\t'.join(str(s) for s in [n, nuc_count[n], 
 			total_nucs, float(nuc_count[n]) / float(total_nucs)]))
+		
