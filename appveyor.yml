@@ -119,10 +119,10 @@ install:
     #- "%CMD_IN_ENV% pip install C:\\HDF5\\matplotlib-1.5.1-cp27-none-win32.whl"
 
 
-  #- ps: Invoke-WebRequest "https://download.lfd.uci.edu/pythonlibs/yjwkc9i2/seaborn-0.8.1-py2.py3-none-any.whl" -OutFile "C:\HDF5\seaborn-0.7.0-py2.py3-none-any.whl"
+  - ps: Invoke-WebRequest "https://www.lfd.uci.edu/pythonlibs/~gohlke/yjwkc9i2/seaborn-0.8.1-py2.py3-none-any.whl" -OutFile "C:\HDF5\seaborn-0.7.0-py2.py3-none-any.whl"
     #- "%CMD_IN_ENV% C:\\HDF5\\h5py-2.5.0.win32-py2.7.exe"
-  #- ps: pip install C:\\HDF5\\seaborn-0.8.1-py2.py3-none-any.whl
-  - ps: conda install seaborn 
+  - ps: pip install C:\\HDF5\\seaborn-0.8.1-py2.py3-none-any.whl
+
 
 build_script:
   # Build the compiled extension
