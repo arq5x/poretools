@@ -20,7 +20,7 @@ def run(parser, args):
 				total_nucs += 1
 		fast5.close()
 
-	for n in nuc_count:
+	for n in sorted(nuc_count):
 		print('\t'.join(str(s) for s in [n, nuc_count[n], 
 			total_nucs, float(nuc_count[n]) / float(total_nucs)]))
 		

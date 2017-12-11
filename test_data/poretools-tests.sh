@@ -84,31 +84,28 @@ rm obs_pass_winner
 
 #########################
 # Test `nucdist`
-#
-#Comment this test out, code works for py3 however it place acgt in a new order everytime it is run so the diff check fails
-#
 #########################
 
-#echo 'check nucdist in all FAST5'
-#poretools nucdist YYYYMMDD_HHMM_SampleID/ > obs_all_nucdist
+echo 'check nucdist in all FAST5'
+poretools nucdist YYYYMMDD_HHMM_SampleID/ > obs_all_nucdist
 
-#if [ $ver -gt 27 ]; then 
-#	check obs_all_nucdist exp_all_nucdist_py3
-#else
-#	check obs_all_nucdist exp_all_nucdist
-#fi
+if [ $ver -gt 27 ]; then 
+	check obs_all_nucdist exp_all_nucdist_py3
+else
+	check obs_all_nucdist exp_all_nucdist
+fi
 
-#rm obs_all_nucdist
+rm obs_all_nucdist
 
-#echo 'check nucdist in /Fail FAST5 only'
-#poretools nucdist YYYYMMDD_HHMM_SampleID/Fail/ > obs_fail_nucdist
-#if [ $ver -gt 27 ]; then 
-#	check obs_fail_nucdist exp_fail_nucdist_py3
-#else
-#	check obs_fail_nucdist exp_fail_nucdist
-#fi
+echo 'check nucdist in /Fail FAST5 only'
+poretools nucdist YYYYMMDD_HHMM_SampleID/Fail/ > obs_fail_nucdist
+if [ $ver -gt 27 ]; then 
+	check obs_fail_nucdist exp_fail_nucdist_py3
+else
+	check obs_fail_nucdist exp_fail_nucdist
+fi
 
-#rm obs_fail_nucdist
+rm obs_fail_nucdist
 
 #########################
 # Test `qualdist`
