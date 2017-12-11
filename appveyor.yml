@@ -93,10 +93,10 @@ install:
   # target Python version and architecture
   
   - ps: if ($env:PYTHON_ARCH -eq "32") { `
-        Invoke-WebRequest "https://pypi.python.org/packages/4e/5b/1da1bf9537224adb6ca9148ca34fa9726a878660bbb45705747402d5a854/h5py-2.7.1-cp27-cp27m-win32.whl#md5=849ff329ce2cebb4d2c858eac0d2ff96";
+        Invoke-WebRequest "https://pypi.python.org/packages/4e/5b/1da1bf9537224adb6ca9148ca34fa9726a878660bbb45705747402d5a854/h5py-2.7.1-cp27-cp27m-win32.whl#md5=849ff329ce2cebb4d2c858eac0d2ff96" -OutFile "C:\HDF5\h5py-2.5.0-cp27-cp27m-win32.whl";
         pip install C:\HDF5\h5py-2.5.0-cp27-cp27m-win32.whl `
        } else { `
-        Invoke-WebRequest "https://pypi.python.org/packages/98/43/cb0345e3e47cbc1958200d2ecb536a202550fc58c54134aab6b0bb1d9794/h5py-2.7.1-cp27-cp27m-win_amd64.whl#md5=02f06d0f8208832c4b5cdddcad954932";
+        Invoke-WebRequest "https://pypi.python.org/packages/98/43/cb0345e3e47cbc1958200d2ecb536a202550fc58c54134aab6b0bb1d9794/h5py-2.7.1-cp27-cp27m-win_amd64.whl#md5=02f06d0f8208832c4b5cdddcad954932" -OutFile "C:\HDF5\h5py-2.5.0-cp27-cp27m-win_amd64.whl";
         pip install C:\HDF5\h5py-2.5.0-cp27-cp27m-win_amd64.whl `
         }
 
