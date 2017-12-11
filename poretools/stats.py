@@ -30,7 +30,7 @@ def run(parser, args):
                         if fast5.is_high_quality():
                             stats['2D_hq'].append(len(fa.seq))
 
-            fast5.close()
+        fast5.close()
 
         print("files\ttotal reads\t%d" % (files))
         print("files\ttotal base-called reads\t%d" % (basecalled_files))
@@ -51,7 +51,6 @@ def run(parser, args):
             else:
                 logger.warning("No valid sequences observed.\n")
     else:
-        print('main else statment')
         sizes = []
         for fast5 in Fast5File.Fast5FileSet(args.files, group=args.group):
             fas = fast5.get_fastas(args.type)
