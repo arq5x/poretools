@@ -1,5 +1,5 @@
 import Fast5File
-from time import strftime, localtime
+from time import strftime, localtime, gmtime
 import sys
 
 #logging
@@ -28,7 +28,10 @@ def run(parser, args):
 			else:
 				read_length = 0
 
-			lt = localtime(start_time)
+			if args.utc:
+				lt = gmtime(start_time)
+			else:
+				lt = localtime(start_time)
 			print "\t".join([str(fast5.get_channel_number()),
 				fast5.filename, 
 				str(read_length),

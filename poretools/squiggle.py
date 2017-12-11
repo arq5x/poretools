@@ -36,6 +36,10 @@ def plot_squiggle(args, filename, start_times, mean_signals):
     starts = df.groupby('cat')['start']
     mins, maxs = list(starts.min()), list(starts.max())
 
+    if args.saveas is not None:
+        plt.switch_backend('Agg') # Use non-interactive backend in case this is
+                                  # running on a headless system.
+
     grid = sns.FacetGrid(df, row="cat", sharex=False, size=8)
     #plt.gcf().tight_layout()
     grid.fig.suptitle('Squiggle plot for read: ' + filename + "\nTotal time (sec): " + str(total_time))

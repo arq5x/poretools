@@ -50,6 +50,10 @@ def plot_collectors_curve(args, start_times, read_lengths):
         if args.theme_bw:
             sns.set_style("whitegrid")
 
+        if args.saveas is not None:
+            plt.switch_backend('Agg') # Use non-interactive backend in case this is
+                                      # running on a headless system.
+
         # plot
         plt.plot(df['start'], df['cumul'])
         plt.xlabel('Time (hours)')

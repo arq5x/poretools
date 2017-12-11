@@ -1,6 +1,7 @@
 import Fast5File
 from collections import defaultdict
 import pandas
+import sys
 import matplotlib.pyplot as plt
 
 #logging
@@ -42,6 +43,10 @@ def run(parser, args):
 
         fast5.close()
 
+    if args.saveas is not None:
+        plt.switch_backend('Agg') # Use non-interactive backend in case this is
+                                  # running on a headless system.
+
     logger.info("Processing data...")
     data = [qualpos[e] for e in sorted(qualpos.keys())]
     logger.info("Constructing box plot...")
@@ -53,10 +58,10 @@ def run(parser, args):
     if args.saveas is not None:
             logger.info("Writing plot to file...")
             plot_file = args.saveas
-            if plot_file.endswith(".pdf") or plot_file.endswith(".jpg"):
+            if plot_file.endswith(".pdf") or plot_file.endswith(".png") or plot_file.endswith(".svg"):
                     plt.savefig(plot_file)
             else:
-                    logger.error("Unrecognized extension for %s! Try .pdf or .jpg" % (plot_file))
+                    logger.error("Unrecognized extension for %s! Try .pdf, .png, or .svg" % (plot_file))
                     sys.exit()
 
     else:

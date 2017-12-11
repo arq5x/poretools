@@ -25,6 +25,9 @@ def plot_performance(parser, args, pore_measure):
     """
     Plot the pore performance in terms of reads per pore
     """
+    if args.saveas is not None:
+        plt.switch_backend('Agg') # Use non-interactive backend in case this is
+                                  # running on a headless system.
     flowcell_layout = minion_flowcell_layout()
 
     pore_values = []
