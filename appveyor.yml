@@ -122,17 +122,6 @@ install:
   #- ps: wget "https://www.lfd.uci.edu/~gohlke/pythonlibs/seaborn-0.8.1-py2.py3-none-any.whl" -OutFile "C:\HDF5\seaborn-0.8.1-py2.py3-none-any.whl"
     #- "%CMD_IN_ENV% C:\\HDF5\\h5py-2.5.0.win32-py2.7.exe"
   #- ps: pip install C:\\HDF5\\seaborn-0.8.1-py2.py3-none-any.whl
-
-
-# Freetype GL - A C OpenGL Freetype engine
-#
-# Distributed under the OSI-approved BSD 2-Clause License.  See accompanying
-# file `LICENSE` for more details.
-version: ci-{build}
-init:
-  - git config --global core.eol native
-  - git config --global core.autocrlf true
-install:
   - '"C:\Program Files (X86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat"'
   # Remove the VS Xamarin targets to reduce AppVeyor specific noise in build
   # logs.  See also http://help.appveyor.com/discussions/problems/4569
@@ -143,14 +132,14 @@ install:
   - cmake -G "Visual Studio 12" -DBUILD_SHARED_LIBS=ON -DGLFW_BUILD_EXAMPLES=OFF -DGLFW_BUILD_TESTS=OFF -DGLFW_BUILD_DOCS=OFF .
   - cmake --build . --config Release --target install -- /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" /verbosity:minimal
   - cd ..
+
 before_build:
   - if not exist build\NUL mkdir build
   - cd build
+
 build_script:
   - cmake -G "Visual Studio 12" -Dfreetype-gl_BUILD_APIDOC=OFF -Dfreetype-gl_BUILD_TESTS=OFF "-Dglfw3_DIR=C:/Program Files (x86)/GLFW/lib/cmake/glfw3" ..
   - cmake --build . --config RelWithDebInfo -- /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" /verbosity:minimal
-
-build_script:
   # Build the compiled extension
   - "%CMD_IN_ENV% python setup.py build"
   - "%CMD_IN_ENV% python setup.py install"
