@@ -3,3 +3,5 @@ matplotlib
 seaborn
 pandas
 python-dateutil
+future
+

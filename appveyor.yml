@@ -91,22 +91,22 @@ install:
   # compiled extensions and are not provided as pre-built wheel packages,
   # pip will build them from source using the MSVC compiler matching the
   # target Python version and architecture
-  #
+  
   - ps: if ($env:PYTHON_ARCH -eq "32") { `
-        Invoke-WebRequest "http://www.lfd.uci.edu/~gohlke/pythonlibs/djcobkfp/h5py-2.5.0-cp27-none-win32.whl" -OutFile "C:\HDF5\h5py-2.5.0-cp27-none-win32.whl";
-        pip install C:\HDF5\h5py-2.5.0-cp27-none-win32.whl `
-        } else { `
-        Invoke-WebRequest "http://www.lfd.uci.edu/~gohlke/pythonlibs/djcobkfp/h5py-2.5.0-cp27-none-win_amd64.whl" -OutFile "C:\HDF5\h5py-2.5.0-cp27-none-win_amd64.whl";
-        pip install C:\HDF5\h5py-2.5.0-cp27-none-win_amd64.whl `
+        Invoke-WebRequest "https://pypi.python.org/packages/4e/5b/1da1bf9537224adb6ca9148ca34fa9726a878660bbb45705747402d5a854/h5py-2.7.1-cp27-cp27m-win32.whl#md5=849ff329ce2cebb4d2c858eac0d2ff96" -OutFile "C:\HDF5\h5py-2.5.0-cp27-cp27m-win32.whl";
+        pip install C:\HDF5\h5py-2.5.0-cp27-cp27m-win32.whl `
+       } else { `
+        Invoke-WebRequest "https://pypi.python.org/packages/98/43/cb0345e3e47cbc1958200d2ecb536a202550fc58c54134aab6b0bb1d9794/h5py-2.7.1-cp27-cp27m-win_amd64.whl#md5=02f06d0f8208832c4b5cdddcad954932" -OutFile "C:\HDF5\h5py-2.5.0-cp27-cp27m-win_amd64.whl";
+        pip install C:\HDF5\h5py-2.5.0-cp27-cp27m-win_amd64.whl `
         }
 
-  - ps: if ($env:PYTHON_ARCH -eq "32") { `
-        Invoke-WebRequest "http://www.lfd.uci.edu/~gohlke/pythonlibs/djcobkfp/matplotlib-1.5.1-cp27-none-win32.whl" -OutFile "C:\HDF5\matplotlib-1.5.1-cp27-none-win32.whl";
-        pip install C:\HDF5\matplotlib-1.5.1-cp27-none-win32.whl `
-        } else { `
-        Invoke-WebRequest "http://www.lfd.uci.edu/~gohlke/pythonlibs/djcobkfp/matplotlib-1.5.1-cp27-none-win_amd64.whl" -OutFile "C:\HDF5\matplotlib-1.5.1-cp27-none-win_amd64.whl";
-        pip install C:\HDF5\matplotlib-1.5.1-cp27-none-win_amd64.whl `
-        }
+  #- ps: if ($env:PYTHON_ARCH -eq "32") { `
+  #      Invoke-WebRequest "http://www.lfd.uci.edu/~gohlke/pythonlibs/djcobkfp/matplotlib-1.5.1-cp27-none-win32.whl" -OutFile "C:\HDF5\matplotlib-1.5.1-cp27-none-win32.whl";
+  #      pip install C:\HDF5\matplotlib-1.5.1-cp27-none-win32.whl `
+  #      } else { `
+  #      Invoke-WebRequest "http://www.lfd.uci.edu/~gohlke/pythonlibs/djcobkfp/matplotlib-1.5.1-cp27-none-win_amd64.whl" -OutFile "C:\HDF5\matplotlib-1.5.1-cp27-none-win_amd64.whl";
+  #      pip install C:\HDF5\matplotlib-1.5.1-cp27-none-win_amd64.whl `
+  #      }
 
   #- ps: Invoke-WebRequest "https://pypi.python.org/packages/2.7/h/h5py/h5py-2.5.0.win32-py2.7.exe" -OutFile "C:\HDF5\h5py-2.5.0.win32-py2.7.exe"
   #- ps: Invoke-WebRequest "http://www.lfd.uci.edu/~gohlke/pythonlibs/djcobkfp/h5py-2.5.0-cp27-none-win%PYTHON_ARCH%.whl" -OutFile "C:\HDF5\h5py-2.5.0-cp27-none-win%PYTHON_ARCH%.whl"
@@ -119,12 +119,27 @@ install:
     #- "%CMD_IN_ENV% pip install C:\\HDF5\\matplotlib-1.5.1-cp27-none-win32.whl"
 
 
-  - ps: Invoke-WebRequest "http://www.lfd.uci.edu/~gohlke/pythonlibs/djcobkfp/seaborn-0.7.0-py2.py3-none-any.whl" -OutFile "C:\HDF5\seaborn-0.7.0-py2.py3-none-any.whl"
+  #- ps: wget "https://www.lfd.uci.edu/~gohlke/pythonlibs/seaborn-0.8.1-py2.py3-none-any.whl" -OutFile "C:\HDF5\seaborn-0.8.1-py2.py3-none-any.whl"
     #- "%CMD_IN_ENV% C:\\HDF5\\h5py-2.5.0.win32-py2.7.exe"
-  - ps: pip install C:\\HDF5\\seaborn-0.7.0-py2.py3-none-any.whl
+  #- ps: pip install C:\\HDF5\\seaborn-0.8.1-py2.py3-none-any.whl
+  - '"C:\Program Files (X86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat"'
+  # Remove the VS Xamarin targets to reduce AppVeyor specific noise in build
+  # logs.  See also http://help.appveyor.com/discussions/problems/4569
+  - del "C:\Program Files (x86)\MSBuild\12.0\Microsoft.Common.targets\ImportAfter\Xamarin.Common.targets"
+  - ps: Start-FileDownload https://github.com/glfw/glfw/archive/3.2.1.zip -FileName glfw-3.2.1.zip
+  - unzip glfw-3.2.1.zip
+  - cd glfw-3.2.1
+  - cmake -G "Visual Studio 12" -DBUILD_SHARED_LIBS=ON -DGLFW_BUILD_EXAMPLES=OFF -DGLFW_BUILD_TESTS=OFF -DGLFW_BUILD_DOCS=OFF .
+  - cmake --build . --config Release --target install -- /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" /verbosity:minimal
+  - cd ..
 
+before_build:
+  - if not exist build\NUL mkdir build
+  - cd build
 
 build_script:
+  - cmake -G "Visual Studio 12" -Dfreetype-gl_BUILD_APIDOC=OFF -Dfreetype-gl_BUILD_TESTS=OFF "-Dglfw3_DIR=C:/Program Files (x86)/GLFW/lib/cmake/glfw3" ..
+  - cmake --build . --config RelWithDebInfo -- /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" /verbosity:minimal
   # Build the compiled extension
   - "%CMD_IN_ENV% python setup.py build"
   - "%CMD_IN_ENV% python setup.py install"

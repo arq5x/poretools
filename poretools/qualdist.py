@@ -1,5 +1,11 @@
-import Fast5File
+# py2 and py3 imports
+from __future__ import print_function
+from __future__ import division
+
 from collections import Counter
+
+# poretools imports
+from poretools import Fast5File
 
 def run(parser, args):
 
@@ -15,5 +21,5 @@ def run(parser, args):
 		fast5.close()
 
 	for q in qual_count:
-		print '\t'.join(str(s) for s in [chr(q+33), q, qual_count[q], 
-			total_nucs, float(qual_count[q]) / float(total_nucs)])
+		print('\t'.join(str(s) for s in [chr(q+33), q, qual_count[q], 
+			total_nucs, float(qual_count[q]) / float(total_nucs)]))

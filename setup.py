@@ -1,9 +1,12 @@
+from __future__ import print_function
+
 import os
 from setuptools import setup
 
 version_py = os.path.join(os.path.dirname(__file__), 'poretools', 'version.py')
 version = open(version_py).read().strip().split('=')[-1].replace('"','').strip()
-print version
+print(version)
+
 long_description = """
 ``poretools`` is a toolset for working with nanopore sequencing data'
 """
@@ -17,7 +20,7 @@ setup(
     name="poretools",
     version=version,
     install_requires=install_requires,
-    requires=['python (>=2.7, <3.0)'],
+    requires=['python (>=2.7)'],
     packages=['poretools',
               'poretools.scripts'],
     author="Nick Loman and Aaron Quinlan",
