@@ -11,6 +11,11 @@ check()
 }
 
 #########################
+# Python version check
+#########################
+ver=$(python --version 2>&1 | sed 's/.* \([0-9]\).\([0-9]\).*/\1\2/')
+
+#########################
 # Test `fasta`
 #########################
 
@@ -44,12 +49,22 @@ rm obs_total.fq
 
 echo 'check stats for all FAST5'
 poretools stats YYYYMMDD_HHMM_SampleID/ > obs_all_stats
-check obs_all_stats exp_all_stats
+if [ $ver -gt 27 ]; then 
+	check obs_all_stats exp_all_stats_py3
+else
+	check obs_all_stats exp_all_stats
+fi
+
 rm obs_all_stats
 
 echo 'check stats for /Pass FAST5 only'
 poretools stats YYYYMMDD_HHMM_SampleID/Pass/ > obs_pass_stats
-check obs_pass_stats exp_pass_stats
+if [ $ver -gt 27 ]; then 
+	check obs_pass_stats exp_pass_stats_py3
+else
+	check obs_pass_stats exp_pass_stats
+fi
+
 rm obs_pass_stats
 
 
@@ -73,12 +88,23 @@ rm obs_pass_winner
 
 echo 'check nucdist in all FAST5'
 poretools nucdist YYYYMMDD_HHMM_SampleID/ > obs_all_nucdist
-check obs_all_nucdist exp_all_nucdist
+
+if [ $ver -gt 27 ]; then 
+	check obs_all_nucdist exp_all_nucdist_py3
+else
+	check obs_all_nucdist exp_all_nucdist
+fi
+
 rm obs_all_nucdist
 
 echo 'check nucdist in /Fail FAST5 only'
 poretools nucdist YYYYMMDD_HHMM_SampleID/Fail/ > obs_fail_nucdist
-check obs_fail_nucdist exp_fail_nucdist
+if [ $ver -gt 27 ]; then 
+	check obs_fail_nucdist exp_fail_nucdist_py3
+else
+	check obs_fail_nucdist exp_fail_nucdist
+fi
+
 rm obs_fail_nucdist
 
 #########################
@@ -87,11 +113,22 @@ rm obs_fail_nucdist
 
 echo 'check qualdist in all FAST5'
 poretools qualdist YYYYMMDD_HHMM_SampleID/ > obs_all_qualdist
-check obs_all_qualdist exp_all_qualdist
+if [ $ver -gt 27 ]; then 
+	check obs_all_qualdist exp_all_qualdist_py3
+else
+	check obs_all_qualdist exp_all_qualdist
+fi
+
 rm obs_all_qualdist
+
 
 echo 'check qualdist in /Fail FAST5 only'
 poretools qualdist YYYYMMDD_HHMM_SampleID/Fail/ > obs_fail_qualdist
-check obs_fail_qualdist exp_fail_qualdist
+if [ $ver -gt 27 ]; then 
+	check obs_fail_qualdist exp_fail_qualdist_py3
+else
+	check obs_fail_qualdist exp_fail_qualdist
+fi
+
 rm obs_fail_qualdist
 

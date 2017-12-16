@@ -1,5 +1,7 @@
-import Fast5File
+from __future__ import print_function
+from . import Fast5File
 import sys
+
 
 def run(parser, args):
 	
@@ -15,6 +17,7 @@ def run(parser, args):
 				fast5.close()
 				continue
 
+		#this si the same varable for fastas, would making it fqs be clearer or does it matter?
 		fas = fast5.get_fastqs(args.type)
 
 		# high quality 2D: means there are more nanopore events on the 
@@ -42,7 +45,7 @@ def run(parser, args):
 			args.max_length > 0):			
 				continue
 
-			print fa
+			print (fa)
 
 		fast5.close()
 

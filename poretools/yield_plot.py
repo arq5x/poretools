@@ -1,4 +1,6 @@
-import Fast5File
+#py2 and py3 imports
+from past.builtins import xrange
+
 import matplotlib
 #matplotlib.use('Agg') # Must be called before any other matplotlib calls
 from matplotlib import pyplot as plt
@@ -11,6 +13,9 @@ import seaborn as sns
 import logging
 logger = logging.getLogger('poretools')
 logger.setLevel(logging.INFO)
+
+# Poretools imports
+from poretools import Fast5File
 
 def plot_collectors_curve(args, start_times, read_lengths):
         """
