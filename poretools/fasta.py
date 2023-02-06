@@ -1,5 +1,10 @@
-import Fast5File
+# py2 and py3 imports
+from __future__ import print_function
+
 import sys
+
+# poretools imports
+from poretools import Fast5File
 
 def run(parser, args):
 
@@ -42,7 +47,7 @@ def run(parser, args):
 			args.max_length > 0):			
 				continue			
 
-			print fa
+			print(fa)
 
 		fast5.close()
 
